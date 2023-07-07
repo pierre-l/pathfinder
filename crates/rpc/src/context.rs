@@ -1,8 +1,10 @@
 use crate::gas_price;
 use crate::SyncState;
-use pathfinder_common::ChainId;
+use anyhow::{Context, Ok};
+use pathfinder_common::pending::PendingData;
+use pathfinder_common::{BlockWithBody, ChainId, StateUpdate};
 use pathfinder_storage::Storage;
-use starknet_gateway_types::pending::PendingData;
+
 use std::sync::Arc;
 
 type SequencerClient = starknet_gateway_client::Client;
@@ -61,6 +63,32 @@ impl RpcContext {
         }
     }
 
+    pub(crate) fn pending_block(
+        &self,
+        db: &pathfinder_storage::Transaction<'_>,
+    ) -> anyhow::Result<Option<Arc<BlockWithBody>>> {
+        let Some(latest) = db
+            .block_id(pathfinder_storage::BlockId::Latest)
+            .context("Querying latest block hash")? else {
+                return Ok(None);
+            };
+
+        Ok(self.pending_data.block(latest.1))
+    }
+
+    pub(crate) fn pending_state_update(
+        &self,
+        db: &pathfinder_storage::Transaction<'_>,
+    ) -> anyhow::Result<Option<Arc<StateUpdate>>> {
+        let Some(latest) = db
+            .block_header(pathfinder_storage::BlockId::Latest)
+            .context("Querying latest block header")? else {
+                return Ok(None);
+            };
+
+        Ok(self.pending_data.state_update(latest.state_commitment))
+    }
+
     pub(crate) fn with_version(self, version: &str) -> Self {
         Self {
             version: RpcVersion::parse(version),
@@ -103,7 +131,7 @@ impl RpcContext {
 
     pub fn with_pending_data(self, pending_data: PendingData) -> Self {
         Self {
-            pending_data: Some(pending_data),
+            pending_data,
             ..self
         }
     }

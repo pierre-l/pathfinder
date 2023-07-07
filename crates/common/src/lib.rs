@@ -8,20 +8,23 @@ use primitive_types::{H160, H256};
 use serde::{Deserialize, Serialize};
 use stark_hash::Felt;
 
+mod body;
 pub mod consts;
 pub mod event;
 pub mod hash;
 mod header;
 mod macros;
+pub mod pending;
 pub mod prelude;
+pub mod receipt;
 pub mod state_update;
 pub mod test_utils;
 pub mod transaction;
 pub mod trie;
 
-pub use state_update::StateUpdate;
-
+pub use body::{BlockBody, BlockWithBody};
 pub use header::{BlockHeader, BlockHeaderBuilder};
+pub use state_update::StateUpdate;
 
 impl ContractAddress {
     /// The contract at 0x1 is special. It was never deployed and therefore
@@ -145,7 +148,7 @@ macros::i64_backed_u64::new_get_partialeq!(BlockTimestamp);
 macros::i64_backed_u64::serdes!(BlockTimestamp);
 
 /// A Starknet transaction index.
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct TransactionIndex(u64);
 
 macros::i64_backed_u64::new_get_partialeq!(TransactionIndex);
@@ -156,7 +159,7 @@ macros::i64_backed_u64::serdes!(TransactionIndex);
 pub struct GasPrice(pub u128);
 
 /// Starknet transaction version.
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Deserialize, Serialize, Default)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Deserialize, Serialize)]
 pub struct TransactionVersion(pub H256);
 
 impl TransactionVersion {
@@ -488,6 +491,7 @@ pub fn calculate_class_commitment_leaf_hash(
 
 #[cfg(test)]
 mod tests {
+
     #[test]
     fn constructor_entry_point() {
         use crate::truncated_keccak;

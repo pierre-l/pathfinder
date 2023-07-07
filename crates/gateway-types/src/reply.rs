@@ -1,7 +1,7 @@
 //! Structures used for deserializing replies from Starkware's sequencer REST API.
 use pathfinder_common::{
-    BlockHash, BlockNumber, BlockTimestamp, ContractAddress, EthereumAddress, GasPrice,
-    SequencerAddress, StarknetVersion, StateCommitment,
+    BlockBody, BlockHash, BlockHeader, BlockNumber, BlockTimestamp, ContractAddress,
+    EthereumAddress, GasPrice, SequencerAddress, StarknetVersion, StateCommitment,
 };
 use pathfinder_serde::{EthereumAddressAsHexStr, GasPriceAsHexStr};
 use serde::{Deserialize, Serialize};
@@ -50,6 +50,30 @@ pub struct PendingBlock {
     /// Version metadata introduced in 0.9.1, older blocks will not have it.
     #[serde(default)]
     pub starknet_version: StarknetVersion,
+}
+
+impl PendingBlock {
+    pub fn into_parts(self) -> (BlockHeader, BlockBody) {
+        let header = BlockHeader {
+            parent_hash: self.parent_hash,
+            timestamp: self.timestamp,
+            gas_price: self.gas_price,
+            sequencer_address: self.sequencer_address,
+            starknet_version: self.starknet_version,
+            ..Default::default()
+        };
+
+        let transaction_data = self
+            .transactions
+            .into_iter()
+            .zip(self.transaction_receipts.into_iter())
+            .map(|(tx, rx)| (tx.into(), rx.into()))
+            .collect();
+
+        let body = BlockBody { transaction_data };
+
+        (header, body)
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -166,6 +190,7 @@ pub struct Transaction {
 /// Types used when deserializing L2 transaction related data.
 pub mod transaction {
     use fake::{Dummy, Fake, Faker};
+    use pathfinder_common::receipt::BuiltinInstanceCounter;
     use pathfinder_common::{
         CallParam, CasmHash, ClassHash, ConstructorParam, ContractAddress, ContractAddressSalt,
         EntryPoint, EthereumAddress, Fee, L1ToL2MessageNonce, L1ToL2MessagePayloadElem,
@@ -229,6 +254,70 @@ pub mod transaction {
         pub segment_arena_builtin: u64,
     }
 
+    impl From<ExecutionResources> for pathfinder_common::receipt::ExecutionResources {
+        fn from(value: ExecutionResources) -> Self {
+            Self {
+                // TODO builtin_instance_counter: value.builtin_instance_counter.into(),
+                builtin_instance_counter: BuiltinInstanceCounter::Empty,
+                n_steps: value.n_steps,
+                n_memory_holes: value.n_memory_holes,
+            }
+        }
+    }
+
+    /// Types used when deserializing L2 execution resources related data.
+    pub mod execution_resources {
+        use serde::{Deserialize, Serialize};
+
+        /// Sometimes `builtin_instance_counter` JSON object is returned empty.
+        #[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+        #[serde(untagged)]
+        #[serde(deny_unknown_fields)]
+        pub enum BuiltinInstanceCounter {
+            Normal(NormalBuiltinInstanceCounter),
+            Empty(EmptyBuiltinInstanceCounter),
+        }
+
+        impl From<BuiltinInstanceCounter> for pathfinder_common::receipt::BuiltinInstanceCounter {
+            fn from(value: BuiltinInstanceCounter) -> Self {
+                match value {
+                    BuiltinInstanceCounter::Normal(NormalBuiltinInstanceCounter {
+                        bitwise_builtin,
+                        ecdsa_builtin,
+                        ec_op_builtin,
+                        output_builtin,
+                        pedersen_builtin,
+                        range_check_builtin,
+                    }) => pathfinder_common::receipt::BuiltinInstanceCounter::Normal {
+                        bitwise_builtin,
+                        ecdsa_builtin,
+                        ec_op_builtin,
+                        output_builtin,
+                        pedersen_builtin,
+                        range_check_builtin,
+                    },
+                    BuiltinInstanceCounter::Empty(_) => {
+                        pathfinder_common::receipt::BuiltinInstanceCounter::Empty
+                    }
+                }
+            }
+        }
+
+        #[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+        #[serde(deny_unknown_fields)]
+        pub struct NormalBuiltinInstanceCounter {
+            bitwise_builtin: u64,
+            ecdsa_builtin: u64,
+            ec_op_builtin: u64,
+            output_builtin: u64,
+            pedersen_builtin: u64,
+            range_check_builtin: u64,
+        }
+
+        #[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+        pub struct EmptyBuiltinInstanceCounter {}
+    }
+
     /// Represents deserialized L1 to L2 message.
     #[serde_as]
     #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
@@ -242,6 +331,18 @@ pub mod transaction {
         pub to_address: ContractAddress,
         #[serde(default)]
         pub nonce: Option<L1ToL2MessageNonce>,
+    }
+
+    impl From<L1ToL2Message> for pathfinder_common::receipt::L1ToL2Message {
+        fn from(value: L1ToL2Message) -> Self {
+            pathfinder_common::receipt::L1ToL2Message {
+                from_address: value.from_address,
+                payload: value.payload,
+                selector: value.selector,
+                to_address: value.to_address,
+                nonce: value.nonce,
+            }
+        }
     }
 
     impl<T> Dummy<T> for L1ToL2Message {
@@ -277,6 +378,16 @@ pub mod transaction {
         #[default]
         Succeeded,
         Reverted,
+    }
+
+    impl From<L2ToL1Message> for pathfinder_common::receipt::L2ToL1Message {
+        fn from(value: L2ToL1Message) -> Self {
+            pathfinder_common::receipt::L2ToL1Message {
+                from_address: value.from_address,
+                payload: value.payload,
+                to_address: value.to_address,
+            }
+        }
     }
 
     /// Represents deserialized L2 transaction receipt data.
@@ -342,62 +453,21 @@ pub mod transaction {
         L1Handler(L1HandlerTransaction),
     }
 
-    // This manual deserializtion is a work-around for L1 handler transactions
-    // historically being served as Invoke V0. However, the gateway has retroactively
-    // changed these to L1 handlers. This means older databases will have these as Invoke
-    // but modern one's as L1 handler. This causes confusion, so we convert these old Invoke
-    // to L1 handler manually.
-    //
-    // The alternative is to do a costly database migration which involves opening every tx.
-    //
-    // This work-around may be removed once we are certain all databases no longer contain these
-    // transactions, which will likely only occur after either a migration, or regenesis.
-    impl<'de> Deserialize<'de> for Transaction {
-        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where
-            D: serde::Deserializer<'de>,
-        {
-            /// Copy of [Transaction] to deserialize into, before converting to [Transaction]
-            /// with the potential Invoke V0 -> L1 handler cast.
-            #[derive(Deserialize)]
-            #[serde(tag = "type", deny_unknown_fields)]
-            pub enum InnerTransaction {
-                #[serde(rename = "DECLARE")]
-                Declare(DeclareTransaction),
-                #[serde(rename = "DEPLOY")]
-                Deploy(DeployTransaction),
-                #[serde(rename = "DEPLOY_ACCOUNT")]
-                DeployAccount(DeployAccountTransaction),
-                #[serde(rename = "INVOKE_FUNCTION")]
-                Invoke(InvokeTransaction),
-                #[serde(rename = "L1_HANDLER")]
-                L1Handler(L1HandlerTransaction),
+    impl From<Receipt> for pathfinder_common::receipt::Receipt {
+        fn from(value: Receipt) -> Self {
+            pathfinder_common::receipt::Receipt {
+                actual_fee: value.actual_fee,
+                events: value.events,
+                execution_resources: value.execution_resources.map(Into::into),
+                l1_to_l2_consumed_message: value.l1_to_l2_consumed_message.map(Into::into),
+                l2_to_l1_messages: value
+                    .l2_to_l1_messages
+                    .into_iter()
+                    .map(Into::into)
+                    .collect(),
+                transaction_hash: value.transaction_hash,
+                transaction_index: value.transaction_index,
             }
-
-            let tx = InnerTransaction::deserialize(deserializer)?;
-            let tx = match tx {
-                InnerTransaction::Declare(x) => Transaction::Declare(x),
-                InnerTransaction::Deploy(x) => Transaction::Deploy(x),
-                InnerTransaction::DeployAccount(x) => Transaction::DeployAccount(x),
-                InnerTransaction::Invoke(InvokeTransaction::V0(i))
-                    if i.entry_point_type == Some(EntryPointType::L1Handler) =>
-                {
-                    let l1_handler = L1HandlerTransaction {
-                        contract_address: i.sender_address,
-                        entry_point_selector: i.entry_point_selector,
-                        nonce: TransactionNonce::ZERO,
-                        calldata: i.calldata,
-                        transaction_hash: i.transaction_hash,
-                        version: TransactionVersion::ZERO,
-                    };
-
-                    Transaction::L1Handler(l1_handler)
-                }
-                InnerTransaction::Invoke(x) => Transaction::Invoke(x),
-                InnerTransaction::L1Handler(x) => Transaction::L1Handler(x),
-            };
-
-            Ok(tx)
         }
     }
 
@@ -550,6 +620,217 @@ pub mod transaction {
             pathfinder_common::transaction::Transaction { hash, variant }
         }
     }
+
+    // This manual deserializtion is a work-around for L1 handler transactions
+    // historically being served as Invoke V0. However, the gateway has retroactively
+    // changed these to L1 handlers. This means older databases will have these as Invoke
+    // but modern one's as L1 handler. This causes confusion, so we convert these old Invoke
+    // to L1 handler manually.
+    //
+    // The alternative is to do a costly database migration which involves opening every tx.
+    //
+    // This work-around may be removed once we are certain all databases no longer contain these
+    // transactions, which will likely only occur after either a migration, or regenesis.
+    impl<'de> Deserialize<'de> for Transaction {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::Deserializer<'de>,
+        {
+            /// Copy of [Transaction] to deserialize into, before converting to [Transaction]
+            /// with the potential Invoke V0 -> L1 handler cast.
+            #[derive(Deserialize)]
+            #[serde(tag = "type", deny_unknown_fields)]
+            pub enum InnerTransaction {
+                #[serde(rename = "DECLARE")]
+                Declare(DeclareTransaction),
+                #[serde(rename = "DEPLOY")]
+                Deploy(DeployTransaction),
+                #[serde(rename = "DEPLOY_ACCOUNT")]
+                DeployAccount(DeployAccountTransaction),
+                #[serde(rename = "INVOKE_FUNCTION")]
+                Invoke(InvokeTransaction),
+                #[serde(rename = "L1_HANDLER")]
+                L1Handler(L1HandlerTransaction),
+            }
+
+            let tx = InnerTransaction::deserialize(deserializer)?;
+            let tx = match tx {
+                InnerTransaction::Declare(x) => Transaction::Declare(x),
+                InnerTransaction::Deploy(x) => Transaction::Deploy(x),
+                InnerTransaction::DeployAccount(x) => Transaction::DeployAccount(x),
+                InnerTransaction::Invoke(InvokeTransaction::V0(i))
+                    if i.entry_point_type == Some(EntryPointType::L1Handler) =>
+                {
+                    let l1_handler = L1HandlerTransaction {
+                        contract_address: i.sender_address,
+                        entry_point_selector: i.entry_point_selector,
+                        nonce: TransactionNonce::ZERO,
+                        calldata: i.calldata,
+                        transaction_hash: i.transaction_hash,
+                        version: TransactionVersion::ZERO,
+                    };
+
+                    Transaction::L1Handler(l1_handler)
+                }
+                InnerTransaction::Invoke(x) => Transaction::Invoke(x),
+                InnerTransaction::L1Handler(x) => Transaction::L1Handler(x),
+            };
+
+            Ok(tx)
+        }
+    }
+
+    /* TODO
+    impl From<Transaction> for pathfinder_common::transaction::Transaction {
+        fn from(value: Transaction) -> Self {
+            use pathfinder_common::transaction::TransactionVariant;
+
+            let hash = value.hash();
+            let variant = match value {
+                Transaction::Declare(DeclareTransaction::V0(DeclareTransactionV0V1 {
+                    class_hash,
+                    max_fee,
+                    nonce,
+                    sender_address,
+                    signature,
+                    transaction_hash: _,
+                })) => TransactionVariant::DeclareV0(
+                    pathfinder_common::transaction::DeclareTransactionV0V1 {
+                        class_hash,
+                        max_fee,
+                        nonce,
+                        sender_address,
+                        signature,
+                    },
+                ),
+                Transaction::Declare(DeclareTransaction::V1(DeclareTransactionV0V1 {
+                    class_hash,
+                    max_fee,
+                    nonce,
+                    sender_address,
+                    signature,
+                    transaction_hash: _,
+                })) => TransactionVariant::DeclareV1(
+                    pathfinder_common::transaction::DeclareTransactionV0V1 {
+                        class_hash,
+                        max_fee,
+                        nonce,
+                        sender_address,
+                        signature,
+                    },
+                ),
+                Transaction::Declare(DeclareTransaction::V2(DeclareTransactionV2 {
+                    class_hash,
+                    max_fee,
+                    nonce,
+                    sender_address,
+                    signature,
+                    transaction_hash: _,
+                    compiled_class_hash,
+                })) => TransactionVariant::DeclareV2(
+                    pathfinder_common::transaction::DeclareTransactionV2 {
+                        class_hash,
+                        max_fee,
+                        nonce,
+                        sender_address,
+                        signature,
+                        compiled_class_hash,
+                    },
+                ),
+                Transaction::Deploy(DeployTransaction {
+                    contract_address,
+                    contract_address_salt,
+                    class_hash,
+                    constructor_calldata,
+                    transaction_hash: _,
+                    version,
+                }) => {
+                    TransactionVariant::Deploy(pathfinder_common::transaction::DeployTransaction {
+                        contract_address,
+                        contract_address_salt,
+                        class_hash,
+                        constructor_calldata,
+                        version,
+                    })
+                }
+                Transaction::DeployAccount(DeployAccountTransaction {
+                    contract_address,
+                    transaction_hash: _,
+                    max_fee,
+                    version,
+                    signature,
+                    nonce,
+                    contract_address_salt,
+                    constructor_calldata,
+                    class_hash,
+                }) => TransactionVariant::DeployAccount(
+                    pathfinder_common::transaction::DeployAccountTransaction {
+                        contract_address,
+                        max_fee,
+                        version,
+                        signature,
+                        nonce,
+                        contract_address_salt,
+                        constructor_calldata,
+                        class_hash,
+                    },
+                ),
+                Transaction::Invoke(InvokeTransaction::V0(InvokeTransactionV0 {
+                    calldata,
+                    sender_address,
+                    entry_point_selector,
+                    entry_point_type,
+                    max_fee,
+                    signature,
+                    transaction_hash: _,
+                })) => TransactionVariant::InvokeV0(
+                    pathfinder_common::transaction::InvokeTransactionV0 {
+                        calldata,
+                        sender_address,
+                        entry_point_selector,
+                        entry_point_type: entry_point_type.map(Into::into),
+                        max_fee,
+                        signature,
+                    },
+                ),
+                Transaction::Invoke(InvokeTransaction::V1(InvokeTransactionV1 {
+                    calldata,
+                    sender_address,
+                    max_fee,
+                    signature,
+                    nonce,
+                    transaction_hash: _,
+                })) => TransactionVariant::InvokeV1(
+                    pathfinder_common::transaction::InvokeTransactionV1 {
+                        calldata,
+                        sender_address,
+                        max_fee,
+                        signature,
+                        nonce,
+                    },
+                ),
+                Transaction::L1Handler(L1HandlerTransaction {
+                    contract_address,
+                    entry_point_selector,
+                    nonce,
+                    calldata,
+                    transaction_hash: _,
+                    version,
+                }) => TransactionVariant::L1Handler(
+                    pathfinder_common::transaction::L1HandlerTransaction {
+                        contract_address,
+                        entry_point_selector,
+                        nonce,
+                        calldata,
+                        version,
+                    },
+                ),
+            };
+
+            pathfinder_common::transaction::Transaction { hash, variant }
+        }
+    }
+     */
 
     impl Transaction {
         /// Returns hash of the transaction

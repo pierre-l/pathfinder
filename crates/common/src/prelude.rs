@@ -1,7 +1,9 @@
+pub use crate::BlockBody;
 pub use crate::BlockHash;
 pub use crate::BlockHeader;
 pub use crate::BlockNumber;
 pub use crate::BlockTimestamp;
+pub use crate::BlockWithBody;
 pub use crate::ByteCodeOffset;
 pub use crate::CallParam;
 pub use crate::CallResultValue;
