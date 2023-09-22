@@ -241,12 +241,16 @@ pub(super) fn transaction_block_hash(
 
 #[cfg(test)]
 mod tests {
+    use crate::JournalMode;
     use pathfinder_common::macro_prelude::*;
     use pathfinder_common::{BlockHeader, TransactionIndex, TransactionVersion};
     use starknet_gateway_types::reply::transaction::{
         DeclareTransactionV0V1, DeclareTransactionV2, DeployAccountTransaction, DeployTransaction,
         InvokeTransactionV0, InvokeTransactionV1,
     };
+    use std::num::NonZeroU32;
+    use std::path::Path;
+    use std::time::{Duration, Instant};
 
     use super::*;
 
@@ -405,6 +409,253 @@ mod tests {
         db_tx.commit().unwrap();
 
         (db, header, body)
+    }
+
+    #[test]
+    fn convert() {
+        println!("Started");
+        // TODO Metrics we're interested in: compressed size, compression time, decompression time
+        // TODO Time metrics would require batching. Also black boxing the output
+        // TODO Allocator?
+        // TODO Investigate the possibility to join the tx & receipt field for better compression
+        let storage_manager = crate::Storage::migrate(
+            Path::new("/home/pierre/workspace/pathfinder/testnet2.sqlite").to_path_buf(),
+            JournalMode::WAL,
+        )
+        .unwrap();
+        let mut connection = storage_manager
+            .create_pool(NonZeroU32::new(8).unwrap())
+            .unwrap()
+            .connection()
+            .unwrap();
+        let transaction = connection.transaction().unwrap();
+        println!("Connected");
+
+        /* TODO
+        let count = transaction
+            .inner()
+            .query_row(
+                "SELECT COUNT(idx) as count FROM starknet_transactions",
+                params!(),
+                |row| Ok(row.get::<&str, i32>("count").unwrap()),
+            )
+            .unwrap();
+        println!("Number of transactions: {}", count);
+         */
+
+        let mut statement = transaction
+            .inner()
+            .prepare(
+                "SELECT hash, tx, receipt FROM starknet_transactions ORDER BY hash ASC LIMIT ? OFFSET ?",
+            )
+            .unwrap();
+
+        let mut json_zstd_counter = Counter {
+            acc_duration: Default::default(),
+            total_size: 0,
+            processed_items: 0,
+        };
+
+        let mut bincode_zstd_counter = Counter {
+            acc_duration: Default::default(),
+            total_size: 0,
+            processed_items: 0,
+        };
+
+        let mut bson_zstd_counter = Counter {
+            acc_duration: Default::default(),
+            total_size: 0,
+            processed_items: 0,
+        };
+
+        const BATCH_SIZE: i32 = 100;
+        let mut last_batch_size = BATCH_SIZE;
+        let mut batch_index = -1;
+        while last_batch_size == BATCH_SIZE {
+            batch_index += 1;
+            println!("Querying batch {}", batch_index);
+            let mut rows = statement
+                .query(params!(&BATCH_SIZE, &((batch_index + 1) * BATCH_SIZE)))
+                .unwrap();
+
+            let decompression_duration = Duration::from_secs(0);
+
+            last_batch_size = 0;
+            while let Some(row) = rows.next().unwrap() {
+                last_batch_size += 1;
+                let tx = row.get_ref_unwrap("tx").as_blob().unwrap();
+                let receipt = row.get_ref_unwrap("receipt").as_blob().unwrap();
+                // TODO println!("Transaction compressed len: {}", tx.len());
+
+                if let Ok((tx, receipt)) = json_decompression(tx, receipt) {
+                    // TODO Move the clones into measure+closure params
+                    let tx_clone = tx.clone();
+                    let receipt_clone = receipt.clone();
+                    measure(&mut json_zstd_counter, move || {
+                        json_roundtrip(tx_clone, receipt_clone)
+                    });
+                    let tx_clone = tx.clone();
+                    let receipt_clone = receipt.clone();
+                    measure(&mut bincode_zstd_counter, move || {
+                        bincode_zstd_roundtrip(tx_clone, receipt_clone)
+                    });
+                    let tx_clone = tx.clone();
+                    let receipt_clone = receipt.clone();
+                    measure(&mut bson_zstd_counter, move || {
+                        bson_zstd_roundtrip(tx_clone, receipt_clone)
+                    });
+                    // TODO Other formats
+                }
+            }
+
+            if json_zstd_counter.processed_items > 100_000 {
+                println!(
+                    "JSON+ZSTD Average compressed size: {}",
+                    json_zstd_counter.total_size / json_zstd_counter.processed_items
+                );
+                println!(
+                    "Bincode+ZSTD Average compressed size: {}",
+                    bincode_zstd_counter.total_size / bincode_zstd_counter.processed_items
+                );
+                println!(
+                    "BSON+ZSTD Average compressed size: {}",
+                    bson_zstd_counter.total_size / bson_zstd_counter.processed_items
+                );
+
+                return;
+            }
+        }
+
+        println!("Done");
+    }
+
+    fn json_decompression(
+        tx: &[u8],
+        receipt: &[u8],
+    ) -> anyhow::Result<(gateway::Transaction, gateway::Receipt)> {
+        let transaction = zstd::decode_all(tx).context("Transaction initial decompression")?;
+        let transaction =
+            serde_json::from_slice(&transaction).context("Transaction initial deser")?;
+
+        let receipt = zstd::decode_all(receipt).context("Receipt initial decompression")?;
+        let receipt = serde_json::from_slice(&receipt).context("Receipt initial deser")?;
+
+        Ok((transaction, receipt))
+    }
+
+    struct Counter {
+        acc_duration: Duration,
+        total_size: usize,
+        processed_items: usize,
+    }
+
+    fn measure<F>(counter: &mut Counter, work: F)
+    where
+        F: FnOnce() -> anyhow::Result<usize>,
+    {
+        let start = Instant::now();
+
+        match work() {
+            Ok(compressed_size) => {
+                counter.acc_duration += start.elapsed();
+                counter.total_size += compressed_size;
+                counter.processed_items += 1;
+            }
+            Err(err) => {
+                println!("Measurement failed: {}", err);
+            }
+        }
+    }
+
+    fn json_roundtrip(tx: gateway::Transaction, rct: gateway::Receipt) -> anyhow::Result<usize> {
+        let mut compressor = zstd::bulk::Compressor::new(10).context("Create zstd compressor")?;
+        let tx_data = serde_json::to_vec(&tx).context("Serializing transaction")?;
+        let tx_data = compressor
+            .compress(&tx_data)
+            .context("Compressing transaction")?;
+
+        let serialized_receipt = serde_json::to_vec(&rct).context("Serializing receipt")?;
+        let serialized_receipt = compressor
+            .compress(&serialized_receipt)
+            .context("Compressing receipt")?;
+
+        let compressed_size = tx_data.len() + serialized_receipt.len();
+
+        let transaction =
+            zstd::decode_all(tx_data.as_slice()).context("Decompressing transaction")?;
+        let transaction: gateway::Transaction =
+            serde_json::from_slice(&transaction).context("Deserializing transaction")?;
+        let receipt =
+            zstd::decode_all(serialized_receipt.as_slice()).context("Decompressing receipt")?;
+        let receipt: gateway::Receipt =
+            serde_json::from_slice(&receipt).context("Deserializing receipt")?;
+
+        Ok(compressed_size)
+    }
+
+    fn bson_zstd_roundtrip(
+        tx: gateway::Transaction,
+        rct: gateway::Receipt,
+    ) -> anyhow::Result<usize> {
+        let mut compressor = zstd::bulk::Compressor::new(10).context("Create zstd compressor")?;
+
+        let tx_data = bson::to_vec(&tx).context("Serializing transaction")?;
+        let serialized_receipt = bson::to_vec(&rct).context("Serializing receipt")?;
+
+        let tx_data = compressor
+            .compress(&tx_data)
+            .context("Compressing transaction")?;
+        let serialized_receipt = compressor
+            .compress(&serialized_receipt)
+            .context("Compressing receipt")?;
+
+        let compressed_size = tx_data.len() + serialized_receipt.len();
+
+        let transaction =
+            zstd::decode_all(tx_data.as_slice()).context("Decompressing transaction")?;
+        let receipt =
+            zstd::decode_all(serialized_receipt.as_slice()).context("Decompressing receipt")?;
+
+        let transaction: gateway::Transaction =
+            bson::from_slice(&transaction).context("Deserializing transaction")?;
+        let receipt: gateway::Receipt =
+            bson::from_slice(&receipt).context("Deserializing receipt")?;
+
+        Ok(compressed_size)
+    }
+
+    fn bincode_zstd_roundtrip(
+        tx: gateway::Transaction,
+        rct: gateway::Receipt,
+    ) -> anyhow::Result<usize> {
+        let mut compressor = zstd::bulk::Compressor::new(10).context("Create zstd compressor")?;
+        let tx_data = bincode::serialize(&tx).context("Serializing transaction")?;
+        let serialized_receipt = bincode::serialize(&rct).context("Serializing receipt")?;
+
+        let tx_data = compressor
+            .compress(&tx_data)
+            .context("Compressing transaction")?;
+        let serialized_receipt = compressor
+            .compress(&serialized_receipt)
+            .context("Compressing receipt")?;
+
+        let compressed_size = tx_data.len() + serialized_receipt.len();
+
+        let transaction =
+            zstd::decode_all(tx_data.as_slice()).context("Decompressing transaction")?;
+        let receipt =
+            zstd::decode_all(serialized_receipt.as_slice()).context("Decompressing receipt")?;
+
+        // TODO Fails with "DeserializeAnyNotSupported"
+        // TODO https://github.com/bincode-org/bincode/issues/548
+        /*
+        let transaction: gateway::Transaction =
+            bincode::deserialize(&transaction).context("Deserializing transaction")?;
+        let receipt: gateway::Receipt =
+            bincode::deserialize(&receipt).context("Deserializing receipt")?;
+         */
+
+        Ok(compressed_size)
     }
 
     #[test]
