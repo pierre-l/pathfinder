@@ -450,25 +450,12 @@ mod tests {
             )
             .unwrap();
 
-        let mut json_zstd_counter = Counter {
-            acc_duration: Default::default(),
-            total_size: 0,
-            processed_items: 0,
-        };
-
-        let mut bincode_zstd_counter = Counter {
-            acc_duration: Default::default(),
-            total_size: 0,
-            processed_items: 0,
-        };
-
-        let mut bson_zstd_counter = Counter {
-            acc_duration: Default::default(),
-            total_size: 0,
-            processed_items: 0,
-        };
+        let mut json_zstd_counter = Counter::new("json/zstd".to_string());
+        let mut bincode_zstd_counter = Counter::new("bincode/zstd".to_string());
+        let mut bson_zstd_counter = Counter::new("bzon/zstd".to_string());
 
         const BATCH_SIZE: i32 = 100;
+        const BENCHMARK_LIMIT: usize = 10_000;
         let mut last_batch_size = BATCH_SIZE;
         let mut batch_index = -1;
         while last_batch_size == BATCH_SIZE {
@@ -500,19 +487,10 @@ mod tests {
                 }
             }
 
-            if json_zstd_counter.processed_items > 100_000 {
-                println!(
-                    "JSON+ZSTD Average compressed size: {}",
-                    json_zstd_counter.total_size / json_zstd_counter.processed_items
-                );
-                println!(
-                    "Bincode+ZSTD Average compressed size: {}",
-                    bincode_zstd_counter.total_size / bincode_zstd_counter.processed_items
-                );
-                println!(
-                    "BSON+ZSTD Average compressed size: {}",
-                    bson_zstd_counter.total_size / bson_zstd_counter.processed_items
-                );
+            if json_zstd_counter.processed_items > BENCHMARK_LIMIT {
+                json_zstd_counter.print_results();
+                bincode_zstd_counter.print_results();
+                bson_zstd_counter.print_results();
 
                 return;
             }
@@ -536,9 +514,29 @@ mod tests {
     }
 
     struct Counter {
+        name: String,
         acc_duration: Duration,
         total_size: usize,
         processed_items: usize,
+    }
+
+    impl Counter {
+        pub fn new(name: String) -> Self {
+            Self {
+                name,
+                acc_duration: Default::default(),
+                total_size: 0,
+                processed_items: 0,
+            }
+        }
+
+        pub fn print_results(self) {
+            println!(
+                "{} Average compressed size: {}",
+                self.name,
+                self.total_size / self.processed_items
+            );
+        }
     }
 
     fn measure<F>(counter: &mut Counter, tx: &gateway::Transaction, rct: &gateway::Receipt, work: F)
