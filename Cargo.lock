@@ -6700,6 +6700,7 @@ dependencies = [
  "const_format",
  "data-encoding",
  "fake",
+ "flate2",
  "hex",
  "lazy_static",
  "pathfinder-common",

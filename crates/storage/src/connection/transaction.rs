@@ -242,15 +242,21 @@ pub(super) fn transaction_block_hash(
 #[cfg(test)]
 mod tests {
     use crate::JournalMode;
+    use anyhow::Error;
+    use flate2::write::GzEncoder;
+    use flate2::Compression;
     use pathfinder_common::macro_prelude::*;
     use pathfinder_common::{BlockHeader, TransactionIndex, TransactionVersion};
     use starknet_gateway_types::reply::transaction::{
         DeclareTransactionV0V1, DeclareTransactionV2, DeployAccountTransaction, DeployTransaction,
         InvokeTransactionV0, InvokeTransactionV1,
     };
+    use std::io::Write;
     use std::num::NonZeroU32;
     use std::path::Path;
     use std::time::{Duration, Instant};
+    use tokio::io::AsyncWriteExt;
+    use zstd::bulk::Compressor;
 
     use super::*;
 
@@ -453,11 +459,24 @@ mod tests {
         let mut counters = [
             Counter::new("json/zstd".to_string(), json_serializer, zstd_compressor),
             Counter::new(
+                "json/dual_zstd".to_string(),
+                json_serializer,
+                zstd_dual_compressor,
+            ),
+            Counter::new(
+                "json/zstd22".to_string(),
+                json_serializer,
+                zstd22_compressor,
+            ),
+            Counter::new("json/gz".to_string(), json_serializer, gz_compressor),
+            Counter::new(
                 "bincode/zstd".to_string(),
                 bincode_serializer,
                 zstd_compressor,
             ),
+            Counter::new("bincode/gz".to_string(), bincode_serializer, gz_compressor),
             Counter::new("bzon/zstd".to_string(), bson_serializer, zstd_compressor),
+            Counter::new("bzon/gz".to_string(), bson_serializer, gz_compressor),
         ];
 
         const BATCH_SIZE: i32 = 100;
@@ -578,6 +597,19 @@ mod tests {
 
     fn zstd_compressor(tx_data: &[u8], rct_data: &[u8]) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
         let mut compressor = zstd::bulk::Compressor::new(10).context("Create zstd compressor")?;
+        zstd_compression(&tx_data, &rct_data, &mut compressor)
+    }
+
+    fn zstd22_compressor(tx_data: &[u8], rct_data: &[u8]) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+        let mut compressor = zstd::bulk::Compressor::new(22).context("Create zstd compressor")?;
+        zstd_compression(&tx_data, &rct_data, &mut compressor)
+    }
+
+    fn zstd_compression(
+        tx_data: &&[u8],
+        rct_data: &&[u8],
+        compressor: &mut Compressor,
+    ) -> Result<(Vec<u8>, Vec<u8>), Error> {
         let tx_data = compressor
             .compress(&tx_data)
             .context("Compressing transaction")?;
@@ -585,6 +617,34 @@ mod tests {
         let rct_data = compressor
             .compress(&rct_data)
             .context("Compressing receipt")?;
+
+        Ok((tx_data, rct_data))
+    }
+
+    fn zstd_dual_compressor(tx_data: &[u8], rct_data: &[u8]) -> Result<(Vec<u8>, Vec<u8>), Error> {
+        let mut compressor = zstd::bulk::Compressor::new(10).context("Create zstd compressor")?;
+        let mut all_data = vec![];
+        std::io::Write::write_all(&mut all_data, tx_data).unwrap();
+        std::io::Write::write_all(&mut all_data, rct_data).unwrap();
+        let dual = compressor
+            .compress(&all_data)
+            .context("Compressing transaction")?;
+
+        Ok((dual, vec![]))
+    }
+
+    fn gz_compressor(tx_data: &[u8], rct_data: &[u8]) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+        let mut tx_compressor = GzEncoder::new(Vec::new(), Compression::best());
+        tx_compressor
+            .write_all(&tx_data)
+            .context("Compressing transaction")?;
+        let mut rct_compressor = GzEncoder::new(Vec::new(), Compression::best());
+        rct_compressor
+            .write_all(&rct_data)
+            .context("Compressing receipt")?;
+        let tx_data = tx_compressor.finish().context("Tx finish")?;
+
+        let rct_data = rct_compressor.finish().context("Rct finish")?;
 
         Ok((tx_data, rct_data))
     }
