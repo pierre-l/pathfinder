@@ -450,9 +450,12 @@ mod tests {
             )
             .unwrap();
 
-        let mut json_zstd_counter = Counter::new("json/zstd".to_string());
-        let mut bincode_zstd_counter = Counter::new("bincode/zstd".to_string());
-        let mut bson_zstd_counter = Counter::new("bzon/zstd".to_string());
+        // TODO Make it an array.
+        let mut counters = [
+            Counter::new("json/zstd".to_string(), json_roundtrip),
+            Counter::new("bincode/zstd".to_string(), bincode_zstd_roundtrip),
+            Counter::new("bzon/zstd".to_string(), bson_zstd_roundtrip),
+        ];
 
         const BATCH_SIZE: i32 = 100;
         const BENCHMARK_LIMIT: usize = 10_000;
@@ -475,22 +478,16 @@ mod tests {
                 // TODO println!("Transaction compressed len: {}", tx.len());
 
                 if let Ok((tx, receipt)) = json_decompression(tx, receipt) {
-                    measure(&mut json_zstd_counter, &tx, &receipt, json_roundtrip);
-                    measure(
-                        &mut bincode_zstd_counter,
-                        &tx,
-                        &receipt,
-                        bincode_zstd_roundtrip,
-                    );
-                    measure(&mut bson_zstd_counter, &tx, &receipt, bson_zstd_roundtrip);
-                    // TODO Other formats
+                    for counter in &mut counters {
+                        counter.measure(&tx, &receipt);
+                    }
                 }
             }
 
-            if json_zstd_counter.processed_items > BENCHMARK_LIMIT {
-                json_zstd_counter.print_results();
-                bincode_zstd_counter.print_results();
-                bson_zstd_counter.print_results();
+            if counters[0].processed_items > BENCHMARK_LIMIT {
+                for counter in counters {
+                    counter.print_results()
+                }
 
                 return;
             }
@@ -518,15 +515,35 @@ mod tests {
         acc_duration: Duration,
         total_size: usize,
         processed_items: usize,
+        roundtrip: Box<dyn Fn(gateway::Transaction, gateway::Receipt) -> anyhow::Result<usize>>,
     }
 
     impl Counter {
-        pub fn new(name: String) -> Self {
+        pub fn new<F>(name: String, roundtrip: F) -> Self
+        where
+            F: Fn(gateway::Transaction, gateway::Receipt) -> anyhow::Result<usize> + 'static,
+        {
             Self {
                 name,
                 acc_duration: Default::default(),
                 total_size: 0,
                 processed_items: 0,
+                roundtrip: Box::new(roundtrip),
+            }
+        }
+
+        fn measure(&mut self, tx: &gateway::Transaction, rct: &gateway::Receipt) {
+            let start = Instant::now();
+
+            match (self.roundtrip)(tx.clone(), rct.clone()) {
+                Ok(compressed_size) => {
+                    self.acc_duration += start.elapsed();
+                    self.total_size += compressed_size;
+                    self.processed_items += 1;
+                }
+                Err(err) => {
+                    println!("Measurement failed: {}", err);
+                }
             }
         }
 
@@ -536,24 +553,6 @@ mod tests {
                 self.name,
                 self.total_size / self.processed_items
             );
-        }
-    }
-
-    fn measure<F>(counter: &mut Counter, tx: &gateway::Transaction, rct: &gateway::Receipt, work: F)
-    where
-        F: FnOnce(gateway::Transaction, gateway::Receipt) -> anyhow::Result<usize>,
-    {
-        let start = Instant::now();
-
-        match work(tx.clone(), rct.clone()) {
-            Ok(compressed_size) => {
-                counter.acc_duration += start.elapsed();
-                counter.total_size += compressed_size;
-                counter.processed_items += 1;
-            }
-            Err(err) => {
-                println!("Measurement failed: {}", err);
-            }
         }
     }
 
