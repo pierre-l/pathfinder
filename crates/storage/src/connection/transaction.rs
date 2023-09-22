@@ -450,11 +450,14 @@ mod tests {
             )
             .unwrap();
 
-        // TODO Make it an array.
         let mut counters = [
-            Counter::new("json/zstd".to_string(), json_roundtrip),
-            Counter::new("bincode/zstd".to_string(), bincode_zstd_roundtrip),
-            Counter::new("bzon/zstd".to_string(), bson_zstd_roundtrip),
+            Counter::new("json/zstd".to_string(), json_serializer, zstd_compressor),
+            Counter::new(
+                "bincode/zstd".to_string(),
+                bincode_serializer,
+                zstd_compressor,
+            ),
+            Counter::new("bzon/zstd".to_string(), bson_serializer, zstd_compressor),
         ];
 
         const BATCH_SIZE: i32 = 100;
@@ -515,27 +518,44 @@ mod tests {
         acc_duration: Duration,
         total_size: usize,
         processed_items: usize,
-        roundtrip: Box<dyn Fn(gateway::Transaction, gateway::Receipt) -> anyhow::Result<usize>>,
+        serializer: Box<
+            dyn Fn(gateway::Transaction, gateway::Receipt) -> anyhow::Result<(Vec<u8>, Vec<u8>)>,
+        >,
+        compressor: Box<dyn Fn(&[u8], &[u8]) -> anyhow::Result<(Vec<u8>, Vec<u8>)>>,
     }
 
     impl Counter {
-        pub fn new<F>(name: String, roundtrip: F) -> Self
+        pub fn new<F, C>(name: String, roundtrip: F, compressor: C) -> Self
         where
-            F: Fn(gateway::Transaction, gateway::Receipt) -> anyhow::Result<usize> + 'static,
+            F: Fn(gateway::Transaction, gateway::Receipt) -> anyhow::Result<(Vec<u8>, Vec<u8>)>
+                + 'static,
+            C: Fn(&[u8], &[u8]) -> anyhow::Result<(Vec<u8>, Vec<u8>)> + 'static,
         {
             Self {
                 name,
                 acc_duration: Default::default(),
                 total_size: 0,
                 processed_items: 0,
-                roundtrip: Box::new(roundtrip),
+                serializer: Box::new(roundtrip),
+                compressor: Box::new(compressor),
             }
+        }
+
+        fn perform(
+            &self,
+            tx: gateway::Transaction,
+            rct: gateway::Receipt,
+        ) -> anyhow::Result<usize> {
+            let (tx, rct) = (self.serializer)(tx, rct)?;
+            let (tx, rct) = (self.compressor)(&tx, &rct)?;
+            // TODO Decompression + deserialization
+            Ok(tx.len() + rct.len())
         }
 
         fn measure(&mut self, tx: &gateway::Transaction, rct: &gateway::Receipt) {
             let start = Instant::now();
 
-            match (self.roundtrip)(tx.clone(), rct.clone()) {
+            match self.perform(tx.clone(), rct.clone()) {
                 Ok(compressed_size) => {
                     self.acc_duration += start.elapsed();
                     self.total_size += compressed_size;
@@ -556,95 +576,50 @@ mod tests {
         }
     }
 
-    fn json_roundtrip(tx: gateway::Transaction, rct: gateway::Receipt) -> anyhow::Result<usize> {
+    fn zstd_compressor(tx_data: &[u8], rct_data: &[u8]) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
         let mut compressor = zstd::bulk::Compressor::new(10).context("Create zstd compressor")?;
+        let tx_data = compressor
+            .compress(&tx_data)
+            .context("Compressing transaction")?;
+
+        let rct_data = compressor
+            .compress(&rct_data)
+            .context("Compressing receipt")?;
+
+        Ok((tx_data, rct_data))
+    }
+
+    fn json_serializer(
+        tx: gateway::Transaction,
+        rct: gateway::Receipt,
+    ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
         let tx_data = serde_json::to_vec(&tx).context("Serializing transaction")?;
-        let tx_data = compressor
-            .compress(&tx_data)
-            .context("Compressing transaction")?;
+        let rct_data = serde_json::to_vec(&rct).context("Serializing receipt")?;
 
-        let serialized_receipt = serde_json::to_vec(&rct).context("Serializing receipt")?;
-        let serialized_receipt = compressor
-            .compress(&serialized_receipt)
-            .context("Compressing receipt")?;
-
-        let compressed_size = tx_data.len() + serialized_receipt.len();
-
-        let transaction =
-            zstd::decode_all(tx_data.as_slice()).context("Decompressing transaction")?;
-        let transaction: gateway::Transaction =
-            serde_json::from_slice(&transaction).context("Deserializing transaction")?;
-        let receipt =
-            zstd::decode_all(serialized_receipt.as_slice()).context("Decompressing receipt")?;
-        let receipt: gateway::Receipt =
-            serde_json::from_slice(&receipt).context("Deserializing receipt")?;
-
-        Ok(compressed_size)
+        Ok((tx_data, rct_data))
     }
 
-    fn bson_zstd_roundtrip(
+    fn bson_serializer(
         tx: gateway::Transaction,
         rct: gateway::Receipt,
-    ) -> anyhow::Result<usize> {
-        let mut compressor = zstd::bulk::Compressor::new(10).context("Create zstd compressor")?;
-
+    ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
         let tx_data = bson::to_vec(&tx).context("Serializing transaction")?;
-        let serialized_receipt = bson::to_vec(&rct).context("Serializing receipt")?;
+        let rct_data = bson::to_vec(&rct).context("Serializing receipt")?;
 
-        let tx_data = compressor
-            .compress(&tx_data)
-            .context("Compressing transaction")?;
-        let serialized_receipt = compressor
-            .compress(&serialized_receipt)
-            .context("Compressing receipt")?;
-
-        let compressed_size = tx_data.len() + serialized_receipt.len();
-
-        let transaction =
-            zstd::decode_all(tx_data.as_slice()).context("Decompressing transaction")?;
-        let receipt =
-            zstd::decode_all(serialized_receipt.as_slice()).context("Decompressing receipt")?;
-
-        let transaction: gateway::Transaction =
-            bson::from_slice(&transaction).context("Deserializing transaction")?;
-        let receipt: gateway::Receipt =
-            bson::from_slice(&receipt).context("Deserializing receipt")?;
-
-        Ok(compressed_size)
+        Ok((tx_data, rct_data))
     }
 
-    fn bincode_zstd_roundtrip(
+    fn bincode_serializer(
         tx: gateway::Transaction,
         rct: gateway::Receipt,
-    ) -> anyhow::Result<usize> {
-        let mut compressor = zstd::bulk::Compressor::new(10).context("Create zstd compressor")?;
+    ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
         let tx_data = bincode::serialize(&tx).context("Serializing transaction")?;
-        let serialized_receipt = bincode::serialize(&rct).context("Serializing receipt")?;
+        let rct_data = bincode::serialize(&rct).context("Serializing receipt")?;
 
-        let tx_data = compressor
-            .compress(&tx_data)
-            .context("Compressing transaction")?;
-        let serialized_receipt = compressor
-            .compress(&serialized_receipt)
-            .context("Compressing receipt")?;
-
-        let compressed_size = tx_data.len() + serialized_receipt.len();
-
-        let transaction =
-            zstd::decode_all(tx_data.as_slice()).context("Decompressing transaction")?;
-        let receipt =
-            zstd::decode_all(serialized_receipt.as_slice()).context("Decompressing receipt")?;
-
-        // TODO Fails with "DeserializeAnyNotSupported"
+        // TODO Fails to deserialize with "DeserializeAnyNotSupported"
         // TODO https://github.com/bincode-org/bincode/issues/548
-        /*
-        let transaction: gateway::Transaction =
-            bincode::deserialize(&transaction).context("Deserializing transaction")?;
-        let receipt: gateway::Receipt =
-            bincode::deserialize(&receipt).context("Deserializing receipt")?;
-         */
 
-        Ok(compressed_size)
+        Ok((tx_data, rct_data))
     }
 
     #[test]
