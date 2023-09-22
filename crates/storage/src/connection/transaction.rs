@@ -488,22 +488,14 @@ mod tests {
                 // TODO println!("Transaction compressed len: {}", tx.len());
 
                 if let Ok((tx, receipt)) = json_decompression(tx, receipt) {
-                    // TODO Move the clones into measure+closure params
-                    let tx_clone = tx.clone();
-                    let receipt_clone = receipt.clone();
-                    measure(&mut json_zstd_counter, move || {
-                        json_roundtrip(tx_clone, receipt_clone)
-                    });
-                    let tx_clone = tx.clone();
-                    let receipt_clone = receipt.clone();
-                    measure(&mut bincode_zstd_counter, move || {
-                        bincode_zstd_roundtrip(tx_clone, receipt_clone)
-                    });
-                    let tx_clone = tx.clone();
-                    let receipt_clone = receipt.clone();
-                    measure(&mut bson_zstd_counter, move || {
-                        bson_zstd_roundtrip(tx_clone, receipt_clone)
-                    });
+                    measure(&mut json_zstd_counter, &tx, &receipt, json_roundtrip);
+                    measure(
+                        &mut bincode_zstd_counter,
+                        &tx,
+                        &receipt,
+                        bincode_zstd_roundtrip,
+                    );
+                    measure(&mut bson_zstd_counter, &tx, &receipt, bson_zstd_roundtrip);
                     // TODO Other formats
                 }
             }
@@ -549,13 +541,13 @@ mod tests {
         processed_items: usize,
     }
 
-    fn measure<F>(counter: &mut Counter, work: F)
+    fn measure<F>(counter: &mut Counter, tx: &gateway::Transaction, rct: &gateway::Receipt, work: F)
     where
-        F: FnOnce() -> anyhow::Result<usize>,
+        F: FnOnce(gateway::Transaction, gateway::Receipt) -> anyhow::Result<usize>,
     {
         let start = Instant::now();
 
-        match work() {
+        match work(tx.clone(), rct.clone()) {
             Ok(compressed_size) => {
                 counter.acc_duration += start.elapsed();
                 counter.total_size += compressed_size;
