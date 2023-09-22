@@ -26,6 +26,9 @@ primitive-types = { workspace = true }
 r2d2 = "0.8.10"
 r2d2_sqlite = "0.21.0"
 rand = { workspace = true }
+rmp = "0.8"
+rmp-serde = "1.1.2"
+ron = "0.8.1"
 rusqlite = { version = "0.28.0", features = ["bundled", "functions"] }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true, features = [

@@ -243,6 +243,7 @@ pub(super) fn transaction_block_hash(
 mod tests {
     use crate::JournalMode;
     use anyhow::Error;
+    use bincode::Options;
     use flate2::write::GzEncoder;
     use flate2::Compression;
     use lz4::EncoderBuilder;
@@ -469,6 +470,8 @@ mod tests {
                 json_serializer,
                 zstd22_compressor,
             ),
+            Counter::new("json/noop".to_string(), json_serializer, noop_compressor),
+            Counter::new("json/lz4".to_string(), json_serializer, lz4_compressor),
             Counter::new("json/gz".to_string(), json_serializer, gz_compressor),
             Counter::new(
                 "bincode/zstd".to_string(),
@@ -478,8 +481,9 @@ mod tests {
             Counter::new("bincode/gz".to_string(), bincode_serializer, gz_compressor),
             Counter::new("bzon/zstd".to_string(), bson_serializer, zstd_compressor),
             Counter::new("bzon/gz".to_string(), bson_serializer, gz_compressor),
-            Counter::new("json/lz4".to_string(), json_serializer, lz4_compressor),
-            Counter::new("json/noop".to_string(), json_serializer, noop_compressor),
+            Counter::new("rmp/zstd".to_string(), rmp_serializer, zstd_compressor),
+            Counter::new("rmp/noop".to_string(), rmp_serializer, noop_compressor),
+            Counter::new("rmp/dual".to_string(), rmp_serializer, zstd_dual_compressor),
         ];
 
         const BATCH_SIZE: i32 = 100;
@@ -682,6 +686,16 @@ mod tests {
     ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
         let tx_data = serde_json::to_vec(&tx).context("Serializing transaction")?;
         let rct_data = serde_json::to_vec(&rct).context("Serializing receipt")?;
+
+        Ok((tx_data, rct_data))
+    }
+
+    fn rmp_serializer(
+        tx: gateway::Transaction,
+        rct: gateway::Receipt,
+    ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+        let mut tx_data = rmp_serde::to_vec(&tx).unwrap();
+        let mut rct_data = rmp_serde::to_vec(&rct).unwrap();
 
         Ok((tx_data, rct_data))
     }
