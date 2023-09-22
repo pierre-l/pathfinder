@@ -253,6 +253,7 @@ mod tests {
         DeclareTransactionV0V1, DeclareTransactionV2, DeployAccountTransaction, DeployTransaction,
         InvokeTransactionV0, InvokeTransactionV1,
     };
+    use std::hint::black_box;
     use std::io::{BufReader, BufWriter, Write};
     use std::num::NonZeroU32;
     use std::path::Path;
@@ -459,41 +460,10 @@ mod tests {
 
         let mut counters = [
             Counter::new("json/zstd".to_string(), json_serializer, zstd_compressor),
-            Counter::new(
-                "json/dual_zstd".to_string(),
-                json_serializer,
-                zstd_dual_compressor,
-            ),
-            Counter::new(
-                "json/zstd22".to_string(),
-                json_serializer,
-                zstd22_compressor,
-            ),
-            Counter::new("json/noop".to_string(), json_serializer, noop_compressor),
-            Counter::new("json/lz4".to_string(), json_serializer, lz4_compressor),
-            Counter::new("json/gz".to_string(), json_serializer, gz_compressor),
-            Counter::new(
-                "bincode/zstd".to_string(),
-                bincode_serializer,
-                zstd_compressor,
-            ),
-            Counter::new("bincode/gz".to_string(), bincode_serializer, gz_compressor),
-            Counter::new("bzon/zstd".to_string(), bson_serializer, zstd_compressor),
-            Counter::new("bzon/gz".to_string(), bson_serializer, gz_compressor),
-            Counter::new("rmp/zstd".to_string(), rmp_serializer, zstd_compressor),
-            Counter::new("rmp/noop".to_string(), rmp_serializer, noop_compressor),
-            Counter::new(
-                "rmp/dual".to_string(),
-                flexbuffers_serializer,
-                zstd_dual_compressor,
-            ),
             Counter::new("flex/zstd".to_string(), rmp_serializer, zstd_compressor),
-            Counter::new("flex/zstd22".to_string(), rmp_serializer, zstd22_compressor),
-            Counter::new("flex/lz4".to_string(), rmp_serializer, lz4_compressor),
-            Counter::new("flex/gz".to_string(), rmp_serializer, gz_compressor),
         ];
 
-        const BATCH_SIZE: i32 = 100;
+        const BATCH_SIZE: i32 = 1_000;
         const BENCHMARK_LIMIT: usize = 10_000;
         let mut last_batch_size = BATCH_SIZE;
         let mut batch_index = -1;
@@ -578,33 +548,42 @@ mod tests {
             &self,
             tx: gateway::Transaction,
             rct: gateway::Receipt,
-        ) -> anyhow::Result<usize> {
-            let (tx, rct) = (self.serializer)(tx, rct)?;
-            let (tx, rct) = (self.compressor)(&tx, &rct)?;
-            // TODO Decompression + deserialization
-            Ok(tx.len() + rct.len())
+        ) -> anyhow::Result<(Duration, usize)> {
+            let start = Instant::now();
+            let (tx_data, rct_data) = (self.serializer)(tx.clone(), rct.clone())?;
+            for i in 0..99 {
+                let (tx_data, rct_data) = (self.serializer)(tx.clone(), rct.clone())?;
+                black_box(tx_data);
+                black_box(rct_data);
+            }
+            let duration = start.elapsed();
+            let (tx, rct) = (self.compressor)(&tx_data, &rct_data)?;
+            Ok((duration, tx.len() + rct.len()))
         }
 
         fn measure(&mut self, tx: &gateway::Transaction, rct: &gateway::Receipt) {
-            let start = Instant::now();
-
             match self.perform(tx.clone(), rct.clone()) {
-                Ok(compressed_size) => {
-                    self.acc_duration += start.elapsed();
+                Ok((duration, compressed_size)) => {
+                    self.acc_duration += duration;
                     self.total_size += compressed_size;
                     self.processed_items += 1;
                 }
                 Err(err) => {
-                    println!("Measurement failed: {}", err);
+                    panic!("Measurement failed: {}", err);
                 }
             }
         }
 
         pub fn print_results(self) {
             println!(
-                "{} Average compressed size: {}",
+                "{} avg size: {}",
                 self.name,
                 self.total_size / self.processed_items
+            );
+            println!(
+                "{} ser/de duration: {}µs",
+                self.name,
+                self.acc_duration.as_micros() / self.processed_items as u128 / 100
             );
         }
     }
@@ -691,8 +670,28 @@ mod tests {
         tx: gateway::Transaction,
         rct: gateway::Receipt,
     ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
-        let tx_data = serde_json::to_vec(&tx).context("Serializing transaction")?;
-        let rct_data = serde_json::to_vec(&rct).context("Serializing receipt")?;
+        let tx_data = serde_json::to_vec(&tx).unwrap();
+        let rct_data = serde_json::to_vec(&rct).unwrap();
+
+        let dec_tx: gateway::Transaction = serde_json::from_slice(&tx_data).unwrap();
+        assert_eq!(dec_tx, tx);
+        let dec_rct: gateway::Receipt = serde_json::from_slice(&rct_data).unwrap();
+        assert_eq!(dec_rct, rct);
+
+        Ok((tx_data, rct_data))
+    }
+
+    fn flexbuffers_serializer(
+        tx: gateway::Transaction,
+        rct: gateway::Receipt,
+    ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+        let mut tx_data = flexbuffers::to_vec(&tx).unwrap();
+        let mut rct_data = flexbuffers::to_vec(&rct).unwrap();
+
+        let dec_tx: gateway::Transaction = flexbuffers::from_slice(&tx_data).unwrap();
+        assert_eq!(dec_tx, tx);
+        let dec_rct: gateway::Receipt = flexbuffers::from_slice(&rct_data).unwrap();
+        assert_eq!(dec_rct, rct);
 
         Ok((tx_data, rct_data))
     }
@@ -710,21 +709,6 @@ mod tests {
         let dec_rct: gateway::Receipt = rmp_serde::from_slice(&rct_data).unwrap();
         assert_eq!(dec_rct, rct);
          */
-
-        Ok((tx_data, rct_data))
-    }
-
-    fn flexbuffers_serializer(
-        tx: gateway::Transaction,
-        rct: gateway::Receipt,
-    ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
-        let mut tx_data = flexbuffers::to_vec(&tx).unwrap();
-        let mut rct_data = flexbuffers::to_vec(&rct).unwrap();
-
-        let dec_tx: gateway::Transaction = flexbuffers::from_slice(&tx_data).unwrap();
-        assert_eq!(dec_tx, tx);
-        let dec_rct: gateway::Receipt = flexbuffers::from_slice(&rct_data).unwrap();
-        assert_eq!(dec_rct, rct);
 
         Ok((tx_data, rct_data))
     }
