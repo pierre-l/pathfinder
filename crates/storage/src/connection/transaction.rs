@@ -245,13 +245,14 @@ mod tests {
     use anyhow::Error;
     use flate2::write::GzEncoder;
     use flate2::Compression;
+    use lz4::EncoderBuilder;
     use pathfinder_common::macro_prelude::*;
     use pathfinder_common::{BlockHeader, TransactionIndex, TransactionVersion};
     use starknet_gateway_types::reply::transaction::{
         DeclareTransactionV0V1, DeclareTransactionV2, DeployAccountTransaction, DeployTransaction,
         InvokeTransactionV0, InvokeTransactionV1,
     };
-    use std::io::Write;
+    use std::io::{BufReader, BufWriter, Write};
     use std::num::NonZeroU32;
     use std::path::Path;
     use std::time::{Duration, Instant};
@@ -477,6 +478,7 @@ mod tests {
             Counter::new("bincode/gz".to_string(), bincode_serializer, gz_compressor),
             Counter::new("bzon/zstd".to_string(), bson_serializer, zstd_compressor),
             Counter::new("bzon/gz".to_string(), bson_serializer, gz_compressor),
+            Counter::new("json/lz4".to_string(), json_serializer, lz4_compressor),
         ];
 
         const BATCH_SIZE: i32 = 100;
@@ -645,6 +647,26 @@ mod tests {
         let tx_data = tx_compressor.finish().context("Tx finish")?;
 
         let rct_data = rct_compressor.finish().context("Rct finish")?;
+
+        Ok((tx_data, rct_data))
+    }
+
+    fn lz4_compressor(tx_data: &[u8], rct_data: &[u8]) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+        let mut output = vec![];
+        let mut encoder = EncoderBuilder::new()
+            .level(4)
+            .build(BufWriter::new(output))?;
+        std::io::copy(&mut BufReader::new(tx_data), &mut encoder)?;
+        let (tx_data, result) = encoder.finish();
+        let tx_data = tx_data.into_inner().unwrap();
+
+        let mut output = vec![];
+        let mut encoder = EncoderBuilder::new()
+            .level(4)
+            .build(BufWriter::new(output))?;
+        std::io::copy(&mut BufReader::new(rct_data), &mut encoder)?;
+        let (rct_data, result) = encoder.finish();
+        let rct_data = rct_data.into_inner().unwrap();
 
         Ok((tx_data, rct_data))
     }
