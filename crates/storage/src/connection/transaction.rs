@@ -479,6 +479,7 @@ mod tests {
             Counter::new("bzon/zstd".to_string(), bson_serializer, zstd_compressor),
             Counter::new("bzon/gz".to_string(), bson_serializer, gz_compressor),
             Counter::new("json/lz4".to_string(), json_serializer, lz4_compressor),
+            Counter::new("json/noop".to_string(), json_serializer, noop_compressor),
         ];
 
         const BATCH_SIZE: i32 = 100;
@@ -649,6 +650,10 @@ mod tests {
         let rct_data = rct_compressor.finish().context("Rct finish")?;
 
         Ok((tx_data, rct_data))
+    }
+
+    fn noop_compressor(tx_data: &[u8], rct_data: &[u8]) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+        Ok((tx_data.to_vec(), rct_data.to_vec()))
     }
 
     fn lz4_compressor(tx_data: &[u8], rct_data: &[u8]) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
