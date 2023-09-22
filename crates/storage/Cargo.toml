@@ -16,6 +16,7 @@ const_format = { workspace = true }
 data-encoding = "2.4.0"
 fake = { workspace = true }
 flate2 = "1.0"
+flexbuffers = "2.0.0"
 hex = { workspace = true }
 lazy_static = { workspace = true }
 lz4 = "1.24.0"

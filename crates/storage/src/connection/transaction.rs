@@ -257,7 +257,6 @@ mod tests {
     use std::num::NonZeroU32;
     use std::path::Path;
     use std::time::{Duration, Instant};
-    use tokio::io::AsyncWriteExt;
     use zstd::bulk::Compressor;
 
     use super::*;
@@ -483,7 +482,15 @@ mod tests {
             Counter::new("bzon/gz".to_string(), bson_serializer, gz_compressor),
             Counter::new("rmp/zstd".to_string(), rmp_serializer, zstd_compressor),
             Counter::new("rmp/noop".to_string(), rmp_serializer, noop_compressor),
-            Counter::new("rmp/dual".to_string(), rmp_serializer, zstd_dual_compressor),
+            Counter::new(
+                "rmp/dual".to_string(),
+                flexbuffers_serializer,
+                zstd_dual_compressor,
+            ),
+            Counter::new("flex/zstd".to_string(), rmp_serializer, zstd_compressor),
+            Counter::new("flex/zstd22".to_string(), rmp_serializer, zstd22_compressor),
+            Counter::new("flex/lz4".to_string(), rmp_serializer, lz4_compressor),
+            Counter::new("flex/gz".to_string(), rmp_serializer, gz_compressor),
         ];
 
         const BATCH_SIZE: i32 = 100;
@@ -703,6 +710,21 @@ mod tests {
         let dec_rct: gateway::Receipt = rmp_serde::from_slice(&rct_data).unwrap();
         assert_eq!(dec_rct, rct);
          */
+
+        Ok((tx_data, rct_data))
+    }
+
+    fn flexbuffers_serializer(
+        tx: gateway::Transaction,
+        rct: gateway::Receipt,
+    ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+        let mut tx_data = flexbuffers::to_vec(&tx).unwrap();
+        let mut rct_data = flexbuffers::to_vec(&rct).unwrap();
+
+        let dec_tx: gateway::Transaction = flexbuffers::from_slice(&tx_data).unwrap();
+        assert_eq!(dec_tx, tx);
+        let dec_rct: gateway::Receipt = flexbuffers::from_slice(&rct_data).unwrap();
+        assert_eq!(dec_rct, rct);
 
         Ok((tx_data, rct_data))
     }
