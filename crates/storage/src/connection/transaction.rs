@@ -697,6 +697,13 @@ mod tests {
         let mut tx_data = rmp_serde::to_vec(&tx).unwrap();
         let mut rct_data = rmp_serde::to_vec(&rct).unwrap();
 
+        /* TODO Deser failed
+        let dec_tx: gateway::Transaction = rmp_serde::from_slice(&tx_data).unwrap();
+        assert_eq!(dec_tx, tx);
+        let dec_rct: gateway::Receipt = rmp_serde::from_slice(&rct_data).unwrap();
+        assert_eq!(dec_rct, rct);
+         */
+
         Ok((tx_data, rct_data))
     }
 
