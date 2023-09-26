@@ -2,7 +2,6 @@
 
 use anyhow::Context;
 use metrics_exporter_prometheus::PrometheusBuilder;
-use pathfinder_common::pending::PendingData;
 use pathfinder_common::{consts::VERGEN_GIT_DESCRIBE, BlockNumber, Chain, ChainId, EthereumChain};
 use pathfinder_ethereum::{EthereumApi, EthereumClient};
 use pathfinder_lib::state::SyncContext;
@@ -11,6 +10,7 @@ use pathfinder_rpc::{metrics::logger::RpcMetricsLogger, SyncState};
 use pathfinder_storage::Storage;
 use primitive_types::H160;
 use starknet_gateway_client::GatewayApi;
+use starknet_gateway_types::pending::PendingData;
 use std::net::SocketAddr;
 use std::num::NonZeroU32;
 use std::path::PathBuf;

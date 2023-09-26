@@ -1,42 +1,18 @@
-use anyhow::Context;
-
 use crate::context::RpcContext;
 use crate::v02::types::reply::Transaction;
 
-crate::error::generate_rpc_error_subset!(PendingTransactionsError:);
+crate::error::generate_rpc_error_subset!(GetNonceError:);
 
-pub async fn pending_transactions(
-    context: RpcContext,
-) -> Result<Vec<Transaction>, PendingTransactionsError> {
-    let span = tracing::Span::current();
+pub async fn pending_transactions(context: RpcContext) -> Result<Vec<Transaction>, GetNonceError> {
+    let transactions = match context.pending_data {
+        Some(data) => match data.block().await {
+            Some(block) => block.transactions.iter().map(Transaction::from).collect(),
+            None => Vec::new(),
+        },
+        None => Vec::new(),
+    };
 
-    tokio::task::spawn_blocking(move || {
-        let _g = span.enter();
-        let mut db = context
-            .storage
-            .connection()
-            .context("Opening database connection")?;
-
-        let db_tx = db.transaction().context("Creating database transaction")?;
-
-        let pending = context
-            .pending_block(&db_tx)
-            .context("Querying pending block")?;
-
-        let pending = pending
-            .map(|b| {
-                b.body
-                    .transaction_data
-                    .iter()
-                    .map(|(tx, _rx)| tx.clone().into())
-                    .collect::<Vec<Transaction>>()
-            })
-            .unwrap_or_default();
-
-        Ok(pending)
-    })
-    .await
-    .context("Joining database task")?
+    Ok(transactions)
 }
 
 #[cfg(test)]

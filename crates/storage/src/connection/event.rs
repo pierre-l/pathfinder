@@ -40,7 +40,7 @@ pub enum EventFilterError {
     TooManyMatches,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PageOfEvents {
     pub events: Vec<EmittedEvent>,
     pub is_last_page: bool,

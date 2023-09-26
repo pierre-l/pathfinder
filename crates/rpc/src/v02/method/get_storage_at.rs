@@ -1,6 +1,6 @@
 use crate::context::RpcContext;
 use crate::felt::RpcFelt;
-use anyhow::Context;
+use anyhow::{anyhow, Context};
 use pathfinder_common::{BlockId, ContractAddress, StorageAddress, StorageValue};
 use serde::Deserialize;
 
@@ -23,26 +23,16 @@ pub async fn get_storage_at(
     context: RpcContext,
     input: GetStorageAtInput,
 ) -> Result<GetStorageOutput, GetStorageAtError> {
-    let span = tracing::Span::current();
-
-    let jh = tokio::task::spawn_blocking(move || {
-        let _g = span.enter();
-        let mut db = context
-            .storage
-            .connection()
-            .context("Opening database connection")?;
-
-        let tx = db.transaction().context("Creating database transaction")?;
-
-        // Check pending data
-        let block_id = match input.block_id {
-            BlockId::Pending => {
-                let pending = context
-                    .pending_state_update(&tx)
-                    .context("Querying pending state update")?;
-
-                if let Some(pending) = pending {
-                    let value = pending
+    let block_id = match input.block_id {
+        BlockId::Pending => {
+            match context
+                .pending_data
+                .ok_or_else(|| anyhow!("Pending data not supported in this configuration"))?
+                .state_update()
+                .await
+            {
+                Some(update) => {
+                    let pending_value = update
                         .contract_updates
                         .get(&input.contract_address)
                         .and_then(|update| {
@@ -52,15 +42,27 @@ pub async fn get_storage_at(
                                 .find_map(|(key, value)| (key == &input.key).then_some(*value))
                         });
 
-                    if let Some(value) = value {
-                        return Ok(GetStorageOutput(value));
-                    };
+                    match pending_value {
+                        Some(value) => return Ok(GetStorageOutput(value)),
+                        None => pathfinder_storage::BlockId::Latest,
+                    }
                 }
-
-                pathfinder_storage::BlockId::Latest
+                None => pathfinder_storage::BlockId::Latest,
             }
-            other => other.try_into().expect("Only pending cast should fail"),
-        };
+        }
+        other => other.try_into().expect("Only pending cast should fail"),
+    };
+
+    let storage = context.storage.clone();
+    let span = tracing::Span::current();
+
+    let jh = tokio::task::spawn_blocking(move || {
+        let _g = span.enter();
+        let mut db = storage
+            .connection()
+            .context("Opening database connection")?;
+
+        let tx = db.transaction().context("Creating database transaction")?;
 
         // Check for block existence.
         if !tx.block_exists(block_id)? {
@@ -178,7 +180,8 @@ mod tests {
     async fn happy_paths_and_major_errors() {
         let ctx = RpcContext::for_tests_with_pending().await;
         let ctx_with_pending_empty = RpcContext::for_tests()
-            .with_pending_data(pathfinder_common::pending::PendingData::default());
+            .with_pending_data(starknet_gateway_types::pending::PendingData::default());
+        let ctx_with_pending_disabled = RpcContext::for_tests();
 
         let pending_contract0 = contract_address_bytes!(b"pending contract 1 address");
         let pending_key0 = storage_address_bytes!(b"pending storage key 0");
@@ -257,6 +260,15 @@ mod tests {
                 key0,
                 pre_deploy_block,
                 assert_error(GetStorageAtError::ContractNotFound),
+            ),
+            (
+                ctx_with_pending_disabled,
+                pending_contract0,
+                pending_key0,
+                BlockId::Pending,
+                assert_error(GetStorageAtError::Internal(anyhow!(
+                    "Pending data not supported in this configuration"
+                ))),
             ),
         ];
 
