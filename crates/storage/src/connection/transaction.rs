@@ -465,10 +465,11 @@ mod tests {
         let mut counters = [
             Counter::new("json/zstd".to_string(), json_serializer, zstd_compressor),
             Counter::new("flex/zstd".to_string(), rmp_serializer, zstd_compressor),
+            Counter::new("flex/raw".to_string(), rmp_serializer, noop_compressor),
         ];
 
         const BATCH_SIZE: i32 = 1_000;
-        const BENCHMARK_LIMIT: usize = 10_000;
+        const BENCHMARK_LIMIT: usize = 100_000;
         let mut last_batch_size = BATCH_SIZE;
         let mut batch_index = -1;
         while last_batch_size == BATCH_SIZE {
@@ -550,11 +551,6 @@ mod tests {
         fn perform(&self, tx: StoredTx, rct: StoredRct) -> anyhow::Result<(Duration, usize)> {
             let start = Instant::now();
             let (tx_data, rct_data) = (self.serializer)(tx.clone(), rct.clone())?;
-            for i in 0..99 {
-                let (tx_data, rct_data) = (self.serializer)(tx.clone(), rct.clone())?;
-                black_box(tx_data);
-                black_box(rct_data);
-            }
             let duration = start.elapsed();
             let (tx, rct) = (self.compressor)(&tx_data, &rct_data)?;
             Ok((duration, tx.len() + rct.len()))
