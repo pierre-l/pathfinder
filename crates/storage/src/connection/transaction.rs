@@ -5,6 +5,10 @@ use pathfinder_common::{BlockHash, BlockNumber, TransactionHash};
 use starknet_gateway_types::reply::transaction as gateway;
 
 use crate::{prelude::*, BlockId};
+use pathfinder_common::receipt::Receipt as CommonRct;
+use pathfinder_common::receipt::Receipt as StoredRct;
+use pathfinder_common::transaction::Transaction as CommonTx;
+use pathfinder_common::transaction::Transaction as StoredTx;
 
 pub enum TransactionStatus {
     L1Accepted,
@@ -484,8 +488,10 @@ mod tests {
                 // TODO println!("Transaction compressed len: {}", tx.len());
 
                 if let Ok((tx, receipt)) = json_decompression(tx, receipt) {
+                    let tx = CommonTx::from(tx);
+                    let rct = CommonRct::from(receipt);
                     for counter in &mut counters {
-                        counter.measure(&tx, &receipt);
+                        counter.measure(&tx, &rct);
                     }
                 }
             }
@@ -521,17 +527,14 @@ mod tests {
         acc_duration: Duration,
         total_size: usize,
         processed_items: usize,
-        serializer: Box<
-            dyn Fn(gateway::Transaction, gateway::Receipt) -> anyhow::Result<(Vec<u8>, Vec<u8>)>,
-        >,
+        serializer: Box<dyn Fn(StoredTx, StoredRct) -> anyhow::Result<(Vec<u8>, Vec<u8>)>>,
         compressor: Box<dyn Fn(&[u8], &[u8]) -> anyhow::Result<(Vec<u8>, Vec<u8>)>>,
     }
 
     impl Counter {
         pub fn new<F, C>(name: String, roundtrip: F, compressor: C) -> Self
         where
-            F: Fn(gateway::Transaction, gateway::Receipt) -> anyhow::Result<(Vec<u8>, Vec<u8>)>
-                + 'static,
+            F: Fn(StoredTx, StoredRct) -> anyhow::Result<(Vec<u8>, Vec<u8>)> + 'static,
             C: Fn(&[u8], &[u8]) -> anyhow::Result<(Vec<u8>, Vec<u8>)> + 'static,
         {
             Self {
@@ -544,11 +547,7 @@ mod tests {
             }
         }
 
-        fn perform(
-            &self,
-            tx: gateway::Transaction,
-            rct: gateway::Receipt,
-        ) -> anyhow::Result<(Duration, usize)> {
+        fn perform(&self, tx: StoredTx, rct: StoredRct) -> anyhow::Result<(Duration, usize)> {
             let start = Instant::now();
             let (tx_data, rct_data) = (self.serializer)(tx.clone(), rct.clone())?;
             for i in 0..99 {
@@ -561,7 +560,7 @@ mod tests {
             Ok((duration, tx.len() + rct.len()))
         }
 
-        fn measure(&mut self, tx: &gateway::Transaction, rct: &gateway::Receipt) {
+        fn measure(&mut self, tx: &StoredTx, rct: &StoredRct) {
             match self.perform(tx.clone(), rct.clone()) {
                 Ok((duration, compressed_size)) => {
                     self.acc_duration += duration;
@@ -666,40 +665,31 @@ mod tests {
         Ok((tx_data, rct_data))
     }
 
-    fn json_serializer(
-        tx: gateway::Transaction,
-        rct: gateway::Receipt,
-    ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+    fn json_serializer(tx: StoredTx, rct: StoredRct) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
         let tx_data = serde_json::to_vec(&tx).unwrap();
         let rct_data = serde_json::to_vec(&rct).unwrap();
 
-        let dec_tx: gateway::Transaction = serde_json::from_slice(&tx_data).unwrap();
+        let dec_tx: StoredTx = serde_json::from_slice(&tx_data).unwrap();
         assert_eq!(dec_tx, tx);
-        let dec_rct: gateway::Receipt = serde_json::from_slice(&rct_data).unwrap();
+        let dec_rct: StoredRct = serde_json::from_slice(&rct_data).unwrap();
         assert_eq!(dec_rct, rct);
 
         Ok((tx_data, rct_data))
     }
 
-    fn flexbuffers_serializer(
-        tx: gateway::Transaction,
-        rct: gateway::Receipt,
-    ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+    fn flexbuffers_serializer(tx: StoredTx, rct: StoredRct) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
         let mut tx_data = flexbuffers::to_vec(&tx).unwrap();
         let mut rct_data = flexbuffers::to_vec(&rct).unwrap();
 
-        let dec_tx: gateway::Transaction = flexbuffers::from_slice(&tx_data).unwrap();
+        let dec_tx: StoredTx = flexbuffers::from_slice(&tx_data).unwrap();
         assert_eq!(dec_tx, tx);
-        let dec_rct: gateway::Receipt = flexbuffers::from_slice(&rct_data).unwrap();
+        let dec_rct: StoredRct = flexbuffers::from_slice(&rct_data).unwrap();
         assert_eq!(dec_rct, rct);
 
         Ok((tx_data, rct_data))
     }
 
-    fn rmp_serializer(
-        tx: gateway::Transaction,
-        rct: gateway::Receipt,
-    ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+    fn rmp_serializer(tx: StoredTx, rct: StoredRct) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
         let mut tx_data = rmp_serde::to_vec(&tx).unwrap();
         let mut rct_data = rmp_serde::to_vec(&rct).unwrap();
 
@@ -713,20 +703,14 @@ mod tests {
         Ok((tx_data, rct_data))
     }
 
-    fn bson_serializer(
-        tx: gateway::Transaction,
-        rct: gateway::Receipt,
-    ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+    fn bson_serializer(tx: StoredTx, rct: StoredRct) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
         let tx_data = bson::to_vec(&tx).context("Serializing transaction")?;
         let rct_data = bson::to_vec(&rct).context("Serializing receipt")?;
 
         Ok((tx_data, rct_data))
     }
 
-    fn bincode_serializer(
-        tx: gateway::Transaction,
-        rct: gateway::Receipt,
-    ) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+    fn bincode_serializer(tx: StoredTx, rct: StoredRct) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
         let tx_data = bincode::serialize(&tx).context("Serializing transaction")?;
         let rct_data = bincode::serialize(&rct).context("Serializing receipt")?;
 

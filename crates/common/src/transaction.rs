@@ -1,15 +1,16 @@
 use stark_hash::{Felt, HashChain};
 
-use crate::{felt_bytes, prelude::*};
 use crate::prelude::*;
+use crate::{felt_bytes, prelude::*};
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Transaction {
     pub hash: TransactionHash,
     pub variant: TransactionVariant,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum TransactionVariant {
     DeclareV0(DeclareTransactionV0V1),
     DeclareV1(DeclareTransactionV0V1),
@@ -232,7 +233,7 @@ impl TransactionVariant {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Eq)]
+#[derive(Clone, Default, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DeclareTransactionV0V1 {
     pub class_hash: ClassHash,
     pub max_fee: Fee,
@@ -241,7 +242,7 @@ pub struct DeclareTransactionV0V1 {
     pub signature: Vec<TransactionSignatureElem>,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Eq)]
+#[derive(Clone, Default, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DeclareTransactionV2 {
     pub class_hash: ClassHash,
     pub max_fee: Fee,
@@ -251,7 +252,7 @@ pub struct DeclareTransactionV2 {
     pub compiled_class_hash: CasmHash,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Eq)]
+#[derive(Clone, Default, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DeployTransaction {
     pub contract_address: ContractAddress,
     pub contract_address_salt: ContractAddressSalt,
@@ -260,7 +261,7 @@ pub struct DeployTransaction {
     pub version: TransactionVersion,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Eq)]
+#[derive(Clone, Default, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DeployAccountTransaction {
     pub contract_address: ContractAddress,
     pub max_fee: Fee,
@@ -272,7 +273,7 @@ pub struct DeployAccountTransaction {
     pub class_hash: ClassHash,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Eq)]
+#[derive(Clone, Default, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct InvokeTransactionV0 {
     pub calldata: Vec<CallParam>,
     pub sender_address: ContractAddress,
@@ -282,7 +283,7 @@ pub struct InvokeTransactionV0 {
     pub signature: Vec<TransactionSignatureElem>,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Eq)]
+#[derive(Clone, Default, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct InvokeTransactionV1 {
     pub calldata: Vec<CallParam>,
     pub sender_address: ContractAddress,
@@ -291,7 +292,7 @@ pub struct InvokeTransactionV1 {
     pub nonce: TransactionNonce,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Eq)]
+#[derive(Clone, Default, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct L1HandlerTransaction {
     pub contract_address: ContractAddress,
     pub entry_point_selector: EntryPoint,
@@ -300,7 +301,7 @@ pub struct L1HandlerTransaction {
     pub version: TransactionVersion,
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum EntryPointType {
     External,
     L1Handler,

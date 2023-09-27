@@ -1,6 +1,7 @@
 use crate::prelude::*;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Default, Debug, PartialEq, Eq)]
+#[derive(Clone, Default, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Receipt {
     pub actual_fee: Option<Fee>,
     pub events: Vec<crate::event::Event>,
@@ -11,7 +12,7 @@ pub struct Receipt {
     pub transaction_index: TransactionIndex,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct L1ToL2Message {
     pub from_address: EthereumAddress,
     pub payload: Vec<L1ToL2MessagePayloadElem>,
@@ -20,21 +21,21 @@ pub struct L1ToL2Message {
     pub nonce: Option<L1ToL2MessageNonce>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct L2ToL1Message {
     pub from_address: ContractAddress,
     pub payload: Vec<L2ToL1MessagePayloadElem>,
     pub to_address: EthereumAddress,
 }
 
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ExecutionResources {
     pub builtin_instance_counter: BuiltinInstanceCounter,
     pub n_steps: u64,
     pub n_memory_holes: u64,
 }
 
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum BuiltinInstanceCounter {
     Normal {
         bitwise_builtin: u64,
