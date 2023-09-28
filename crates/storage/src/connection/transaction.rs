@@ -503,6 +503,14 @@ mod tests {
                 bincode_serializer,
                 lz4_compressor,
             ),
+            Counter::new("bson/zstd".to_string(), bson_serializer, zstd_compressor),
+            Counter::new("bson/raw".to_string(), bson_serializer, noop_compressor),
+            Counter::new("bson/gz".to_string(), bson_serializer, gz_compressor),
+            Counter::new("bson/lz4".to_string(), bson_serializer, lz4_compressor),
+            Counter::new("cbor/zstd".to_string(), cbor_serializer, zstd_compressor),
+            Counter::new("cbor/raw".to_string(), cbor_serializer, noop_compressor),
+            Counter::new("cbor/gz".to_string(), cbor_serializer, gz_compressor),
+            Counter::new("cbor/lz4".to_string(), cbor_serializer, lz4_compressor),
         ];
 
         const BATCH_SIZE: i32 = 1_000;
@@ -740,6 +748,13 @@ mod tests {
         let tx_data = bson::to_vec(&tx).context("Serializing transaction")?;
         let rct_data = bson::to_vec(&rct).context("Serializing receipt")?;
 
+        /* TODO
+        let dec_tx: StoredTx = rmp_serde::from_slice(&tx_data).unwrap();
+        assert_eq!(dec_tx, tx);
+        let dec_rct: StoredRct = rmp_serde::from_slice(&rct_data).unwrap();
+        assert_eq!(dec_rct, rct);
+        */
+
         Ok((tx_data, rct_data))
     }
 
@@ -749,6 +764,35 @@ mod tests {
 
         // TODO Fails to deserialize with "DeserializeAnyNotSupported"
         // TODO https://github.com/bincode-org/bincode/issues/548
+
+        /* TODO
+        let dec_tx: StoredTx = bincode::deserialize_from(&mut tx_data.as_slice()).unwrap();
+        assert_eq!(dec_tx, tx);
+        let dec_rct: StoredRct = bincode::deserialize_from(&mut rct_data.as_slice()).unwrap();
+        assert_eq!(dec_rct, rct);
+        */
+
+        Ok((tx_data, rct_data))
+    }
+
+    fn cbor_serializer(tx: StoredTx, rct: StoredRct) -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+        let tx_data = {
+            let mut writer = Vec::new();
+            ciborium::into_writer(&tx, &mut writer).unwrap();
+            writer
+        };
+        let rct_data = {
+            let mut writer = Vec::new();
+            ciborium::into_writer(&rct, &mut writer).unwrap();
+            writer
+        };
+
+        /* TODO
+        let dec_tx: StoredTx = ciborium::from_reader(&mut tx_data.as_slice()).unwrap();
+        assert_eq!(dec_tx, tx);
+        let dec_rct: StoredRct = ciborium::from_reader(&mut rct_data.as_slice()).unwrap();
+        assert_eq!(dec_rct, rct);
+        */
 
         Ok((tx_data, rct_data))
     }
