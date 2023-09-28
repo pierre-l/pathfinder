@@ -464,8 +464,45 @@ mod tests {
 
         let mut counters = [
             Counter::new("json/zstd".to_string(), json_serializer, zstd_compressor),
-            Counter::new("flex/zstd".to_string(), rmp_serializer, zstd_compressor),
-            Counter::new("flex/raw".to_string(), rmp_serializer, noop_compressor),
+            Counter::new("json/raw".to_string(), json_serializer, noop_compressor),
+            Counter::new("json/gz".to_string(), json_serializer, gz_compressor),
+            Counter::new("json/lz4".to_string(), json_serializer, lz4_compressor),
+            Counter::new(
+                "flex/zstd".to_string(),
+                flexbuffers_serializer,
+                zstd_compressor,
+            ),
+            Counter::new(
+                "flex/raw".to_string(),
+                flexbuffers_serializer,
+                noop_compressor,
+            ),
+            Counter::new("flex/gz".to_string(), flexbuffers_serializer, gz_compressor),
+            Counter::new(
+                "flex/lz4".to_string(),
+                flexbuffers_serializer,
+                lz4_compressor,
+            ),
+            Counter::new("rmp/zstd".to_string(), rmp_serializer, zstd_compressor),
+            Counter::new("rmp/raw".to_string(), rmp_serializer, noop_compressor),
+            Counter::new("rmp/gz".to_string(), rmp_serializer, gz_compressor),
+            Counter::new("rmp/lz4".to_string(), rmp_serializer, lz4_compressor),
+            Counter::new(
+                "bincode/zstd".to_string(),
+                bincode_serializer,
+                zstd_compressor,
+            ),
+            Counter::new(
+                "bincode/raw".to_string(),
+                bincode_serializer,
+                noop_compressor,
+            ),
+            Counter::new("bincode/gz".to_string(), bincode_serializer, gz_compressor),
+            Counter::new(
+                "bincode/lz4".to_string(),
+                bincode_serializer,
+                lz4_compressor,
+            ),
         ];
 
         const BATCH_SIZE: i32 = 1_000;
@@ -575,11 +612,13 @@ mod tests {
                 self.name,
                 self.total_size / self.processed_items
             );
+            /* TODO
             println!(
                 "{} ser/de duration: {}µs",
                 self.name,
                 self.acc_duration.as_micros() / self.processed_items as u128 / 100
             );
+             */
         }
     }
 
@@ -689,12 +728,10 @@ mod tests {
         let mut tx_data = rmp_serde::to_vec(&tx).unwrap();
         let mut rct_data = rmp_serde::to_vec(&rct).unwrap();
 
-        /* TODO Deser failed
-        let dec_tx: gateway::Transaction = rmp_serde::from_slice(&tx_data).unwrap();
+        let dec_tx: StoredTx = rmp_serde::from_slice(&tx_data).unwrap();
         assert_eq!(dec_tx, tx);
-        let dec_rct: gateway::Receipt = rmp_serde::from_slice(&rct_data).unwrap();
+        let dec_rct: StoredRct = rmp_serde::from_slice(&rct_data).unwrap();
         assert_eq!(dec_rct, rct);
-         */
 
         Ok((tx_data, rct_data))
     }
