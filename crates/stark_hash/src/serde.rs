@@ -7,14 +7,10 @@ impl Serialize for Felt {
     where
         S: serde::Serializer,
     {
-        let bytes = self.as_be_bytes();
-        let mut last_consecutive_zero = 0;
-        while last_consecutive_zero < bytes.len() && bytes[last_consecutive_zero] == 0 {
-            last_consecutive_zero += 1;
-        }
-
-        let trimmed = Vec::from(&bytes[last_consecutive_zero..]);
-        serializer.serialize_bytes(&trimmed)
+        // StarkHash has a leading "0x" and at most 64 digits
+        let mut buf = [0u8; 2 + 64];
+        let s = self.as_hex_str(&mut buf);
+        serializer.serialize_str(s)
     }
 }
 
