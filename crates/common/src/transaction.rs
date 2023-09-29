@@ -1,7 +1,7 @@
 use stark_hash::{Felt, HashChain};
 
+use crate::felt_bytes;
 use crate::prelude::*;
-use crate::{felt_bytes, prelude::*};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]

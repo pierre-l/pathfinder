@@ -8,13 +8,11 @@ use primitive_types::{H160, H256};
 use serde::{Deserialize, Serialize};
 use stark_hash::Felt;
 
-mod body;
 pub mod consts;
 pub mod event;
 pub mod hash;
 mod header;
 mod macros;
-pub mod pending;
 pub mod prelude;
 pub mod receipt;
 pub mod state_update;
@@ -22,7 +20,6 @@ pub mod test_utils;
 pub mod transaction;
 pub mod trie;
 
-pub use body::{BlockBody, BlockWithBody};
 pub use header::{BlockHeader, BlockHeaderBuilder};
 pub use state_update::StateUpdate;
 
