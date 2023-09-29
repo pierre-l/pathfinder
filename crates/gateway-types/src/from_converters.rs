@@ -1,8 +1,9 @@
 use crate::reply::transaction::{
     DeclareTransaction, DeclareTransactionV0V1, DeclareTransactionV2, DeployAccountTransaction,
-    DeployTransaction, InvokeTransaction, InvokeTransactionV0, InvokeTransactionV1,
-    L1HandlerTransaction, Receipt, Transaction,
+    DeployTransaction, EntryPointType, ExecutionResources, InvokeTransaction, InvokeTransactionV0,
+    InvokeTransactionV1, L1HandlerTransaction, L1ToL2Message, L2ToL1Message, Receipt, Transaction,
 };
+use pathfinder_common::receipt::BuiltinInstanceCounter;
 
 impl From<Transaction> for pathfinder_common::transaction::Transaction {
     fn from(value: Transaction) -> Self {
@@ -168,4 +169,99 @@ impl From<Receipt> for pathfinder_common::receipt::Receipt {
             transaction_index: value.transaction_index,
         }
     }
+}
+
+impl From<L2ToL1Message> for pathfinder_common::receipt::L2ToL1Message {
+    fn from(value: L2ToL1Message) -> Self {
+        pathfinder_common::receipt::L2ToL1Message {
+            from_address: value.from_address,
+            payload: value.payload,
+            to_address: value.to_address,
+        }
+    }
+}
+
+impl From<L1ToL2Message> for pathfinder_common::receipt::L1ToL2Message {
+    fn from(value: L1ToL2Message) -> Self {
+        pathfinder_common::receipt::L1ToL2Message {
+            from_address: value.from_address,
+            payload: value.payload,
+            selector: value.selector,
+            to_address: value.to_address,
+            nonce: value.nonce,
+        }
+    }
+}
+
+impl From<EntryPointType> for pathfinder_common::transaction::EntryPointType {
+    fn from(value: EntryPointType) -> Self {
+        match value {
+            EntryPointType::External => pathfinder_common::transaction::EntryPointType::External,
+            EntryPointType::L1Handler => pathfinder_common::transaction::EntryPointType::L1Handler,
+        }
+    }
+}
+
+impl From<ExecutionResources> for pathfinder_common::receipt::ExecutionResources {
+    fn from(value: ExecutionResources) -> Self {
+        Self {
+            // TODO builtin_instance_counter: value.builtin_instance_counter.into(),
+            builtin_instance_counter: BuiltinInstanceCounter::Empty,
+            n_steps: value.n_steps,
+            n_memory_holes: value.n_memory_holes,
+        }
+    }
+}
+
+/// Types used when deserializing L2 execution resources related data.
+pub mod execution_resources {
+    use serde::{Deserialize, Serialize};
+
+    /// Sometimes `builtin_instance_counter` JSON object is returned empty.
+    #[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+    #[serde(untagged)]
+    #[serde(deny_unknown_fields)]
+    pub enum BuiltinInstanceCounter {
+        Normal(NormalBuiltinInstanceCounter),
+        Empty(EmptyBuiltinInstanceCounter),
+    }
+
+    impl From<BuiltinInstanceCounter> for pathfinder_common::receipt::BuiltinInstanceCounter {
+        fn from(value: BuiltinInstanceCounter) -> Self {
+            match value {
+                BuiltinInstanceCounter::Normal(NormalBuiltinInstanceCounter {
+                    bitwise_builtin,
+                    ecdsa_builtin,
+                    ec_op_builtin,
+                    output_builtin,
+                    pedersen_builtin,
+                    range_check_builtin,
+                }) => pathfinder_common::receipt::BuiltinInstanceCounter::Normal {
+                    bitwise_builtin,
+                    ecdsa_builtin,
+                    ec_op_builtin,
+                    output_builtin,
+                    pedersen_builtin,
+                    range_check_builtin,
+                },
+                BuiltinInstanceCounter::Empty(_) => {
+                    pathfinder_common::receipt::BuiltinInstanceCounter::Empty
+                }
+            }
+        }
+    }
+
+    #[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+    #[serde(deny_unknown_fields)]
+    pub struct NormalBuiltinInstanceCounter {
+        bitwise_builtin: u64,
+        ecdsa_builtin: u64,
+        ec_op_builtin: u64,
+        output_builtin: u64,
+        pedersen_builtin: u64,
+        range_check_builtin: u64,
+    }
+
+    #[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+    pub struct EmptyBuiltinInstanceCounter {}
 }
