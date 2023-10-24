@@ -498,11 +498,11 @@ where
     let (result_sender, mut result_receiver) = tokio::sync::mpsc::channel(capacity);
 
     futures::stream::iter(input_iter)
-        .map(|input| work(input))
         .enumerate()
-        .for_each_concurrent(Some(concurrency_limit.get()), |(index, future)| {
+        .for_each_concurrent(Some(concurrency_limit.get()), |(index, input)| {
             let index = index.clone();
             let result_sender = result_sender.clone();
+            let future = work(input);
 
             async move {
                 let result = future.await;
