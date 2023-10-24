@@ -11,6 +11,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 use serde_json::value::RawValue;
 use serde_json::Value;
+// TODO use tokio_stream::StreamExt as TokioStreamExt;
 
 use crate::context::RpcContext;
 use crate::jsonrpc::error::RpcError;
@@ -498,16 +499,22 @@ where
 
     // TODO More testing required regarding ordering
     futures::stream::iter(input_iter)
+        .map(|input| work(input))
         .enumerate()
-        .for_each_concurrent(Some(concurrency_limit.get()), |(index, input)| async {
-            let result = work(input).await;
+        .for_each_concurrent(Some(concurrency_limit.get()), |(index, future)| {
+            let index = index.clone();
+            let result_sender = result_sender.clone();
 
-            // No reason for this to fail as:
-            //  * channel capacity is sized according to the input size,
-            //  * a sender is kept alive until completion
-            result_sender.send((index, result)).await.expect(
-                "This channel is expected to be open and to not go over capacity. This is a bug.",
-            );
+            async move {
+                let result = future.await;
+
+                // No reason for this to fail as:
+                //  * channel capacity is sized according to the input size,
+                //  * a sender is kept alive until completion
+                result_sender.send((index, result)).await.expect(
+                    "This channel is expected to be open and to not go over capacity. This is a bug.",
+                );
+            }
         })
         .await;
 
@@ -970,14 +977,14 @@ mod tests {
                 0..iterations,
                 |i| async move {
                     // Make these decrease to mess up with completion order.
-                    sleep(Duration::from_millis(10 - i as u64)).await;
+                    sleep(Duration::from_millis((iterations - 1 - i) as u64)).await;
                     i
                 },
             )
             .await;
 
             // Make sure the futures were indeed executed concurrently: total time << sum of the sleep times
-            assert!(start.elapsed().as_millis() < (10 * 2));
+            assert!(start.elapsed().as_millis() < (iterations * 2) as u128);
 
             // Make sure the results are complete.
             assert_eq!(results.len(), iterations);
@@ -998,7 +1005,7 @@ mod tests {
                 0..iterations,
                 |i| async move {
                     // Make these decrease to mess up with completion order.
-                    sleep(Duration::from_millis(10 - i as u64)).await;
+                    sleep(Duration::from_millis((iterations - 1 - i) as u64)).await;
                     i
                 },
             )
@@ -1006,8 +1013,8 @@ mod tests {
 
             // Total time should be ~= sum of the sleep times
             let elapsed = start.elapsed().as_millis();
-            assert!(elapsed > (sum - 10).try_into().unwrap());
-            assert!(elapsed < (sum - 10).try_into().unwrap());
+            assert!(elapsed > (sum - iterations).try_into().unwrap());
+            assert!(elapsed < (sum + iterations).try_into().unwrap());
 
             // Make sure the results are complete.
             assert_eq!(results.len(), iterations);
