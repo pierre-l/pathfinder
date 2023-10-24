@@ -497,7 +497,6 @@ where
     let capacity = input_iter.len();
     let (result_sender, mut result_receiver) = tokio::sync::mpsc::channel(capacity);
 
-    // TODO More testing required regarding ordering
     futures::stream::iter(input_iter)
         .map(|input| work(input))
         .enumerate()
