@@ -500,7 +500,6 @@ where
     futures::stream::iter(input_iter)
         .enumerate()
         .for_each_concurrent(Some(concurrency_limit.get()), |(index, input)| {
-            let index = index.clone();
             let result_sender = result_sender.clone();
             let future = work(input);
 
