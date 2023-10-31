@@ -10,6 +10,7 @@ impl From<crate::v05::method::call::CallError> for CallError {
             crate::v05::method::call::CallError::BlockNotFound => Self::BlockNotFound,
             crate::v05::method::call::CallError::ContractNotFound => Self::ContractNotFound,
             crate::v05::method::call::CallError::ContractErrorV05 { revert_error } => {
+                // TODO Custom?
                 Self::Internal(anyhow::anyhow!("Transaction reverted: {}", revert_error))
             }
         }

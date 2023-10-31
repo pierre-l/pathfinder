@@ -12,6 +12,7 @@ use tokio::task::JoinHandle;
 #[derive(Debug)]
 pub enum GetEventsError {
     Internal(anyhow::Error),
+    Custom(anyhow::Error),
     BlockNotFound,
     PageSizeTooBig,
     InvalidContinuationToken,
@@ -27,7 +28,8 @@ impl From<anyhow::Error> for GetEventsError {
 impl From<GetEventsError> for crate::error::ApplicationError {
     fn from(e: GetEventsError) -> Self {
         match e {
-            GetEventsError::Internal(internal) => Self::Internal(internal),
+            GetEventsError::Internal(internal) => Self::Internal(internal, ()),
+            GetEventsError::Custom(internal) => Self::Custom(internal),
             GetEventsError::BlockNotFound => Self::BlockNotFound,
             GetEventsError::PageSizeTooBig => Self::PageSizeTooBig,
             GetEventsError::InvalidContinuationToken => Self::InvalidContinuationToken,
@@ -166,10 +168,10 @@ pub async fn get_events(
             if let Some(event_filter_error) = e.downcast_ref::<EventFilterError>() {
                 match event_filter_error {
                     EventFilterError::PageSizeTooBig(_) => GetEventsError::PageSizeTooBig,
-                    EventFilterError::TooManyMatches => GetEventsError::from(e),
+                    EventFilterError::TooManyMatches => GetEventsError::Custom(e),
                 }
             } else {
-                GetEventsError::from(e)
+                GetEventsError::Internal(e)
             }
         })?;
 

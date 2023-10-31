@@ -41,10 +41,13 @@ impl From<ExecutionStateError> for TraceBlockTransactionsError {
 impl From<CallError> for TraceBlockTransactionsError {
     fn from(value: CallError) -> Self {
         match value {
+            // TODO Custom?
             CallError::ContractNotFound => Self::Internal(anyhow::anyhow!("Contract not found")),
             CallError::InvalidMessageSelector => {
+                // TODO Custom?
                 Self::Internal(anyhow::anyhow!("Invalid message selector"))
             }
+            // TODO Custom?
             CallError::Reverted(reason) => Self::Internal(anyhow::anyhow!("Reverted: {reason}")),
             CallError::Internal(e) => Self::Internal(e),
         }
@@ -53,6 +56,7 @@ impl From<CallError> for TraceBlockTransactionsError {
 
 impl From<JoinError> for TraceBlockTransactionsError {
     fn from(e: JoinError) -> Self {
+        // TODO Custom?
         Self::Internal(anyhow::anyhow!("Join error: {e}"))
     }
 }

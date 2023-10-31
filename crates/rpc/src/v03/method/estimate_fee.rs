@@ -17,6 +17,7 @@ impl From<crate::v05::method::estimate_fee::EstimateFeeError> for EstimateFeeErr
             BlockNotFound => Self::BlockNotFound,
             ContractNotFound => Self::ContractNotFound,
             ContractErrorV05 { revert_error } => {
+                // TODO Custom?
                 Self::Internal(anyhow::anyhow!("Transaction reverted: {}", revert_error))
             }
         }

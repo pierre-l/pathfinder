@@ -25,8 +25,10 @@ impl From<TransactionExecutionError> for CallError {
                 EntryPointExecutionError::PreExecutionError(
                     PreExecutionError::UninitializedStorageAddress(_),
                 ) => Self::ContractNotFound,
+                // TODO Custom?
                 _ => Self::Internal(anyhow::anyhow!("Internal error: {}", e)),
             },
+            // TODO Custom?
             e => Self::Internal(anyhow::anyhow!("Internal error: {}", e)),
         }
     }
@@ -41,6 +43,7 @@ impl From<EntryPointExecutionError> for CallError {
             EntryPointExecutionError::PreExecutionError(
                 PreExecutionError::UninitializedStorageAddress(_),
             ) => Self::ContractNotFound,
+            // TODO Custom?
             _ => Self::Internal(anyhow::anyhow!("Internal error: {}", e)),
         }
     }
@@ -48,6 +51,7 @@ impl From<EntryPointExecutionError> for CallError {
 
 impl From<StateError> for CallError {
     fn from(e: StateError) -> Self {
+        // TODO Custom?
         Self::Internal(anyhow::anyhow!("Internal state error: {}", e))
     }
 }

@@ -35,16 +35,18 @@ impl From<AddInvokeTransactionError> for crate::error::ApplicationError {
     fn from(value: AddInvokeTransactionError) -> Self {
         match value {
             AddInvokeTransactionError::GatewayError(x) => Self::GatewayError(x),
-            AddInvokeTransactionError::Internal(x) => Self::Internal(x),
+            AddInvokeTransactionError::Internal(x) => Self::Internal(x, ()),
         }
     }
 }
 
+/* TODO
 impl From<anyhow::Error> for AddInvokeTransactionError {
     fn from(value: anyhow::Error) -> Self {
         AddInvokeTransactionError::Internal(value)
     }
 }
+ */
 
 pub async fn add_invoke_transaction(
     context: RpcContext,

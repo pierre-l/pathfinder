@@ -34,6 +34,7 @@ impl From<ExecutionStateError> for TraceTransactionError {
     fn from(value: ExecutionStateError) -> Self {
         match value {
             ExecutionStateError::BlockNotFound => {
+                // TODO Custom?
                 Self::Internal(anyhow::anyhow!("Block not found"))
             }
             ExecutionStateError::Internal(e) => Self::Internal(e),
@@ -44,8 +45,10 @@ impl From<ExecutionStateError> for TraceTransactionError {
 impl From<CallError> for TraceTransactionError {
     fn from(value: CallError) -> Self {
         match value {
+            // TODO Custom?
             CallError::ContractNotFound => Self::Internal(anyhow::anyhow!("Contract not found")),
             CallError::InvalidMessageSelector => {
+                // TODO Custom?
                 Self::Internal(anyhow::anyhow!("Invalid message selector"))
             }
             CallError::Reverted(revert_error) => Self::ContractErrorV05 { revert_error },
@@ -65,6 +68,7 @@ impl From<super::trace_block_transactions::TraceBlockTransactionsError> for Trac
         use super::trace_block_transactions::TraceBlockTransactionsError::*;
         match e {
             Internal(e) => Self::Internal(e),
+            // TODO Custom?
             BlockNotFound => Self::Internal(anyhow::anyhow!("Block not found")),
             ContractErrorV05 { revert_error } => Self::ContractErrorV05 { revert_error },
         }
@@ -81,7 +85,7 @@ impl From<TraceTransactionError> for ApplicationError {
             TraceTransactionError::ContractErrorV05 { revert_error } => {
                 ApplicationError::ContractErrorV05 { revert_error }
             }
-            TraceTransactionError::Internal(e) => ApplicationError::Internal(e),
+            TraceTransactionError::Internal(e) => ApplicationError::Internal(e, ()),
         }
     }
 }

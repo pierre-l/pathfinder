@@ -20,7 +20,7 @@ impl From<AddDeclareTransactionError> for crate::error::ApplicationError {
         match value {
             AddDeclareTransactionError::InvalidContractClass => Self::InvalidContractClass,
             AddDeclareTransactionError::GatewayError(x) => Self::GatewayError(x),
-            AddDeclareTransactionError::Internal(x) => Self::Internal(x),
+            AddDeclareTransactionError::Internal(x) => Self::Internal(x, ()),
         }
     }
 }
@@ -80,6 +80,7 @@ pub async fn add_declare_transaction(
 ) -> Result<AddDeclareTransactionOutput, AddDeclareTransactionError> {
     match input.declare_transaction {
         Transaction::Declare(BroadcastedDeclareTransaction::V0(_)) => {
+            // TODO Custom?
             Err(AddDeclareTransactionError::Internal(anyhow::anyhow!(
                 "Declare v0 transactions are not allowed"
             )))

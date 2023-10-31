@@ -39,7 +39,7 @@ impl From<anyhow::Error> for TraceBlockTransactionsError {
 impl From<TraceBlockTransactionsError> for crate::error::ApplicationError {
     fn from(value: TraceBlockTransactionsError) -> Self {
         match value {
-            TraceBlockTransactionsError::Internal(e) => Self::Internal(e),
+            TraceBlockTransactionsError::Internal(e) => Self::Internal(e, ()),
             TraceBlockTransactionsError::BlockNotFound => Self::BlockNotFound,
             TraceBlockTransactionsError::ContractErrorV05 { revert_error } => {
                 Self::ContractErrorV05 { revert_error }
@@ -60,8 +60,10 @@ impl From<ExecutionStateError> for TraceBlockTransactionsError {
 impl From<CallError> for TraceBlockTransactionsError {
     fn from(value: CallError) -> Self {
         match value {
+            // TODO Custom?
             CallError::ContractNotFound => Self::Internal(anyhow::anyhow!("Contract not found")),
             CallError::InvalidMessageSelector => {
+                // TODO Custom?
                 Self::Internal(anyhow::anyhow!("Invalid message selector"))
             }
             CallError::Reverted(revert_error) => Self::ContractErrorV05 { revert_error },
@@ -72,6 +74,7 @@ impl From<CallError> for TraceBlockTransactionsError {
 
 impl From<tokio::task::JoinError> for TraceBlockTransactionsError {
     fn from(e: tokio::task::JoinError) -> Self {
+        // TODO Custom?
         Self::Internal(anyhow::anyhow!("Join error: {e}"))
     }
 }

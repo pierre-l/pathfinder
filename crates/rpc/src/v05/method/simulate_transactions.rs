@@ -36,7 +36,7 @@ impl From<anyhow::Error> for SimulateTransactionError {
 impl From<SimulateTransactionError> for crate::error::ApplicationError {
     fn from(e: SimulateTransactionError) -> Self {
         match e {
-            SimulateTransactionError::Internal(internal) => Self::Internal(internal),
+            SimulateTransactionError::Internal(internal) => Self::Internal(internal, ()),
             SimulateTransactionError::BlockNotFound => Self::BlockNotFound,
             SimulateTransactionError::ContractNotFound => Self::ContractNotFound,
             SimulateTransactionError::ContractErrorV05 { revert_error } => {
@@ -51,6 +51,7 @@ impl From<CallError> for SimulateTransactionError {
         use CallError::*;
         match value {
             ContractNotFound => Self::ContractNotFound,
+            // TODO Custom?
             InvalidMessageSelector => Self::Internal(anyhow::anyhow!("Invalid message selector")),
             Reverted(revert_error) => Self::ContractErrorV05 { revert_error },
             Internal(e) => Self::Internal(e),

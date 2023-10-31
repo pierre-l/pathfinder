@@ -29,6 +29,7 @@ impl From<pathfinder_executor::CallError> for EstimateMessageFeeError {
     fn from(c: pathfinder_executor::CallError) -> Self {
         use pathfinder_executor::CallError::*;
         match c {
+            // TODO Custom?
             InvalidMessageSelector => Self::Internal(anyhow::anyhow!("Invalid message selector")),
             ContractNotFound => Self::ContractNotFound,
             Reverted(revert_error) => Self::ContractErrorV05 { revert_error },
@@ -55,7 +56,7 @@ impl From<EstimateMessageFeeError> for ApplicationError {
             EstimateMessageFeeError::ContractErrorV05 { revert_error } => {
                 ApplicationError::ContractErrorV05 { revert_error }
             }
-            EstimateMessageFeeError::Internal(e) => ApplicationError::Internal(e),
+            EstimateMessageFeeError::Internal(e) => ApplicationError::Internal(e, ()),
         }
     }
 }

@@ -39,16 +39,18 @@ impl From<AddDeployAccountTransactionError> for crate::error::ApplicationError {
         match value {
             AddDeployAccountTransactionError::ClassHashNotFound => Self::ClassHashNotFound,
             AddDeployAccountTransactionError::GatewayError(x) => Self::GatewayError(x),
-            AddDeployAccountTransactionError::Internal(x) => Self::Internal(x),
+            AddDeployAccountTransactionError::Internal(x) => Self::Internal(x, ()),
         }
     }
 }
 
+/* TODO
 impl From<anyhow::Error> for AddDeployAccountTransactionError {
     fn from(value: anyhow::Error) -> Self {
         AddDeployAccountTransactionError::Internal(value)
     }
 }
+ */
 
 pub async fn add_deploy_account_transaction(
     context: RpcContext,

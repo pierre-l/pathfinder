@@ -78,8 +78,12 @@ pub enum ApplicationError {
     ProofLimitExceeded { limit: u32, requested: u32 },
     #[error("Internal error")]
     GatewayError(starknet_gateway_types::error::StarknetError),
+    // TODO Remove the ()
     #[error("Internal error")]
-    Internal(anyhow::Error),
+    Internal(anyhow::Error, ()),
+    // TODO Label, public details
+    #[error("Internal error")]
+    Custom(anyhow::Error),
 }
 
 impl ApplicationError {
@@ -120,7 +124,9 @@ impl ApplicationError {
             // doc/rpc/pathfinder_rpc_api.json
             ApplicationError::ProofLimitExceeded { .. } => 10000,
             // https://www.jsonrpc.org/specification#error_object
-            ApplicationError::GatewayError(_) | ApplicationError::Internal(_) => -32603,
+            ApplicationError::GatewayError(_)
+            | ApplicationError::Internal(_, ())
+            | ApplicationError::Custom(_) => -32603,
         }
     }
 
@@ -158,7 +164,8 @@ impl ApplicationError {
             ApplicationError::GatewayError(error) => Some(json!({
                 "error": error,
             })),
-            ApplicationError::Internal(error) => {
+            ApplicationError::Internal(_, ()) => None,
+            ApplicationError::Custom(error) => {
                 let error = error.to_string();
                 if error.is_empty() {
                     None
@@ -311,7 +318,8 @@ macro_rules! generate_rpc_error_subset {
     (@parse, $var:ident, $enum_name:ident, {$($arms:tt)*}, $(,)*) => {
         match $var {
             $($arms)*
-            $enum_name::Internal(internal) => Self::Internal(internal),
+            // TODO
+            $enum_name::Internal(internal) => Self::Internal(internal, ()),
         }
     };
     // Special case for single variant. This could probably be folded into one of the other

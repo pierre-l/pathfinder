@@ -130,10 +130,12 @@ pub(super) fn get_events<K: KeyFilter>(
     filter: &EventFilter<K>,
 ) -> anyhow::Result<PageOfEvents> {
     if filter.page_size > PAGE_SIZE_LIMIT {
+        // TODO Custom
         return Err(EventFilterError::PageSizeTooBig(PAGE_SIZE_LIMIT).into());
     }
 
     if filter.page_size < 1 {
+        // TODO Custom
         anyhow::bail!("Invalid page size");
     }
 
@@ -201,20 +203,24 @@ pub(super) fn get_events<K: KeyFilter>(
             let transaction_hash = row.get_transaction_hash("transaction_hash")?;
             let from_address = row.get_contract_address("from_address")?;
 
+            // TODO Unwrap
             let data = row.get_ref_unwrap("data").as_blob().unwrap();
             let data: Vec<_> = data
                 .chunks_exact(32)
                 .map(|data| {
+                    // TODO Unwrap
                     let data = Felt::from_be_slice(data).unwrap();
                     EventData(data)
                 })
                 .collect();
 
+            // TODO Unwrap
             let keys = row.get_ref_unwrap("keys").as_str().unwrap();
 
             // no need to allocate a vec for this in loop
             let mut temp = [0u8; 32];
 
+            // TODO Unwraps
             let keys: Vec<_> = keys
                 .split(' ')
                 .map(|key| {
