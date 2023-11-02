@@ -10,11 +10,32 @@ pub struct EstimateMessageFeeInput {
     pub block_id: BlockId,
 }
 
-crate::error::generate_rpc_error_subset!(
-    EstimateMessageFeeError: BlockNotFound,
+#[derive(Debug)]
+pub enum EstimateMessageFeeError {
+    Internal(anyhow::Error),
+    BlockNotFound,
     ContractNotFound,
-    ContractError
-);
+    ContractError,
+    Custom(anyhow::Error),
+}
+
+impl From<anyhow::Error> for EstimateMessageFeeError {
+    fn from(e: anyhow::Error) -> Self {
+        Self::Internal(e)
+    }
+}
+
+impl From<EstimateMessageFeeError> for crate::error::ApplicationError {
+    fn from(x: EstimateMessageFeeError) -> Self {
+        match x {
+            EstimateMessageFeeError::BlockNotFound => Self::BlockNotFound,
+            EstimateMessageFeeError::ContractNotFound => Self::ContractNotFound,
+            EstimateMessageFeeError::ContractError => Self::ContractError,
+            EstimateMessageFeeError::Internal(internal) => Self::Internal(internal, ()),
+            EstimateMessageFeeError::Custom(error) => Self::Custom(error),
+        }
+    }
+}
 
 impl From<crate::v05::method::estimate_message_fee::EstimateMessageFeeError>
     for EstimateMessageFeeError
@@ -27,9 +48,9 @@ impl From<crate::v05::method::estimate_message_fee::EstimateMessageFeeError>
             BlockNotFound => Self::BlockNotFound,
             ContractNotFound => Self::ContractNotFound,
             ContractErrorV05 { revert_error } => {
-                // TODO Custom?
                 Self::Internal(anyhow::anyhow!("Transaction reverted: {}", revert_error))
             }
+            Custom(error) => Self::Custom(error),
         }
     }
 }

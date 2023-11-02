@@ -32,7 +32,6 @@ impl From<pathfinder_executor::CallError> for EstimateFeeError {
         use pathfinder_executor::CallError::*;
         match value {
             ContractNotFound => Self::ContractNotFound,
-            // TODO Custom?
             InvalidMessageSelector => Self::Internal(anyhow::anyhow!("Invalid message selector")),
             Reverted(revert_error) => Self::ContractErrorV05 { revert_error },
             Internal(e) => Self::Internal(e),
