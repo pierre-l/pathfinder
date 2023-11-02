@@ -120,7 +120,6 @@ pub fn trace_one(
         }
     }
 
-    // TODO Custom?
     Err(CallError::Internal(anyhow::anyhow!(
         "Transaction hash not found: {}",
         target_transaction_hash
