@@ -196,6 +196,7 @@ impl ApplicationError {
     }
 }
 
+// TODO Doc
 /// Generates an enum subset of [ApplicationError] along with boilerplate for mapping the variants back to [ApplicationError].
 ///
 /// This is useful for RPC methods which only emit a few of the [ApplicationError] variants as this macro can be
@@ -282,6 +283,7 @@ macro_rules! generate_rpc_error_subset {
         #[derive(Debug)]
         pub enum $enum_name {
             Internal(anyhow::Error),
+            Custom(anyhow::Error),
             $($subset),*
         }
     };
@@ -320,6 +322,7 @@ macro_rules! generate_rpc_error_subset {
             $($arms)*
             // TODO
             $enum_name::Internal(internal) => Self::Internal(internal, ()),
+            $enum_name::Custom(error) => Self::Custom(error),
         }
     };
     // Special case for single variant. This could probably be folded into one of the other
