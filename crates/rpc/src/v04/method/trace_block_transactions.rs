@@ -4,7 +4,6 @@ use pathfinder_executor::CallError;
 use pathfinder_storage::BlockId;
 use primitive_types::U256;
 use serde::{Deserialize, Serialize};
-use tokio::task::JoinError;
 
 use crate::{compose_executor_transaction, context::RpcContext, executor::ExecutionStateError};
 
@@ -48,13 +47,6 @@ impl From<CallError> for TraceBlockTransactionsError {
             CallError::Reverted(reason) => Self::Custom(anyhow::anyhow!("Reverted: {reason}")),
             CallError::Internal(e) => Self::Internal(e),
         }
-    }
-}
-
-impl From<JoinError> for TraceBlockTransactionsError {
-    fn from(e: JoinError) -> Self {
-        // TODO Custom?
-        Self::Internal(anyhow::anyhow!("Join error: {e}"))
     }
 }
 

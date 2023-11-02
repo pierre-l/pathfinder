@@ -3,7 +3,6 @@ use pathfinder_common::{BlockHash, BlockId, TransactionHash};
 use pathfinder_executor::{CallError, Transaction};
 use primitive_types::U256;
 use serde::{Deserialize, Serialize};
-use tokio::task::JoinError;
 
 use crate::{
     compose_executor_transaction,
@@ -50,13 +49,6 @@ impl From<CallError> for TraceTransactionError {
             CallError::Reverted(reason) => Self::Custom(anyhow::anyhow!("Reverted: {reason}")),
             CallError::Internal(e) => Self::Internal(e),
         }
-    }
-}
-
-impl From<JoinError> for TraceTransactionError {
-    fn from(e: JoinError) -> Self {
-        // TODO Custom?
-        Self::Internal(anyhow::anyhow!("Join error: {e}"))
     }
 }
 

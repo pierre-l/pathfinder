@@ -72,13 +72,6 @@ impl From<CallError> for TraceBlockTransactionsError {
     }
 }
 
-impl From<tokio::task::JoinError> for TraceBlockTransactionsError {
-    fn from(e: tokio::task::JoinError) -> Self {
-        // TODO Custom?
-        Self::Internal(anyhow::anyhow!("Join error: {e}"))
-    }
-}
-
 pub async fn trace_block_transactions(
     context: RpcContext,
     input: TraceBlockTransactionsInput,
