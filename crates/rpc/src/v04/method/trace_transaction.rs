@@ -28,15 +28,13 @@ pub enum TraceTransactionError {
     InvalidTxnHash,
     NoTraceAvailable(TraceError),
     Internal(anyhow::Error),
+    Custom(anyhow::Error),
 }
 
 impl From<ExecutionStateError> for TraceTransactionError {
     fn from(value: ExecutionStateError) -> Self {
         match value {
-            ExecutionStateError::BlockNotFound => {
-                // TODO Custom?
-                Self::Internal(anyhow::anyhow!("Block not found"))
-            }
+            ExecutionStateError::BlockNotFound => Self::Custom(anyhow::anyhow!("Block not found")),
             ExecutionStateError::Internal(e) => Self::Internal(e),
         }
     }
@@ -45,14 +43,11 @@ impl From<ExecutionStateError> for TraceTransactionError {
 impl From<CallError> for TraceTransactionError {
     fn from(value: CallError) -> Self {
         match value {
-            // TODO Custom?
-            CallError::ContractNotFound => Self::Internal(anyhow::anyhow!("Contract not found")),
+            CallError::ContractNotFound => Self::Custom(anyhow::anyhow!("Contract not found")),
             CallError::InvalidMessageSelector => {
-                // TODO Custom?
-                Self::Internal(anyhow::anyhow!("Invalid message selector"))
+                Self::Custom(anyhow::anyhow!("Invalid message selector"))
             }
-            // TODO Custom?
-            CallError::Reverted(reason) => Self::Internal(anyhow::anyhow!("Reverted: {reason}")),
+            CallError::Reverted(reason) => Self::Custom(anyhow::anyhow!("Reverted: {reason}")),
             CallError::Internal(e) => Self::Internal(e),
         }
     }
@@ -79,6 +74,7 @@ impl From<TraceTransactionError> for ApplicationError {
                 ApplicationError::NoTraceAvailable(status)
             }
             TraceTransactionError::Internal(e) => ApplicationError::Internal(e, ()),
+            TraceTransactionError::Custom(e) => ApplicationError::Custom(e),
         }
     }
 }

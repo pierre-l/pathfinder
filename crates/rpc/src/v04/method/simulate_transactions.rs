@@ -32,8 +32,7 @@ impl From<CallError> for SimulateTransactionError {
             ContractNotFound => Self::ContractNotFound,
             InvalidMessageSelector => Self::ContractError,
             Reverted(revert_error) => {
-                // TODO Custom?
-                Self::Internal(anyhow::anyhow!("Transaction reverted: {}", revert_error))
+                Self::Custom(anyhow::anyhow!("Transaction reverted: {}", revert_error))
             }
             Internal(e) => Self::Internal(e),
         }
