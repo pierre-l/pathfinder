@@ -1,30 +1,7 @@
 use crate::context::RpcContext;
 use crate::v05::method::call::{CallInput, CallOutput};
 
-#[derive(Debug)]
-pub enum CallError {
-    Internal(anyhow::Error),
-    BlockNotFound,
-    ContractNotFound,
-    ContractError,
-    Custom(anyhow::Error),
-}
-impl From<anyhow::Error> for CallError {
-    fn from(e: anyhow::Error) -> Self {
-        Self::Internal(e)
-    }
-}
-impl From<CallError> for crate::error::ApplicationError {
-    fn from(x: CallError) -> Self {
-        match x {
-            CallError::BlockNotFound => Self::BlockNotFound,
-            CallError::ContractNotFound => Self::ContractNotFound,
-            CallError::ContractError => Self::ContractError,
-            CallError::Internal(internal) => Self::Internal(internal),
-            CallError::Custom(error) => Self::Custom(error),
-        }
-    }
-}
+crate::error::generate_rpc_error_subset!(CallError: BlockNotFound, ContractNotFound, ContractError);
 
 impl From<crate::v05::method::call::CallError> for CallError {
     fn from(value: crate::v05::method::call::CallError) -> Self {

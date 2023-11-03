@@ -10,32 +10,11 @@ pub struct EstimateMessageFeeInput {
     pub block_id: BlockId,
 }
 
-#[derive(Debug)]
-pub enum EstimateMessageFeeError {
-    Internal(anyhow::Error),
-    BlockNotFound,
+crate::error::generate_rpc_error_subset!(
+    EstimateMessageFeeError: BlockNotFound,
     ContractNotFound,
-    ContractError,
-    Custom(anyhow::Error),
-}
-
-impl From<anyhow::Error> for EstimateMessageFeeError {
-    fn from(e: anyhow::Error) -> Self {
-        Self::Internal(e)
-    }
-}
-
-impl From<EstimateMessageFeeError> for crate::error::ApplicationError {
-    fn from(x: EstimateMessageFeeError) -> Self {
-        match x {
-            EstimateMessageFeeError::BlockNotFound => Self::BlockNotFound,
-            EstimateMessageFeeError::ContractNotFound => Self::ContractNotFound,
-            EstimateMessageFeeError::ContractError => Self::ContractError,
-            EstimateMessageFeeError::Internal(internal) => Self::Internal(internal),
-            EstimateMessageFeeError::Custom(error) => Self::Custom(error),
-        }
-    }
-}
+    ContractError
+);
 
 impl From<crate::v05::method::estimate_message_fee::EstimateMessageFeeError>
     for EstimateMessageFeeError
