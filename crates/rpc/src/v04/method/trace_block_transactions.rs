@@ -46,6 +46,7 @@ impl From<CallError> for TraceBlockTransactionsError {
             }
             CallError::Reverted(reason) => Self::Custom(anyhow::anyhow!("Reverted: {reason}")),
             CallError::Internal(e) => Self::Internal(e),
+            CallError::Custom(e) => Self::Custom(e),
         }
     }
 }

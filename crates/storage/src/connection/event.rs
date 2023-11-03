@@ -32,10 +32,14 @@ pub struct EmittedEvent {
     pub transaction_hash: TransactionHash,
 }
 
-#[derive(Copy, Clone, Debug, thiserror::Error, PartialEq, Eq)]
+#[derive(Debug, thiserror::Error)]
 pub enum EventFilterError {
+    #[error(transparent)]
+    Internal(#[from] anyhow::Error),
     #[error("requested page size is too big, supported maximum is {0}")]
     PageSizeTooBig(usize),
+    #[error("requested page size is too small, supported minimum is 1")]
+    PageSizeTooSmall,
     #[error("Event query too broad. Reduce the block range or add more keys.")]
     TooManyMatches,
 }
@@ -128,15 +132,13 @@ pub(super) fn event_count_for_block(tx: &Transaction<'_>, block: BlockId) -> any
 pub(super) fn get_events<K: KeyFilter>(
     tx: &Transaction<'_>,
     filter: &EventFilter<K>,
-) -> anyhow::Result<PageOfEvents> {
+) -> Result<PageOfEvents, EventFilterError> {
     if filter.page_size > PAGE_SIZE_LIMIT {
-        // TODO Custom
-        return Err(EventFilterError::PageSizeTooBig(PAGE_SIZE_LIMIT).into());
+        return Err(EventFilterError::PageSizeTooBig(PAGE_SIZE_LIMIT));
     }
 
     if filter.page_size < 1 {
-        // TODO Custom
-        anyhow::bail!("Invalid page size");
+        return Err(EventFilterError::PageSizeTooSmall);
     }
 
     let strategy = select_query_strategy(
@@ -198,10 +200,18 @@ pub(super) fn get_events<K: KeyFilter>(
             // This means that there are more pages.
             is_last_page = false;
         } else {
-            let block_number = row.get_block_number("block_number")?;
-            let block_hash = row.get_block_hash("block_hash")?;
-            let transaction_hash = row.get_transaction_hash("transaction_hash")?;
-            let from_address = row.get_contract_address("from_address")?;
+            let block_number = row
+                .get_block_number("block_number")
+                .map_err(anyhow::Error::from)?;
+            let block_hash = row
+                .get_block_hash("block_hash")
+                .map_err(anyhow::Error::from)?;
+            let transaction_hash = row
+                .get_transaction_hash("transaction_hash")
+                .map_err(anyhow::Error::from)?;
+            let from_address = row
+                .get_contract_address("from_address")
+                .map_err(anyhow::Error::from)?;
 
             // TODO Unwrap
             let data = row.get_ref_unwrap("data").as_blob().unwrap();

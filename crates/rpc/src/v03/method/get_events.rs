@@ -164,15 +164,11 @@ pub async fn get_events(
         // We don't add context here, because [StarknetEventsTable::get_events] adds its
         // own context to the errors. This way we get meaningful error information
         // for errors related to query parameters.
-        let page = transaction.events(&filter).map_err(|e| {
-            if let Some(event_filter_error) = e.downcast_ref::<EventFilterError>() {
-                match event_filter_error {
-                    EventFilterError::PageSizeTooBig(_) => GetEventsError::PageSizeTooBig,
-                    EventFilterError::TooManyMatches => GetEventsError::Custom(e),
-                }
-            } else {
-                GetEventsError::Internal(e)
-            }
+        let page = transaction.events(&filter).map_err(|e| match e {
+            EventFilterError::PageSizeTooBig(_) => GetEventsError::PageSizeTooBig,
+            EventFilterError::TooManyMatches => GetEventsError::Custom(e.into()),
+            EventFilterError::Internal(e) => GetEventsError::Internal(e),
+            EventFilterError::PageSizeTooSmall => GetEventsError::Custom(e.into()),
         })?;
 
         let new_continuation_token = match page.is_last_page {

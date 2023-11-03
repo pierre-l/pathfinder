@@ -56,6 +56,7 @@ impl From<CallError> for SimulateTransactionError {
                 Self::Custom(anyhow::anyhow!("Transaction reverted: {}", revert_error))
             }
             Internal(e) => Self::Internal(e),
+            Custom(e) => Self::Custom(e),
         }
     }
 }

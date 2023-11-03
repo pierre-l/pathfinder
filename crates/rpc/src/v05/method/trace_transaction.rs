@@ -49,6 +49,7 @@ impl From<CallError> for TraceTransactionError {
             }
             CallError::Reverted(revert_error) => Self::ContractErrorV05 { revert_error },
             CallError::Internal(e) => Self::Internal(e),
+            CallError::Custom(e) => Self::Custom(e),
         }
     }
 }

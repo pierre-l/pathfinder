@@ -56,6 +56,7 @@ impl From<CallError> for SimulateTransactionError {
             InvalidMessageSelector => Self::Custom(anyhow::anyhow!("Invalid message selector")),
             Reverted(revert_error) => Self::ContractErrorV05 { revert_error },
             Internal(e) => Self::Internal(e),
+            Custom(e) => Self::Custom(e),
         }
     }
 }

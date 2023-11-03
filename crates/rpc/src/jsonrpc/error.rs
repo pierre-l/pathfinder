@@ -46,9 +46,8 @@ impl RpcError {
             RpcError::InvalidRequest => "Invalid Request".into(),
             RpcError::MethodNotFound { .. } => "Method not found".into(),
             RpcError::InvalidParams => "Invalid params".into(),
-            // TODO: this is not necessarily a good idea. All internal errors are returned here, even
-            // ones that we probably should not disclose.
             RpcError::InternalError(_) => "Internal error".into(),
+            // TODO Silence internal errs?
             RpcError::ApplicationError(e) => e.to_string().into(),
             RpcError::WebsocketSubscriptionClosed { .. } => "Websocket subscription closed".into(),
         }
@@ -64,6 +63,7 @@ impl RpcError {
                 "reason": reason,
             })),
             RpcError::ApplicationError(e) => e.data(),
+            // TODO Custom
             RpcError::InternalError(error) => {
                 let error = error.to_string();
                 if error.is_empty() {

@@ -34,6 +34,7 @@ impl From<pathfinder_executor::CallError> for EstimateMessageFeeError {
             ContractNotFound => Self::ContractNotFound,
             Reverted(revert_error) => Self::ContractErrorV05 { revert_error },
             Internal(e) => Self::Internal(e),
+            Custom(e) => Self::Custom(e),
         }
     }
 }
