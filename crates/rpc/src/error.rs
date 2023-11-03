@@ -79,9 +79,13 @@ pub enum ApplicationError {
     #[error("Internal error")]
     GatewayError(starknet_gateway_types::error::StarknetError),
     // TODO Remove the ()
+    /// Internal errors are errors whose details we don't want to show to the end user.
+    /// These are logged, and a simple "internal error" message is shown to the end
+    /// user.
     #[error("Internal error")]
     Internal(anyhow::Error, ()),
-    // TODO Label, public details
+    /// Custom errors are mostly treated as internal errors with the big difference that the error
+    /// details aren't logged and are eventually displayed to the end user.
     #[error("Internal error")]
     Custom(anyhow::Error),
 }
@@ -196,7 +200,6 @@ impl ApplicationError {
     }
 }
 
-// TODO Doc
 /// Generates an enum subset of [ApplicationError] along with boilerplate for mapping the variants back to [ApplicationError].
 ///
 /// This is useful for RPC methods which only emit a few of the [ApplicationError] variants as this macro can be
@@ -208,7 +211,7 @@ impl ApplicationError {
 /// generate_rpc_error_subset!(<enum_name>: <variant a>, <variant b>, <variant N>);
 /// ```
 /// Note that the variants __must__ match the [ApplicationError] variant names and that [ApplicationError::Internal]
-/// is always included by default (and therefore should not be part of macro input).
+/// and [ApplicationError::Custom] are always included by default (and therefore should not be part of macro input).
 ///
 /// An `Internal` only variant can be generated using `generate_rpc_error_subset!(<enum_name>)`.
 ///
@@ -216,10 +219,9 @@ impl ApplicationError {
 /// This macro generates the following:
 ///
 /// 1. New enum definition with `#[derive(Debug)]`
-/// 2. `impl From<NewEnum> for RpcError`
-/// 3. `impl From<anyhow::Error> for NewEnum`
-///
-/// It always includes the `Internal(anyhow::Error)` variant.
+/// 2. `Internal(anyhow::Error)` and `Custom(anyhow::Error)` variants
+/// 3. `impl From<NewEnum> for RpcError`
+/// 4. `impl From<anyhow::Error> for NewEnum`, mapping to the `Internal` variant
 ///
 /// ## Example with expansion
 /// This macro invocation:
@@ -232,7 +234,10 @@ impl ApplicationError {
 /// pub enum MyError {
 ///     BlockNotFound,
 ///     NoBlocks,
+///     /// See [`ApplicationError::Internal`]
 ///     Internal(anyhow::Error),
+///     /// See [`ApplicationError::Custom`]
+///     Custom(anyhow::Error),
 /// }
 ///
 /// impl From<MyError> for RpcError {
@@ -282,7 +287,9 @@ macro_rules! generate_rpc_error_subset {
     (@enum_def, $enum_name:ident, $($subset:tt),*) => {
         #[derive(Debug)]
         pub enum $enum_name {
+            /// See [`ApplicationError::Internal`]
             Internal(anyhow::Error),
+            /// See [`ApplicationError::Custom`]
             Custom(anyhow::Error),
             $($subset),*
         }

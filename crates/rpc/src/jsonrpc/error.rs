@@ -63,17 +63,7 @@ impl RpcError {
                 "reason": reason,
             })),
             RpcError::ApplicationError(e) => e.data(),
-            // TODO Custom
-            RpcError::InternalError(error) => {
-                let error = error.to_string();
-                if error.is_empty() {
-                    None
-                } else {
-                    Some(json!({
-                        "error": error.to_string(),
-                    }))
-                }
-            }
+            RpcError::InternalError(_) => None,
             RpcError::ParseError => None,
             RpcError::InvalidRequest => None,
             RpcError::MethodNotFound => None,
