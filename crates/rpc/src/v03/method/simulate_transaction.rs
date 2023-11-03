@@ -41,7 +41,7 @@ impl From<SimulateTransactionError> for crate::error::ApplicationError {
             SimulateTransactionError::ContractNotFound => Self::ContractNotFound,
             SimulateTransactionError::ContractError => Self::ContractError,
             SimulateTransactionError::Custom(error) => Self::Custom(error),
-            SimulateTransactionError::Internal(internal) => Self::Internal(internal, ()),
+            SimulateTransactionError::Internal(internal) => Self::Internal(internal),
         }
     }
 }

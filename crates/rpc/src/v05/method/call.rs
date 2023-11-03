@@ -50,7 +50,7 @@ impl From<CallError> for ApplicationError {
             CallError::ContractErrorV05 { revert_error } => {
                 ApplicationError::ContractErrorV05 { revert_error }
             }
-            CallError::Internal(e) => ApplicationError::Internal(e, ()),
+            CallError::Internal(e) => ApplicationError::Internal(e),
             CallError::Custom(e) => ApplicationError::Custom(e),
         }
     }

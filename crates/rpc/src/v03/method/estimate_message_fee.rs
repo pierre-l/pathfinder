@@ -31,7 +31,7 @@ impl From<EstimateMessageFeeError> for crate::error::ApplicationError {
             EstimateMessageFeeError::BlockNotFound => Self::BlockNotFound,
             EstimateMessageFeeError::ContractNotFound => Self::ContractNotFound,
             EstimateMessageFeeError::ContractError => Self::ContractError,
-            EstimateMessageFeeError::Internal(internal) => Self::Internal(internal, ()),
+            EstimateMessageFeeError::Internal(internal) => Self::Internal(internal),
             EstimateMessageFeeError::Custom(error) => Self::Custom(error),
         }
     }

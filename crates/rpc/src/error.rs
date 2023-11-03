@@ -78,12 +78,11 @@ pub enum ApplicationError {
     ProofLimitExceeded { limit: u32, requested: u32 },
     #[error("Internal error")]
     GatewayError(starknet_gateway_types::error::StarknetError),
-    // TODO Remove the ()
     /// Internal errors are errors whose details we don't want to show to the end user.
     /// These are logged, and a simple "internal error" message is shown to the end
     /// user.
     #[error("Internal error")]
-    Internal(anyhow::Error, ()),
+    Internal(anyhow::Error),
     /// Custom errors are mostly treated as internal errors with the big difference that the error
     /// details aren't logged and are eventually displayed to the end user.
     #[error("Internal error")]
@@ -129,7 +128,7 @@ impl ApplicationError {
             ApplicationError::ProofLimitExceeded { .. } => 10000,
             // https://www.jsonrpc.org/specification#error_object
             ApplicationError::GatewayError(_)
-            | ApplicationError::Internal(_, ())
+            | ApplicationError::Internal(_)
             | ApplicationError::Custom(_) => -32603,
         }
     }
@@ -168,7 +167,7 @@ impl ApplicationError {
             ApplicationError::GatewayError(error) => Some(json!({
                 "error": error,
             })),
-            ApplicationError::Internal(_, ()) => None,
+            ApplicationError::Internal(_) => None,
             ApplicationError::Custom(error) => {
                 let error = error.to_string();
                 if error.is_empty() {
@@ -327,8 +326,7 @@ macro_rules! generate_rpc_error_subset {
     (@parse, $var:ident, $enum_name:ident, {$($arms:tt)*}, $(,)*) => {
         match $var {
             $($arms)*
-            // TODO
-            $enum_name::Internal(internal) => Self::Internal(internal, ()),
+            $enum_name::Internal(internal) => Self::Internal(internal),
             $enum_name::Custom(error) => Self::Custom(error),
         }
     };

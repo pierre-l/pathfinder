@@ -59,7 +59,7 @@ impl From<EstimateFeeError> for ApplicationError {
             EstimateFeeError::ContractErrorV05 { revert_error } => {
                 ApplicationError::ContractErrorV05 { revert_error }
             }
-            EstimateFeeError::Internal(e) => ApplicationError::Internal(e, ()),
+            EstimateFeeError::Internal(e) => ApplicationError::Internal(e),
             EstimateFeeError::Custom(e) => ApplicationError::Custom(e),
         }
     }

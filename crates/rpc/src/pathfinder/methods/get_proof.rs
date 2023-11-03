@@ -36,7 +36,7 @@ impl From<GetProofError> for crate::error::ApplicationError {
                 Self::ProofLimitExceeded { limit, requested }
             }
             GetProofError::BlockNotFound => Self::BlockNotFound,
-            GetProofError::Internal(internal) => Self::Internal(internal, ()),
+            GetProofError::Internal(internal) => Self::Internal(internal),
         }
     }
 }

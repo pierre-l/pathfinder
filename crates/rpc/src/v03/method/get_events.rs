@@ -28,7 +28,7 @@ impl From<anyhow::Error> for GetEventsError {
 impl From<GetEventsError> for crate::error::ApplicationError {
     fn from(e: GetEventsError) -> Self {
         match e {
-            GetEventsError::Internal(internal) => Self::Internal(internal, ()),
+            GetEventsError::Internal(internal) => Self::Internal(internal),
             GetEventsError::Custom(internal) => Self::Custom(internal),
             GetEventsError::BlockNotFound => Self::BlockNotFound,
             GetEventsError::PageSizeTooBig => Self::PageSizeTooBig,

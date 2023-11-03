@@ -37,7 +37,7 @@ impl From<anyhow::Error> for SimulateTransactionError {
 impl From<SimulateTransactionError> for crate::error::ApplicationError {
     fn from(e: SimulateTransactionError) -> Self {
         match e {
-            SimulateTransactionError::Internal(internal) => Self::Internal(internal, ()),
+            SimulateTransactionError::Internal(internal) => Self::Internal(internal),
             SimulateTransactionError::Custom(internal) => Self::Custom(internal),
             SimulateTransactionError::BlockNotFound => Self::BlockNotFound,
             SimulateTransactionError::ContractNotFound => Self::ContractNotFound,

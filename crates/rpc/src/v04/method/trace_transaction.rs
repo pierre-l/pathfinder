@@ -66,7 +66,7 @@ impl From<TraceTransactionError> for ApplicationError {
             TraceTransactionError::NoTraceAvailable(status) => {
                 ApplicationError::NoTraceAvailable(status)
             }
-            TraceTransactionError::Internal(e) => ApplicationError::Internal(e, ()),
+            TraceTransactionError::Internal(e) => ApplicationError::Internal(e),
             TraceTransactionError::Custom(e) => ApplicationError::Custom(e),
         }
     }

@@ -71,7 +71,7 @@ impl IntoResponse for RpcResponse<'_> {
         // Log internal errors.
         match &self.output {
             Err(RpcError::InternalError(e))
-            | Err(RpcError::ApplicationError(ApplicationError::Internal(e, ()))) => {
+            | Err(RpcError::ApplicationError(ApplicationError::Internal(e))) => {
                 tracing::error!(backtrace = ?e, "Internal error");
             }
             _ => {}

@@ -20,7 +20,7 @@ impl From<CallError> for crate::error::ApplicationError {
             CallError::BlockNotFound => Self::BlockNotFound,
             CallError::ContractNotFound => Self::ContractNotFound,
             CallError::ContractError => Self::ContractError,
-            CallError::Internal(internal) => Self::Internal(internal, ()),
+            CallError::Internal(internal) => Self::Internal(internal),
             CallError::Custom(error) => Self::Custom(error),
         }
     }

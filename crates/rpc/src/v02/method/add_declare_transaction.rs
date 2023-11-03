@@ -21,7 +21,7 @@ impl From<AddDeclareTransactionError> for crate::error::ApplicationError {
         match value {
             AddDeclareTransactionError::InvalidContractClass => Self::InvalidContractClass,
             AddDeclareTransactionError::GatewayError(x) => Self::GatewayError(x),
-            AddDeclareTransactionError::Internal(x) => Self::Internal(x, ()),
+            AddDeclareTransactionError::Internal(x) => Self::Internal(x),
             AddDeclareTransactionError::Custom(x) => Self::Custom(x),
         }
     }

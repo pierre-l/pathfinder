@@ -40,7 +40,7 @@ impl From<anyhow::Error> for TraceBlockTransactionsError {
 impl From<TraceBlockTransactionsError> for crate::error::ApplicationError {
     fn from(value: TraceBlockTransactionsError) -> Self {
         match value {
-            TraceBlockTransactionsError::Internal(e) => Self::Internal(e, ()),
+            TraceBlockTransactionsError::Internal(e) => Self::Internal(e),
             TraceBlockTransactionsError::BlockNotFound => Self::BlockNotFound,
             TraceBlockTransactionsError::ContractErrorV05 { revert_error } => {
                 Self::ContractErrorV05 { revert_error }

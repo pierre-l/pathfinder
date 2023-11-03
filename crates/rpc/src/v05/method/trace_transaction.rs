@@ -82,7 +82,7 @@ impl From<TraceTransactionError> for ApplicationError {
             TraceTransactionError::ContractErrorV05 { revert_error } => {
                 ApplicationError::ContractErrorV05 { revert_error }
             }
-            TraceTransactionError::Internal(e) => ApplicationError::Internal(e, ()),
+            TraceTransactionError::Internal(e) => ApplicationError::Internal(e),
             TraceTransactionError::Custom(e) => ApplicationError::Custom(e),
         }
     }

@@ -39,7 +39,7 @@ impl From<AddDeployAccountTransactionError> for crate::error::ApplicationError {
         match value {
             AddDeployAccountTransactionError::ClassHashNotFound => Self::ClassHashNotFound,
             AddDeployAccountTransactionError::GatewayError(x) => Self::GatewayError(x),
-            AddDeployAccountTransactionError::Internal(x) => Self::Internal(x, ()),
+            AddDeployAccountTransactionError::Internal(x) => Self::Internal(x),
         }
     }
 }
