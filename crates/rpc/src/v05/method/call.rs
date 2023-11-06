@@ -528,7 +528,7 @@ mod tests {
                 block_id: BLOCK_5,
             };
             let error = call(context, input).await;
-            assert_matches::assert_matches!(error, Err(CallError::Internal(_)));
+            assert_matches::assert_matches!(error, Err(CallError::Custom(_)));
         }
 
         #[tokio::test]

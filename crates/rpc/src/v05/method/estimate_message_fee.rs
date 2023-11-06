@@ -379,7 +379,7 @@ mod tests {
         let rpc = setup(Setup::Full).await.expect("RPC context");
         assert_matches::assert_matches!(
             estimate_message_fee(rpc, input).await,
-            Err(EstimateMessageFeeError::Internal(_))
+            Err(EstimateMessageFeeError::Custom(_))
         );
     }
 }

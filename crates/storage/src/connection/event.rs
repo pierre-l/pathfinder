@@ -1078,7 +1078,7 @@ mod tests {
         };
         let result = get_events(&tx, &filter);
         assert!(result.is_err());
-        assert_eq!(result.unwrap_err().to_string(), "Invalid page size");
+        assert_matches!(result.unwrap_err(), EventFilterError::PageSizeTooSmall);
 
         let filter = EventFilter {
             from_block: None,
@@ -1090,8 +1090,8 @@ mod tests {
         };
         let result = get_events(&tx, &filter);
         assert!(result.is_err());
-        assert_eq!(
-            result.unwrap_err().downcast::<EventFilterError>().unwrap(),
+        assert_matches!(
+            result.unwrap_err(),
             EventFilterError::PageSizeTooBig(PAGE_SIZE_LIMIT)
         );
     }
