@@ -213,33 +213,35 @@ pub(super) fn get_events<K: KeyFilter>(
                 .get_contract_address("from_address")
                 .map_err(anyhow::Error::from)?;
 
-            // TODO Unwrap
-            let data = row.get_ref_unwrap("data").as_blob().unwrap();
+            let data = row
+                .get_ref_unwrap("data")
+                .as_blob()
+                .map_err(anyhow::Error::from)?;
             let data: Vec<_> = data
                 .chunks_exact(32)
                 .map(|data| {
-                    // TODO Unwrap
-                    let data = Felt::from_be_slice(data).unwrap();
-                    EventData(data)
+                    let data = Felt::from_be_slice(data).map_err(anyhow::Error::from)?;
+                    Ok(EventData(data))
                 })
-                .collect();
+                .collect::<Result<_, EventFilterError>>()?;
 
-            // TODO Unwrap
-            let keys = row.get_ref_unwrap("keys").as_str().unwrap();
+            let keys = row
+                .get_ref_unwrap("keys")
+                .as_str()
+                .map_err(anyhow::Error::from)?;
 
             // no need to allocate a vec for this in loop
             let mut temp = [0u8; 32];
 
-            // TODO Unwraps
             let keys: Vec<_> = keys
                 .split(' ')
                 .map(|key| {
-                    let used =
-                        base64::decode_config_slice(key, base64::STANDARD, &mut temp).unwrap();
-                    let key = Felt::from_be_slice(&temp[..used]).unwrap();
-                    EventKey(key)
+                    let used = base64::decode_config_slice(key, base64::STANDARD, &mut temp)
+                        .map_err(anyhow::Error::from)?;
+                    let key = Felt::from_be_slice(&temp[..used]).map_err(anyhow::Error::from)?;
+                    Ok(EventKey(key))
                 })
-                .collect();
+                .collect::<Result<_, EventFilterError>>()?;
 
             let event = EmittedEvent {
                 data,
