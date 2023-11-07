@@ -18,18 +18,19 @@ async fn main() {
     let mut root = serde_json::from_str::<Value>(&spec).unwrap();
 
     {
-        let mut schemas = root
+        let schemas = root
             .pointer_mut("/components/schemas")
             .unwrap()
             .as_object_mut()
             .unwrap();
 
-        let mut flattened_schemas = HashMap::new();
+        println!("Schemas: {}", schemas.len());
+
+        let mut flattened_schemas = serde_json::Map::new();
 
         // TODO ugly
         let mut schemas_left = 999;
         while schemas_left > 0 {
-            dbg!(&schemas_left);
             // TODO Collect the schemas that are flat
             // TODO Ugly
             let mut flat = vec![];
@@ -38,6 +39,7 @@ async fn main() {
                     .into_iter()
                     .any(|(key, value)| key == "$ref" && value.as_str().is_some())
                 {
+                    println!("Flat: {}", name);
                     flat.push(name.clone());
                 }
             }
@@ -53,12 +55,25 @@ async fn main() {
                     .into_iter()
                     .for_each(|(key, mut value)| {
                         if key == "$ref" {
+                            println!("Ref found: {}", key);
                             let reference = value.as_str().unwrap();
-                            if let Some(definition) = flattened_schemas.get(reference) {
+
+                            if !reference.starts_with("#/components/schemas/") {
+                                panic!()
+                            }
+
+                            let name = reference
+                                .split("#/components/schemas/")
+                                .collect::<Vec<&str>>()[1];
+
+                            // TODO REMOVE
+                            println!("Name {}", name);
+
+                            if let Some(definition) = flattened_schemas.get(name) {
                                 let mut flattened_reference = serde_json::Map::new();
-                                flattened_reference
-                                    .insert(reference.to_string(), definition.clone());
+                                flattened_reference.insert(name.to_string(), definition.clone());
                                 *value = Value::Object(flattened_reference);
+                                // TODO dbg!(&value);
                             }
                         }
                     })
@@ -68,21 +83,9 @@ async fn main() {
                 panic!("No replacement during the last pass.")
             }
             schemas_left = schemas.len();
+            dbg!(&schemas_left);
         }
-        /* TODO
-        for (name, definition) in schemas {
-            object_fields(definition)
-                .into_iter()
-                .for_each(|(ref_, value)| {
-                    // TODO Extract all components
-                    // TODO Flatten all the refs.
-                });
-
-            // TODO
-            if let None = replace_refs() {
-                flattened_schemas.insert(name.clone(), definition.clone());
-        }
-         */
+        *schemas = flattened_schemas
     }
 
     std::fs::write(
@@ -99,14 +102,17 @@ fn object_fields(value: &mut Value) -> Vec<(&str, &mut Value)> {
         Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {
             vec![]
         }
-        Value::Array(array) => array
-            .iter_mut()
-            .map(|value| object_fields(value))
-            .flatten()
-            .collect(),
+        Value::Array(array) => array.iter_mut().map(object_fields).flatten().collect(),
         Value::Object(obj) => obj
             .iter_mut()
-            .map(|(key, value)| (key.as_str(), value))
+            .map(|(key, value)| match value {
+                Value::Object(obj) => object_fields(value),
+                Value::Array(array) => array.iter_mut().map(object_fields).flatten().collect(),
+                Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {
+                    vec![(key.as_str(), value)]
+                }
+            })
+            .flatten()
             .collect(),
     }
 }
