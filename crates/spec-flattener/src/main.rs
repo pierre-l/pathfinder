@@ -18,12 +18,7 @@ async fn main() {
 
     let mut flattened_schemas = serde_json::Map::new();
 
-    flatten_section(
-        &mut root,
-        &mut flattened_schemas,
-        "#/components/schemas/",
-        "/components/schemas",
-    );
+    flatten_section(&mut root, &mut flattened_schemas, "/components/schemas");
 
     std::fs::write(
         format!("reference/{}", file),
@@ -32,13 +27,9 @@ async fn main() {
     .unwrap();
 }
 
-fn flatten_section(
-    root: &mut Value,
-    flattened_schemas: &mut Map<String, Value>,
-    reference_prefix: &str,
-    pointer: &str,
-) {
+fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>, pointer: &str) {
     let schemas = root.pointer_mut(pointer).unwrap().as_object_mut().unwrap();
+    let reference_prefix = "#".to_string() + pointer + "/";
 
     println!("Schemas: {}", schemas.len());
 
@@ -72,11 +63,11 @@ fn flatten_section(
                 .for_each(|(key, value)| {
                     if key == "$ref" {
                         let reference = value.as_str().unwrap();
-                        if !reference.starts_with(reference_prefix) {
+                        if !reference.starts_with(&reference_prefix) {
                             panic!()
                         }
 
-                        let name = reference.split(reference_prefix).collect::<Vec<&str>>()[1];
+                        let name = reference.split(&reference_prefix).collect::<Vec<&str>>()[1];
 
                         // TODO REMOVE
                         println!("Name {}", name);
