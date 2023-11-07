@@ -16,6 +16,7 @@ members = [
     "crates/retry",
     "crates/rpc",
     "crates/serde",
+    "crates/spec-flattener",
     "crates/stark_curve",
     "crates/stark_hash",
     "crates/stark_poseidon",
