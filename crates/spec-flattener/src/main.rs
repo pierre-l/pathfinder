@@ -4,22 +4,35 @@ use serde_json::{Map, Value};
 async fn main() {
     let version = "v0.5.0";
     let file = "starknet_api_openrpc.json";
-    let spec = reqwest::get(format!(
+    let url = format!(
         "https://raw.githubusercontent.com/starkware-libs/starknet-specs/{}/api/{}",
         version, file
-    ))
-    .await
-    .unwrap()
-    .text()
-    .await
-    .unwrap();
+    );
+    println!("Fetching {}", url);
+    let spec = reqwest::get(url).await.unwrap().text().await.unwrap();
 
     let mut root = serde_json::from_str::<Value>(&spec).unwrap();
 
     let mut flattened_schemas = serde_json::Map::new();
 
-    // TODO flatten_section(&mut root, &mut flattened_schemas, "/components/errors");
+    flatten_section(&mut root, &mut flattened_schemas, "/components/errors");
     flatten_section(&mut root, &mut flattened_schemas, "/components/schemas");
+    // TODO Find a better solution
+    {
+        // Just make the methods an object.
+        let mut object = serde_json::Map::new();
+        root.pointer("/methods")
+            .unwrap()
+            .as_array()
+            .unwrap()
+            .iter()
+            .enumerate()
+            .for_each(|(i, value)| {
+                object.insert(i.to_string(), value.clone());
+            });
+        *root.pointer_mut("/methods").unwrap() = Value::Object(object);
+    }
+    flatten_section(&mut root, &mut flattened_schemas, "/methods");
 
     std::fs::write(
         format!("reference/{}", file),
@@ -29,7 +42,7 @@ async fn main() {
 }
 
 fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>, pointer: &str) {
-    let schemas = root.pointer_mut(pointer).unwrap().as_object_mut().unwrap();
+    let mut schemas = root.pointer(pointer).unwrap().as_object().unwrap().clone();
     let reference_prefix = "#".to_string() + pointer + "/";
 
     println!("Schemas: {}", schemas.len());
@@ -37,7 +50,7 @@ fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>,
     // TODO ugly
     let mut schemas_left = 999;
     while schemas_left > 0 {
-        // TODO Collect the schemas that are flat
+        // ollect the schemas that are flat
         // TODO Ugly
         let mut flat = vec![];
         for (name, definition) in schemas.iter_mut() {
@@ -45,7 +58,6 @@ fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>,
                 .into_iter()
                 .any(|(key, value)| key == "$ref" && value.as_str().is_some())
             {
-                println!("Flat: {}", name);
                 flat.push(name.clone());
             }
         }
@@ -59,21 +71,16 @@ fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>,
             }
         }
 
-        // TODO Flatten all the refs.
-        for (name, definition) in schemas.iter_mut() {
+        // Perform a flattening pass
+        for definition in schemas.values_mut() {
             object_fields(definition)
                 .into_iter()
                 .for_each(|(key, value)| {
                     if key == "$ref" {
                         let reference = value.as_str().unwrap();
-                        if !reference.starts_with(&reference_prefix) {
+                        if !reference.starts_with("#") {
                             panic!()
                         }
-
-                        let name = reference.split(&reference_prefix).collect::<Vec<&str>>()[1];
-
-                        // TODO REMOVE
-                        println!("Name {}", name);
 
                         if let Some(definition) = flattened_schemas.get(reference) {
                             let mut flattened_reference = serde_json::Map::new();
@@ -83,7 +90,6 @@ fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>,
                                 panic!("A schema was replaced")
                             }
                             *value = Value::Object(flattened_reference);
-                            // TODO dbg!(&value);
                         }
                     }
                 })
@@ -93,7 +99,6 @@ fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>,
             panic!("No replacement during the last pass.")
         }
         schemas_left = schemas.len();
-        dbg!(&schemas_left);
     }
 }
 
