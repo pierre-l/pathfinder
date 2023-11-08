@@ -18,6 +18,7 @@ async fn main() {
 
     let mut flattened_schemas = serde_json::Map::new();
 
+    // TODO flatten_section(&mut root, &mut flattened_schemas, "/components/errors");
     flatten_section(&mut root, &mut flattened_schemas, "/components/schemas");
 
     std::fs::write(
@@ -51,7 +52,9 @@ fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>,
 
         for flat in flat {
             let definition = schemas.remove(flat.as_str()).unwrap();
-            if let Some(_) = flattened_schemas.insert(flat, definition) {
+            if let Some(_) =
+                flattened_schemas.insert(reference_prefix.to_string() + &flat, definition)
+            {
                 panic!("A schema was replaced")
             }
         }
@@ -72,7 +75,7 @@ fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>,
                         // TODO REMOVE
                         println!("Name {}", name);
 
-                        if let Some(definition) = flattened_schemas.get(name) {
+                        if let Some(definition) = flattened_schemas.get(reference) {
                             let mut flattened_reference = serde_json::Map::new();
                             if let Some(_) = flattened_reference
                                 .insert(reference.to_string(), definition.clone())
