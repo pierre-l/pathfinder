@@ -17,7 +17,7 @@ async fn main() {
 
     flatten_section(&mut root, &mut flattened_schemas, "/components/errors");
     flatten_section(&mut root, &mut flattened_schemas, "/components/schemas");
-    // TODO Find a better solution
+    // TODO Find a better solution?
     {
         // Just make the methods an object.
         let mut object = serde_json::Map::new();
@@ -28,7 +28,10 @@ async fn main() {
             .iter()
             .enumerate()
             .for_each(|(i, value)| {
-                object.insert(i.to_string(), value.clone());
+                object.insert(
+                    value.get("name").unwrap().as_str().unwrap().to_string(),
+                    value.clone(),
+                );
             });
         *root.pointer_mut("/methods").unwrap() = Value::Object(object);
     }
