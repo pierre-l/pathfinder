@@ -42,11 +42,25 @@ async fn main() {
         serde_json::Map::from_iter(raw)
     };
 
-    std::fs::write(
-        format!("output/{}", file),
-        serde_json::to_string_pretty(&sorted).unwrap(),
-    )
-    .unwrap();
+    // Write the method files
+    sorted
+        .iter()
+        .filter_map(|(pointer, schema)| {
+            if pointer.starts_with("#/methods") {
+                let name = pointer.split('/').last().unwrap();
+                Some((name, schema))
+            } else {
+                None
+            }
+        })
+        .for_each(|(name, schema)| write_to_file(schema, "output/methods/".to_string() + name));
+
+    // Write the whole file
+    write_to_file(&Value::Object(sorted), format!("output/{}", file));
+}
+
+fn write_to_file(sorted: &Value, path: String) {
+    std::fs::write(path, serde_json::to_string_pretty(&sorted).unwrap()).unwrap();
 }
 
 fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>, pointer: &str) {
@@ -58,7 +72,7 @@ fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>,
     // TODO ugly
     let mut schemas_left = 999;
     while schemas_left > 0 {
-        // ollect the schemas that are flat
+        // Collect the schemas that are flat
         // TODO Ugly
         let mut flat = vec![];
         for (name, definition) in schemas.iter_mut() {
