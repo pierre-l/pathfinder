@@ -2,7 +2,7 @@ use serde_json::{Map, Value};
 
 #[tokio::main]
 async fn main() {
-    let version = "v0.5.0";
+    let version = "v0.4.0";
     let file = "starknet_api_openrpc.json";
     let url = format!(
         "https://raw.githubusercontent.com/starkware-libs/starknet-specs/{}/api/{}",
