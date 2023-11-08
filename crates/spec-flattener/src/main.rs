@@ -26,8 +26,7 @@ async fn main() {
             .as_array()
             .unwrap()
             .iter()
-            .enumerate()
-            .for_each(|(i, value)| {
+            .for_each(|value| {
                 object.insert(
                     value.get("name").unwrap().as_str().unwrap().to_string(),
                     value.clone(),
@@ -44,7 +43,7 @@ async fn main() {
     };
 
     std::fs::write(
-        format!("reference/{}", file),
+        format!("output/{}", file),
         serde_json::to_string_pretty(&sorted).unwrap(),
     )
     .unwrap();
