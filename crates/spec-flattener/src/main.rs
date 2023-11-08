@@ -37,9 +37,15 @@ async fn main() {
     }
     flatten_section(&mut root, &mut flattened_schemas, "/methods");
 
+    let sorted = {
+        let mut raw: Vec<(String, Value)> = flattened_schemas.into_iter().collect();
+        raw.sort_by(|(name_a, _), (name_b, _)| name_a.cmp(name_b));
+        serde_json::Map::from_iter(raw)
+    };
+
     std::fs::write(
         format!("reference/{}", file),
-        serde_json::to_string_pretty(&flattened_schemas).unwrap(),
+        serde_json::to_string_pretty(&sorted).unwrap(),
     )
     .unwrap();
 }
