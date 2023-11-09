@@ -1,11 +1,9 @@
 {
   "errors": [
     {
-      "$ref": {
-        "#/components/errors/TXN_HASH_NOT_FOUND": {
-          "code": 29,
-          "message": "Transaction hash not found"
-        }
+      "#/components/errors/TXN_HASH_NOT_FOUND": {
+        "code": 29,
+        "message": "Transaction hash not found"
       }
     }
   ],
@@ -16,19 +14,15 @@
       "name": "transaction_hash",
       "required": true,
       "schema": {
-        "$ref": {
-          "#/components/schemas/TXN_HASH": {
-            "$ref": {
-              "#/components/schemas/FELT": {
-                "description": "A field element. represented by at most 63 hex digits",
-                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                "title": "Field element",
-                "type": "string"
-              }
-            },
-            "description": "The transaction hash, as assigned in StarkNet",
-            "title": "Transaction hash"
-          }
+        "#/components/schemas/TXN_HASH": {
+          "#/components/schemas/FELT": {
+            "description": "A field element. represented by at most 63 hex digits",
+            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+            "title": "Field element",
+            "type": "string"
+          },
+          "description": "The transaction hash, as assigned in StarkNet",
+          "title": "Transaction hash"
         },
         "title": "Transaction hash"
       },
@@ -40,32 +34,28 @@
     "schema": {
       "properties": {
         "execution_status": {
-          "$ref": {
-            "#/components/schemas/TXN_EXECUTION_STATUS": {
-              "description": "The execution status of the transaction",
-              "enum": [
-                "SUCCEEDED",
-                "REVERTED"
-              ],
-              "title": "Execution status",
-              "type": "string"
-            }
+          "#/components/schemas/TXN_EXECUTION_STATUS": {
+            "description": "The execution status of the transaction",
+            "enum": [
+              "SUCCEEDED",
+              "REVERTED"
+            ],
+            "title": "Execution status",
+            "type": "string"
           },
           "title": "execution status"
         },
         "finality_status": {
-          "$ref": {
-            "#/components/schemas/TXN_STATUS": {
-              "description": "The finality status of the transaction, including the case the txn is still in the mempool or failed validation during the block construction phase",
-              "enum": [
-                "RECEIVED",
-                "REJECTED",
-                "ACCEPTED_ON_L2",
-                "ACCEPTED_ON_L1"
-              ],
-              "title": "Transaction status",
-              "type": "string"
-            }
+          "#/components/schemas/TXN_STATUS": {
+            "description": "The finality status of the transaction, including the case the txn is still in the mempool or failed validation during the block construction phase",
+            "enum": [
+              "RECEIVED",
+              "REJECTED",
+              "ACCEPTED_ON_L2",
+              "ACCEPTED_ON_L1"
+            ],
+            "title": "Transaction status",
+            "type": "string"
           },
           "title": "finality status"
         }

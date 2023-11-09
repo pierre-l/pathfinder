@@ -42,8 +42,17 @@ async fn main() {
         serde_json::Map::from_iter(raw)
     };
 
+    // Trim: remove the intermediate layers of flattened references: the "$ref" field, the pointer object.
+    let trimmed = {
+        let mut clone = Value::Object(sorted.clone());
+        for_each_object(&mut clone, &|object| {
+            trim_ref_layer(object);
+        });
+        clone.as_object().unwrap().clone()
+    };
+
     // Write the method files
-    sorted
+    trimmed
         .iter()
         .filter_map(|(pointer, schema)| {
             if pointer.starts_with("#/methods") {
@@ -56,13 +65,30 @@ async fn main() {
         .for_each(|(name, schema)| write_to_file(schema, "output/methods/".to_string() + name));
 
     // Write the whole file
-    write_to_file(&Value::Object(sorted), format!("output/{}", file));
+    write_to_file(&Value::Object(trimmed), format!("output/{}", file));
+}
+
+fn trim_ref_layer(obj: &mut Map<String, Value>) {
+    for (key, value) in obj.clone() {
+        if key == "$ref" {
+            // References should now be an object with a single field whose key is the pointer.
+            let pointer_object = value.as_object().unwrap();
+            assert_eq!(pointer_object.keys().len(), 1);
+            let (pointer, flat) = pointer_object.iter().next().unwrap();
+            // Remove the original reference.
+            obj.remove(&key);
+            // Replace it with the pointer object
+            // TODO Trim the pointer
+            obj.insert(pointer.to_string(), flat.clone());
+        }
+    }
 }
 
 fn write_to_file(sorted: &Value, path: String) {
     std::fs::write(path, serde_json::to_string_pretty(&sorted).unwrap()).unwrap();
 }
 
+// TODO Document the transformations
 fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>, pointer: &str) {
     let mut schemas = root.pointer(pointer).unwrap().as_object().unwrap().clone();
     let reference_prefix = "#".to_string() + pointer + "/";
@@ -76,7 +102,7 @@ fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>,
         // TODO Ugly
         let mut flat = vec![];
         for (name, definition) in schemas.iter_mut() {
-            if !object_fields(definition)
+            if !leaf_fields(definition)
                 .into_iter()
                 .any(|(key, value)| key == "$ref" && value.as_str().is_some())
             {
@@ -95,7 +121,7 @@ fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>,
 
         // Perform a flattening pass
         for definition in schemas.values_mut() {
-            object_fields(definition)
+            leaf_fields(definition)
                 .into_iter()
                 .for_each(|(key, value)| {
                     if key == "$ref" {
@@ -126,22 +152,66 @@ fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>,
 
 // TODO Doc
 // TODO Return an iterator?
-fn object_fields(value: &mut Value) -> Vec<(&str, &mut Value)> {
+fn leaf_fields(value: &mut Value) -> Vec<(&str, &mut Value)> {
     match value {
         Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {
             vec![]
         }
-        Value::Array(array) => array.iter_mut().map(object_fields).flatten().collect(),
+        Value::Array(array) => array.iter_mut().map(leaf_fields).flatten().collect(),
         Value::Object(obj) => obj
             .iter_mut()
             .map(|(key, value)| match value {
-                Value::Object(_) => object_fields(value),
-                Value::Array(array) => array.iter_mut().map(object_fields).flatten().collect(),
+                Value::Object(_) => leaf_fields(value),
+                Value::Array(array) => array.iter_mut().map(leaf_fields).flatten().collect(),
                 Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {
+                    // TODO This whole match could probably be merge with the outer match
                     vec![(key.as_str(), value)]
                 }
             })
             .flatten()
             .collect(),
+    }
+}
+
+// TODO The closure ref could be avoided?
+fn for_each_object<F>(value: &mut Value, f: &F)
+where
+    F: Fn(&mut Map<String, Value>),
+{
+    match value {
+        Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {}
+        Value::Array(array) => array.iter_mut().for_each(|v| for_each_object(v, f)),
+        Value::Object(obj) => {
+            obj.iter_mut()
+                .for_each(|(_key, value)| for_each_object(value, f));
+
+            f(obj)
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::leaf_fields;
+    use serde_json::json;
+
+    #[test]
+    fn test_leaf_fields() {
+        let mut value = json!({
+            "field1": {
+                "subfield1": {
+                    "subsubfield1": "subsubvalue1"
+                }
+            },
+            "field2": "value2"
+        });
+
+        assert_eq!(
+            leaf_fields(&mut value),
+            vec![
+                ("subsubfield1", &mut json!("subsubvalue1")),
+                ("field2", &mut json!("value2"))
+            ]
+        )
     }
 }

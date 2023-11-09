@@ -1,11 +1,9 @@
 {
   "errors": [
     {
-      "$ref": {
-        "#/components/errors/BLOCK_NOT_FOUND": {
-          "code": 24,
-          "message": "Block not found"
-        }
+      "#/components/errors/BLOCK_NOT_FOUND": {
+        "code": 24,
+        "message": "Block not found"
       }
     }
   ],
@@ -16,72 +14,62 @@
       "name": "block_id",
       "required": true,
       "schema": {
-        "$ref": {
-          "#/components/schemas/BLOCK_ID": {
-            "description": "Block hash, number or tag",
-            "oneOf": [
-              {
-                "properties": {
-                  "block_hash": {
-                    "$ref": {
-                      "#/components/schemas/BLOCK_HASH": {
-                        "$ref": {
-                          "#/components/schemas/FELT": {
-                            "description": "A field element. represented by at most 63 hex digits",
-                            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                            "title": "Field element",
-                            "type": "string"
-                          }
-                        },
-                        "title": "Block hash"
-                      }
+        "#/components/schemas/BLOCK_ID": {
+          "description": "Block hash, number or tag",
+          "oneOf": [
+            {
+              "properties": {
+                "block_hash": {
+                  "#/components/schemas/BLOCK_HASH": {
+                    "#/components/schemas/FELT": {
+                      "description": "A field element. represented by at most 63 hex digits",
+                      "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                      "title": "Field element",
+                      "type": "string"
                     },
                     "title": "Block hash"
-                  }
-                },
-                "required": [
-                  "block_hash"
-                ],
-                "title": "Block hash",
-                "type": "object"
+                  },
+                  "title": "Block hash"
+                }
               },
-              {
-                "properties": {
-                  "block_number": {
-                    "$ref": {
-                      "#/components/schemas/BLOCK_NUMBER": {
-                        "description": "The block's number (its height)",
-                        "minimum": 0,
-                        "title": "Block number",
-                        "type": "integer"
-                      }
-                    },
-                    "title": "Block number"
-                  }
-                },
-                "required": [
-                  "block_number"
-                ],
-                "title": "Block number",
-                "type": "object"
+              "required": [
+                "block_hash"
+              ],
+              "title": "Block hash",
+              "type": "object"
+            },
+            {
+              "properties": {
+                "block_number": {
+                  "#/components/schemas/BLOCK_NUMBER": {
+                    "description": "The block's number (its height)",
+                    "minimum": 0,
+                    "title": "Block number",
+                    "type": "integer"
+                  },
+                  "title": "Block number"
+                }
               },
-              {
-                "$ref": {
-                  "#/components/schemas/BLOCK_TAG": {
-                    "description": "A tag specifying a dynamic reference to a block",
-                    "enum": [
-                      "latest",
-                      "pending"
-                    ],
-                    "title": "Block tag",
-                    "type": "string"
-                  }
-                },
-                "title": "Block tag"
-              }
-            ],
-            "title": "Block id"
-          }
+              "required": [
+                "block_number"
+              ],
+              "title": "Block number",
+              "type": "object"
+            },
+            {
+              "#/components/schemas/BLOCK_TAG": {
+                "description": "A tag specifying a dynamic reference to a block",
+                "enum": [
+                  "latest",
+                  "pending"
+                ],
+                "title": "Block tag",
+                "type": "string"
+              },
+              "title": "Block tag"
+            }
+          ],
+          "title": "Block id"
         },
         "title": "Block id"
       }
@@ -93,358 +81,304 @@
     "schema": {
       "oneOf": [
         {
-          "$ref": {
-            "#/components/schemas/BLOCK_WITH_TX_HASHES": {
-              "allOf": [
-                {
+          "#/components/schemas/BLOCK_WITH_TX_HASHES": {
+            "allOf": [
+              {
+                "properties": {
+                  "status": {
+                    "#/components/schemas/BLOCK_STATUS": {
+                      "description": "The status of the block",
+                      "enum": [
+                        "PENDING",
+                        "ACCEPTED_ON_L2",
+                        "ACCEPTED_ON_L1",
+                        "REJECTED"
+                      ],
+                      "title": "Block status",
+                      "type": "string"
+                    },
+                    "title": "Status"
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "title": "Block status",
+                "type": "object"
+              },
+              {
+                "#/components/schemas/BLOCK_HEADER": {
                   "properties": {
-                    "status": {
-                      "$ref": {
-                        "#/components/schemas/BLOCK_STATUS": {
-                          "description": "The status of the block",
-                          "enum": [
-                            "PENDING",
-                            "ACCEPTED_ON_L2",
-                            "ACCEPTED_ON_L1",
-                            "REJECTED"
-                          ],
-                          "title": "Block status",
+                    "block_hash": {
+                      "#/components/schemas/BLOCK_HASH": {
+                        "#/components/schemas/FELT": {
+                          "description": "A field element. represented by at most 63 hex digits",
+                          "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                          "title": "Field element",
                           "type": "string"
-                        }
+                        },
+                        "title": "Block hash"
                       },
-                      "title": "Status"
+                      "title": "Block hash"
+                    },
+                    "block_number": {
+                      "#/components/schemas/BLOCK_NUMBER": {
+                        "description": "The block's number (its height)",
+                        "minimum": 0,
+                        "title": "Block number",
+                        "type": "integer"
+                      },
+                      "description": "The block number (its height)",
+                      "title": "Block number"
+                    },
+                    "l1_gas_price": {
+                      "#/components/schemas/RESOURCE_PRICE": {
+                        "properties": {
+                          "price_in_strk": {
+                            "#/components/schemas/NUM_AS_HEX": {
+                              "description": "An integer number in hex format (0x...)",
+                              "pattern": "^0x[a-fA-F0-9]+$",
+                              "title": "Number as hex",
+                              "type": "string"
+                            },
+                            "description": "the price of one unit of the given resource, denominated in strk",
+                            "title": "price in strk"
+                          },
+                          "price_in_wei": {
+                            "#/components/schemas/NUM_AS_HEX": {
+                              "description": "An integer number in hex format (0x...)",
+                              "pattern": "^0x[a-fA-F0-9]+$",
+                              "title": "Number as hex",
+                              "type": "string"
+                            },
+                            "description": "the price of one unit of the given resource, denominated in wei",
+                            "title": "price in wei"
+                          }
+                        },
+                        "required": [
+                          "price_in_wei"
+                        ],
+                        "type": "object"
+                      },
+                      "descritpion": "The price of l1 gas in the block",
+                      "title": "L1 gas price"
+                    },
+                    "new_root": {
+                      "#/components/schemas/FELT": {
+                        "description": "A field element. represented by at most 63 hex digits",
+                        "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                        "title": "Field element",
+                        "type": "string"
+                      },
+                      "description": "The new global state root",
+                      "title": "New root"
+                    },
+                    "parent_hash": {
+                      "#/components/schemas/BLOCK_HASH": {
+                        "#/components/schemas/FELT": {
+                          "description": "A field element. represented by at most 63 hex digits",
+                          "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                          "title": "Field element",
+                          "type": "string"
+                        },
+                        "title": "Block hash"
+                      },
+                      "description": "The hash of this block's parent",
+                      "title": "Parent hash"
+                    },
+                    "sequencer_address": {
+                      "#/components/schemas/FELT": {
+                        "description": "A field element. represented by at most 63 hex digits",
+                        "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                        "title": "Field element",
+                        "type": "string"
+                      },
+                      "description": "The StarkNet identity of the sequencer submitting this block",
+                      "title": "Sequencer address"
+                    },
+                    "starknet_version": {
+                      "description": "Semver of the current Starknet protocol",
+                      "title": "Starknet version",
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "description": "The time in which the block was created, encoded in Unix time",
+                      "minimum": 0,
+                      "title": "Timestamp",
+                      "type": "integer"
                     }
                   },
                   "required": [
-                    "status"
+                    "block_hash",
+                    "parent_hash",
+                    "block_number",
+                    "new_root",
+                    "timestamp",
+                    "sequencer_address",
+                    "l1_gas_price",
+                    "starknet_version"
                   ],
-                  "title": "Block status",
+                  "title": "Block header",
                   "type": "object"
                 },
-                {
-                  "$ref": {
-                    "#/components/schemas/BLOCK_HEADER": {
-                      "properties": {
-                        "block_hash": {
-                          "$ref": {
-                            "#/components/schemas/BLOCK_HASH": {
-                              "$ref": {
-                                "#/components/schemas/FELT": {
-                                  "description": "A field element. represented by at most 63 hex digits",
-                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                  "title": "Field element",
-                                  "type": "string"
-                                }
-                              },
-                              "title": "Block hash"
-                            }
+                "title": "Block header"
+              },
+              {
+                "#/components/schemas/BLOCK_BODY_WITH_TX_HASHES": {
+                  "properties": {
+                    "transactions": {
+                      "description": "The hashes of the transactions included in this block",
+                      "items": {
+                        "#/components/schemas/TXN_HASH": {
+                          "#/components/schemas/FELT": {
+                            "description": "A field element. represented by at most 63 hex digits",
+                            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                            "title": "Field element",
+                            "type": "string"
                           },
-                          "title": "Block hash"
+                          "description": "The transaction hash, as assigned in StarkNet",
+                          "title": "Transaction hash"
                         },
-                        "block_number": {
-                          "$ref": {
-                            "#/components/schemas/BLOCK_NUMBER": {
-                              "description": "The block's number (its height)",
-                              "minimum": 0,
-                              "title": "Block number",
-                              "type": "integer"
-                            }
-                          },
-                          "description": "The block number (its height)",
-                          "title": "Block number"
-                        },
-                        "l1_gas_price": {
-                          "$ref": {
-                            "#/components/schemas/RESOURCE_PRICE": {
-                              "properties": {
-                                "price_in_strk": {
-                                  "$ref": {
-                                    "#/components/schemas/NUM_AS_HEX": {
-                                      "description": "An integer number in hex format (0x...)",
-                                      "pattern": "^0x[a-fA-F0-9]+$",
-                                      "title": "Number as hex",
-                                      "type": "string"
-                                    }
-                                  },
-                                  "description": "the price of one unit of the given resource, denominated in strk",
-                                  "title": "price in strk"
-                                },
-                                "price_in_wei": {
-                                  "$ref": {
-                                    "#/components/schemas/NUM_AS_HEX": {
-                                      "description": "An integer number in hex format (0x...)",
-                                      "pattern": "^0x[a-fA-F0-9]+$",
-                                      "title": "Number as hex",
-                                      "type": "string"
-                                    }
-                                  },
-                                  "description": "the price of one unit of the given resource, denominated in wei",
-                                  "title": "price in wei"
-                                }
-                              },
-                              "required": [
-                                "price_in_wei"
-                              ],
-                              "type": "object"
-                            }
-                          },
-                          "descritpion": "The price of l1 gas in the block",
-                          "title": "L1 gas price"
-                        },
-                        "new_root": {
-                          "$ref": {
-                            "#/components/schemas/FELT": {
-                              "description": "A field element. represented by at most 63 hex digits",
-                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                              "title": "Field element",
-                              "type": "string"
-                            }
-                          },
-                          "description": "The new global state root",
-                          "title": "New root"
-                        },
-                        "parent_hash": {
-                          "$ref": {
-                            "#/components/schemas/BLOCK_HASH": {
-                              "$ref": {
-                                "#/components/schemas/FELT": {
-                                  "description": "A field element. represented by at most 63 hex digits",
-                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                  "title": "Field element",
-                                  "type": "string"
-                                }
-                              },
-                              "title": "Block hash"
-                            }
-                          },
-                          "description": "The hash of this block's parent",
-                          "title": "Parent hash"
-                        },
-                        "sequencer_address": {
-                          "$ref": {
-                            "#/components/schemas/FELT": {
-                              "description": "A field element. represented by at most 63 hex digits",
-                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                              "title": "Field element",
-                              "type": "string"
-                            }
-                          },
-                          "description": "The StarkNet identity of the sequencer submitting this block",
-                          "title": "Sequencer address"
-                        },
-                        "starknet_version": {
-                          "description": "Semver of the current Starknet protocol",
-                          "title": "Starknet version",
-                          "type": "string"
-                        },
-                        "timestamp": {
-                          "description": "The time in which the block was created, encoded in Unix time",
-                          "minimum": 0,
-                          "title": "Timestamp",
-                          "type": "integer"
-                        }
+                        "description": "The hash of a single transaction"
                       },
-                      "required": [
-                        "block_hash",
-                        "parent_hash",
-                        "block_number",
-                        "new_root",
-                        "timestamp",
-                        "sequencer_address",
-                        "l1_gas_price",
-                        "starknet_version"
-                      ],
-                      "title": "Block header",
-                      "type": "object"
+                      "title": "Transaction hashes",
+                      "type": "array"
                     }
                   },
-                  "title": "Block header"
+                  "required": [
+                    "transactions"
+                  ],
+                  "title": "Block body with transaction hashes",
+                  "type": "object"
                 },
-                {
-                  "$ref": {
-                    "#/components/schemas/BLOCK_BODY_WITH_TX_HASHES": {
-                      "properties": {
-                        "transactions": {
-                          "description": "The hashes of the transactions included in this block",
-                          "items": {
-                            "$ref": {
-                              "#/components/schemas/TXN_HASH": {
-                                "$ref": {
-                                  "#/components/schemas/FELT": {
-                                    "description": "A field element. represented by at most 63 hex digits",
-                                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                    "title": "Field element",
-                                    "type": "string"
-                                  }
-                                },
-                                "description": "The transaction hash, as assigned in StarkNet",
-                                "title": "Transaction hash"
-                              }
-                            },
-                            "description": "The hash of a single transaction"
-                          },
-                          "title": "Transaction hashes",
-                          "type": "array"
-                        }
-                      },
-                      "required": [
-                        "transactions"
-                      ],
-                      "title": "Block body with transaction hashes",
-                      "type": "object"
-                    }
-                  },
-                  "title": "Block body with transaction hashes"
-                }
-              ],
-              "description": "The block object",
-              "title": "Block with transaction hashes"
-            }
+                "title": "Block body with transaction hashes"
+              }
+            ],
+            "description": "The block object",
+            "title": "Block with transaction hashes"
           },
           "title": "Block with transaction hashes"
         },
         {
-          "$ref": {
-            "#/components/schemas/PENDING_BLOCK_WITH_TX_HASHES": {
-              "additionalProperties": false,
-              "allOf": [
-                {
-                  "$ref": {
-                    "#/components/schemas/BLOCK_BODY_WITH_TX_HASHES": {
-                      "properties": {
-                        "transactions": {
-                          "description": "The hashes of the transactions included in this block",
-                          "items": {
-                            "$ref": {
-                              "#/components/schemas/TXN_HASH": {
-                                "$ref": {
-                                  "#/components/schemas/FELT": {
-                                    "description": "A field element. represented by at most 63 hex digits",
-                                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                    "title": "Field element",
-                                    "type": "string"
-                                  }
-                                },
-                                "description": "The transaction hash, as assigned in StarkNet",
-                                "title": "Transaction hash"
-                              }
-                            },
-                            "description": "The hash of a single transaction"
+          "#/components/schemas/PENDING_BLOCK_WITH_TX_HASHES": {
+            "additionalProperties": false,
+            "allOf": [
+              {
+                "#/components/schemas/BLOCK_BODY_WITH_TX_HASHES": {
+                  "properties": {
+                    "transactions": {
+                      "description": "The hashes of the transactions included in this block",
+                      "items": {
+                        "#/components/schemas/TXN_HASH": {
+                          "#/components/schemas/FELT": {
+                            "description": "A field element. represented by at most 63 hex digits",
+                            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                            "title": "Field element",
+                            "type": "string"
                           },
-                          "title": "Transaction hashes",
-                          "type": "array"
-                        }
+                          "description": "The transaction hash, as assigned in StarkNet",
+                          "title": "Transaction hash"
+                        },
+                        "description": "The hash of a single transaction"
                       },
-                      "required": [
-                        "transactions"
-                      ],
-                      "title": "Block body with transaction hashes",
-                      "type": "object"
+                      "title": "Transaction hashes",
+                      "type": "array"
                     }
                   },
-                  "title": "Block body with transactions hashes"
+                  "required": [
+                    "transactions"
+                  ],
+                  "title": "Block body with transaction hashes",
+                  "type": "object"
                 },
-                {
-                  "$ref": {
-                    "#/components/schemas/PENDING_BLOCK_HEADER": {
-                      "additionalProperties": false,
-                      "properties": {
-                        "l1_gas_price": {
-                          "$ref": {
-                            "#/components/schemas/RESOURCE_PRICE": {
-                              "properties": {
-                                "price_in_strk": {
-                                  "$ref": {
-                                    "#/components/schemas/NUM_AS_HEX": {
-                                      "description": "An integer number in hex format (0x...)",
-                                      "pattern": "^0x[a-fA-F0-9]+$",
-                                      "title": "Number as hex",
-                                      "type": "string"
-                                    }
-                                  },
-                                  "description": "the price of one unit of the given resource, denominated in strk",
-                                  "title": "price in strk"
-                                },
-                                "price_in_wei": {
-                                  "$ref": {
-                                    "#/components/schemas/NUM_AS_HEX": {
-                                      "description": "An integer number in hex format (0x...)",
-                                      "pattern": "^0x[a-fA-F0-9]+$",
-                                      "title": "Number as hex",
-                                      "type": "string"
-                                    }
-                                  },
-                                  "description": "the price of one unit of the given resource, denominated in wei",
-                                  "title": "price in wei"
-                                }
-                              },
-                              "required": [
-                                "price_in_wei"
-                              ],
-                              "type": "object"
-                            }
-                          },
-                          "descritpion": "The price of l1 gas in the block",
-                          "title": "L1 gas price"
-                        },
-                        "parent_hash": {
-                          "$ref": {
-                            "#/components/schemas/BLOCK_HASH": {
-                              "$ref": {
-                                "#/components/schemas/FELT": {
-                                  "description": "A field element. represented by at most 63 hex digits",
-                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                  "title": "Field element",
-                                  "type": "string"
-                                }
-                              },
-                              "title": "Block hash"
-                            }
-                          },
-                          "description": "The hash of this block's parent",
-                          "title": "Parent hash"
-                        },
-                        "sequencer_address": {
-                          "$ref": {
-                            "#/components/schemas/FELT": {
-                              "description": "A field element. represented by at most 63 hex digits",
-                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                              "title": "Field element",
+                "title": "Block body with transactions hashes"
+              },
+              {
+                "#/components/schemas/PENDING_BLOCK_HEADER": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "l1_gas_price": {
+                      "#/components/schemas/RESOURCE_PRICE": {
+                        "properties": {
+                          "price_in_strk": {
+                            "#/components/schemas/NUM_AS_HEX": {
+                              "description": "An integer number in hex format (0x...)",
+                              "pattern": "^0x[a-fA-F0-9]+$",
+                              "title": "Number as hex",
                               "type": "string"
-                            }
+                            },
+                            "description": "the price of one unit of the given resource, denominated in strk",
+                            "title": "price in strk"
                           },
-                          "description": "The StarkNet identity of the sequencer submitting this block",
-                          "title": "Sequencer address"
+                          "price_in_wei": {
+                            "#/components/schemas/NUM_AS_HEX": {
+                              "description": "An integer number in hex format (0x...)",
+                              "pattern": "^0x[a-fA-F0-9]+$",
+                              "title": "Number as hex",
+                              "type": "string"
+                            },
+                            "description": "the price of one unit of the given resource, denominated in wei",
+                            "title": "price in wei"
+                          }
                         },
-                        "starknet_version": {
-                          "description": "Semver of the current Starknet protocol",
-                          "title": "Starknet version",
+                        "required": [
+                          "price_in_wei"
+                        ],
+                        "type": "object"
+                      },
+                      "descritpion": "The price of l1 gas in the block",
+                      "title": "L1 gas price"
+                    },
+                    "parent_hash": {
+                      "#/components/schemas/BLOCK_HASH": {
+                        "#/components/schemas/FELT": {
+                          "description": "A field element. represented by at most 63 hex digits",
+                          "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                          "title": "Field element",
                           "type": "string"
                         },
-                        "timestamp": {
-                          "description": "The time in which the block was created, encoded in Unix time",
-                          "minimum": 0,
-                          "title": "Timestamp",
-                          "type": "integer"
-                        }
+                        "title": "Block hash"
                       },
-                      "required": [
-                        "parent_hash",
-                        "timestamp",
-                        "sequencer_address",
-                        "l1_gas_price",
-                        "starknet_version"
-                      ],
-                      "title": "Pending block header",
-                      "type": "object"
+                      "description": "The hash of this block's parent",
+                      "title": "Parent hash"
+                    },
+                    "sequencer_address": {
+                      "#/components/schemas/FELT": {
+                        "description": "A field element. represented by at most 63 hex digits",
+                        "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                        "title": "Field element",
+                        "type": "string"
+                      },
+                      "description": "The StarkNet identity of the sequencer submitting this block",
+                      "title": "Sequencer address"
+                    },
+                    "starknet_version": {
+                      "description": "Semver of the current Starknet protocol",
+                      "title": "Starknet version",
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "description": "The time in which the block was created, encoded in Unix time",
+                      "minimum": 0,
+                      "title": "Timestamp",
+                      "type": "integer"
                     }
                   },
-                  "title": "Pending block header"
-                }
-              ],
-              "description": "The dynamic block being constructed by the sequencer. Note that this object will be deprecated upon decentralization.",
-              "title": "Pending block with transaction hashes"
-            }
+                  "required": [
+                    "parent_hash",
+                    "timestamp",
+                    "sequencer_address",
+                    "l1_gas_price",
+                    "starknet_version"
+                  ],
+                  "title": "Pending block header",
+                  "type": "object"
+                },
+                "title": "Pending block header"
+              }
+            ],
+            "description": "The dynamic block being constructed by the sequencer. Note that this object will be deprecated upon decentralization.",
+            "title": "Pending block with transaction hashes"
           },
           "title": "Pending block with transaction hashes"
         }
