@@ -2,13 +2,13 @@
   "description": "Calls a function in a contract and returns the return value.  Using this call will not create a transaction; hence, will not change the state",
   "errors": [
     {
-      "#/components/errors/CONTRACT_NOT_FOUND": {
+      "CONTRACT_NOT_FOUND": {
         "code": 20,
         "message": "Contract not found"
       }
     },
     {
-      "#/components/errors/CONTRACT_ERROR": {
+      "CONTRACT_ERROR": {
         "code": 40,
         "data": {
           "description": "More data about the execution failure",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "#/components/errors/BLOCK_NOT_FOUND": {
+      "BLOCK_NOT_FOUND": {
         "code": 24,
         "message": "Block not found"
       }
@@ -38,13 +38,13 @@
       "name": "request",
       "required": true,
       "schema": {
-        "#/components/schemas/FUNCTION_CALL": {
+        "FUNCTION_CALL": {
           "description": "Function call information",
           "properties": {
             "calldata": {
               "description": "The parameters passed to the function",
               "items": {
-                "#/components/schemas/FELT": {
+                "FELT": {
                   "description": "A field element. represented by at most 63 hex digits",
                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                   "title": "Field element",
@@ -55,8 +55,8 @@
               "type": "array"
             },
             "contract_address": {
-              "#/components/schemas/ADDRESS": {
-                "#/components/schemas/FELT": {
+              "ADDRESS": {
+                "FELT": {
                   "description": "A field element. represented by at most 63 hex digits",
                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                   "title": "Field element",
@@ -67,7 +67,7 @@
               "title": "Contract address"
             },
             "entry_point_selector": {
-              "#/components/schemas/FELT": {
+              "FELT": {
                 "description": "A field element. represented by at most 63 hex digits",
                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                 "title": "Field element",
@@ -93,14 +93,14 @@
       "name": "block_id",
       "required": true,
       "schema": {
-        "#/components/schemas/BLOCK_ID": {
+        "BLOCK_ID": {
           "description": "Block hash, number or tag",
           "oneOf": [
             {
               "properties": {
                 "block_hash": {
-                  "#/components/schemas/BLOCK_HASH": {
-                    "#/components/schemas/FELT": {
+                  "BLOCK_HASH": {
+                    "FELT": {
                       "description": "A field element. represented by at most 63 hex digits",
                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                       "title": "Field element",
@@ -120,7 +120,7 @@
             {
               "properties": {
                 "block_number": {
-                  "#/components/schemas/BLOCK_NUMBER": {
+                  "BLOCK_NUMBER": {
                     "description": "The block's number (its height)",
                     "minimum": 0,
                     "title": "Block number",
@@ -136,7 +136,7 @@
               "type": "object"
             },
             {
-              "#/components/schemas/BLOCK_TAG": {
+              "BLOCK_TAG": {
                 "description": "A tag specifying a dynamic reference to a block",
                 "enum": [
                   "latest",
@@ -159,7 +159,7 @@
     "name": "result",
     "schema": {
       "items": {
-        "#/components/schemas/FELT": {
+        "FELT": {
           "description": "A field element. represented by at most 63 hex digits",
           "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
           "title": "Field element",

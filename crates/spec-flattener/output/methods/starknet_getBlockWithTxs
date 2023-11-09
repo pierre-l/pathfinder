@@ -1,7 +1,7 @@
 {
   "errors": [
     {
-      "#/components/errors/BLOCK_NOT_FOUND": {
+      "BLOCK_NOT_FOUND": {
         "code": 24,
         "message": "Block not found"
       }
@@ -14,14 +14,14 @@
       "name": "block_id",
       "required": true,
       "schema": {
-        "#/components/schemas/BLOCK_ID": {
+        "BLOCK_ID": {
           "description": "Block hash, number or tag",
           "oneOf": [
             {
               "properties": {
                 "block_hash": {
-                  "#/components/schemas/BLOCK_HASH": {
-                    "#/components/schemas/FELT": {
+                  "BLOCK_HASH": {
+                    "FELT": {
                       "description": "A field element. represented by at most 63 hex digits",
                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                       "title": "Field element",
@@ -41,7 +41,7 @@
             {
               "properties": {
                 "block_number": {
-                  "#/components/schemas/BLOCK_NUMBER": {
+                  "BLOCK_NUMBER": {
                     "description": "The block's number (its height)",
                     "minimum": 0,
                     "title": "Block number",
@@ -57,7 +57,7 @@
               "type": "object"
             },
             {
-              "#/components/schemas/BLOCK_TAG": {
+              "BLOCK_TAG": {
                 "description": "A tag specifying a dynamic reference to a block",
                 "enum": [
                   "latest",
@@ -81,12 +81,12 @@
     "schema": {
       "oneOf": [
         {
-          "#/components/schemas/BLOCK_WITH_TXS": {
+          "BLOCK_WITH_TXS": {
             "allOf": [
               {
                 "properties": {
                   "status": {
-                    "#/components/schemas/BLOCK_STATUS": {
+                    "BLOCK_STATUS": {
                       "description": "The status of the block",
                       "enum": [
                         "PENDING",
@@ -107,11 +107,11 @@
                 "type": "object"
               },
               {
-                "#/components/schemas/BLOCK_HEADER": {
+                "BLOCK_HEADER": {
                   "properties": {
                     "block_hash": {
-                      "#/components/schemas/BLOCK_HASH": {
-                        "#/components/schemas/FELT": {
+                      "BLOCK_HASH": {
+                        "FELT": {
                           "description": "A field element. represented by at most 63 hex digits",
                           "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                           "title": "Field element",
@@ -122,7 +122,7 @@
                       "title": "Block hash"
                     },
                     "block_number": {
-                      "#/components/schemas/BLOCK_NUMBER": {
+                      "BLOCK_NUMBER": {
                         "description": "The block's number (its height)",
                         "minimum": 0,
                         "title": "Block number",
@@ -132,10 +132,10 @@
                       "title": "Block number"
                     },
                     "l1_gas_price": {
-                      "#/components/schemas/RESOURCE_PRICE": {
+                      "RESOURCE_PRICE": {
                         "properties": {
                           "price_in_strk": {
-                            "#/components/schemas/NUM_AS_HEX": {
+                            "NUM_AS_HEX": {
                               "description": "An integer number in hex format (0x...)",
                               "pattern": "^0x[a-fA-F0-9]+$",
                               "title": "Number as hex",
@@ -145,7 +145,7 @@
                             "title": "price in strk"
                           },
                           "price_in_wei": {
-                            "#/components/schemas/NUM_AS_HEX": {
+                            "NUM_AS_HEX": {
                               "description": "An integer number in hex format (0x...)",
                               "pattern": "^0x[a-fA-F0-9]+$",
                               "title": "Number as hex",
@@ -164,7 +164,7 @@
                       "title": "L1 gas price"
                     },
                     "new_root": {
-                      "#/components/schemas/FELT": {
+                      "FELT": {
                         "description": "A field element. represented by at most 63 hex digits",
                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                         "title": "Field element",
@@ -174,8 +174,8 @@
                       "title": "New root"
                     },
                     "parent_hash": {
-                      "#/components/schemas/BLOCK_HASH": {
-                        "#/components/schemas/FELT": {
+                      "BLOCK_HASH": {
+                        "FELT": {
                           "description": "A field element. represented by at most 63 hex digits",
                           "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                           "title": "Field element",
@@ -187,7 +187,7 @@
                       "title": "Parent hash"
                     },
                     "sequencer_address": {
-                      "#/components/schemas/FELT": {
+                      "FELT": {
                         "description": "A field element. represented by at most 63 hex digits",
                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                         "title": "Field element",
@@ -224,28 +224,28 @@
                 "title": "Block header"
               },
               {
-                "#/components/schemas/BLOCK_BODY_WITH_TXS": {
+                "BLOCK_BODY_WITH_TXS": {
                   "properties": {
                     "transactions": {
                       "description": "The transactions in this block",
                       "items": {
                         "allOf": [
                           {
-                            "#/components/schemas/TXN": {
+                            "TXN": {
                               "description": "The transaction schema, as it appears inside a block",
                               "oneOf": [
                                 {
-                                  "#/components/schemas/INVOKE_TXN": {
+                                  "INVOKE_TXN": {
                                     "description": "Initiate a transaction from an account",
                                     "oneOf": [
                                       {
-                                        "#/components/schemas/INVOKE_TXN_V0": {
+                                        "INVOKE_TXN_V0": {
                                           "description": "invokes a specific function in the desired contract (not necessarily an account)",
                                           "properties": {
                                             "calldata": {
                                               "description": "The parameters passed to the function",
                                               "items": {
-                                                "#/components/schemas/FELT": {
+                                                "FELT": {
                                                   "description": "A field element. represented by at most 63 hex digits",
                                                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                   "title": "Field element",
@@ -256,8 +256,8 @@
                                               "type": "array"
                                             },
                                             "contract_address": {
-                                              "#/components/schemas/ADDRESS": {
-                                                "#/components/schemas/FELT": {
+                                              "ADDRESS": {
+                                                "FELT": {
                                                   "description": "A field element. represented by at most 63 hex digits",
                                                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                   "title": "Field element",
@@ -268,7 +268,7 @@
                                               "title": "Contract address"
                                             },
                                             "entry_point_selector": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -277,7 +277,7 @@
                                               "title": "Entry point selector"
                                             },
                                             "max_fee": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -287,10 +287,10 @@
                                               "title": "Max fee"
                                             },
                                             "signature": {
-                                              "#/components/schemas/SIGNATURE": {
+                                              "SIGNATURE": {
                                                 "description": "A transaction signature",
                                                 "items": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -332,14 +332,14 @@
                                         "title": "Invoke transaction V0"
                                       },
                                       {
-                                        "#/components/schemas/INVOKE_TXN_V1": {
+                                        "INVOKE_TXN_V1": {
                                           "allOf": [
                                             {
                                               "properties": {
                                                 "calldata": {
                                                   "description": "The data expected by the account's `execute` function (in most usecases, this includes the called contract address and a function selector)",
                                                   "items": {
-                                                    "#/components/schemas/FELT": {
+                                                    "FELT": {
                                                       "description": "A field element. represented by at most 63 hex digits",
                                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                       "title": "Field element",
@@ -350,7 +350,7 @@
                                                   "type": "array"
                                                 },
                                                 "max_fee": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -360,7 +360,7 @@
                                                   "title": "Max fee"
                                                 },
                                                 "nonce": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -369,8 +369,8 @@
                                                   "title": "Nonce"
                                                 },
                                                 "sender_address": {
-                                                  "#/components/schemas/ADDRESS": {
-                                                    "#/components/schemas/FELT": {
+                                                  "ADDRESS": {
+                                                    "FELT": {
                                                       "description": "A field element. represented by at most 63 hex digits",
                                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                       "title": "Field element",
@@ -381,10 +381,10 @@
                                                   "title": "sender address"
                                                 },
                                                 "signature": {
-                                                  "#/components/schemas/SIGNATURE": {
+                                                  "SIGNATURE": {
                                                     "description": "A transaction signature",
                                                     "items": {
-                                                      "#/components/schemas/FELT": {
+                                                      "FELT": {
                                                         "description": "A field element. represented by at most 63 hex digits",
                                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                         "title": "Field element",
@@ -404,7 +404,7 @@
                                                   "type": "string"
                                                 },
                                                 "version": {
-                                                  "#/components/schemas/NUM_AS_HEX": {
+                                                  "NUM_AS_HEX": {
                                                     "description": "An integer number in hex format (0x...)",
                                                     "pattern": "^0x[a-fA-F0-9]+$",
                                                     "title": "Number as hex",
@@ -437,13 +437,13 @@
                                   "title": "Invoke transaction"
                                 },
                                 {
-                                  "#/components/schemas/L1_HANDLER_TXN": {
+                                  "L1_HANDLER_TXN": {
                                     "allOf": [
                                       {
                                         "description": "a call to an l1_handler on an L2 contract induced by a message from L1",
                                         "properties": {
                                           "nonce": {
-                                            "#/components/schemas/NUM_AS_HEX": {
+                                            "NUM_AS_HEX": {
                                               "description": "An integer number in hex format (0x...)",
                                               "pattern": "^0x[a-fA-F0-9]+$",
                                               "title": "Number as hex",
@@ -460,7 +460,7 @@
                                             "type": "string"
                                           },
                                           "version": {
-                                            "#/components/schemas/NUM_AS_HEX": {
+                                            "NUM_AS_HEX": {
                                               "description": "An integer number in hex format (0x...)",
                                               "pattern": "^0x[a-fA-F0-9]+$",
                                               "title": "Number as hex",
@@ -479,13 +479,13 @@
                                         "type": "object"
                                       },
                                       {
-                                        "#/components/schemas/FUNCTION_CALL": {
+                                        "FUNCTION_CALL": {
                                           "description": "Function call information",
                                           "properties": {
                                             "calldata": {
                                               "description": "The parameters passed to the function",
                                               "items": {
-                                                "#/components/schemas/FELT": {
+                                                "FELT": {
                                                   "description": "A field element. represented by at most 63 hex digits",
                                                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                   "title": "Field element",
@@ -496,8 +496,8 @@
                                               "type": "array"
                                             },
                                             "contract_address": {
-                                              "#/components/schemas/ADDRESS": {
-                                                "#/components/schemas/FELT": {
+                                              "ADDRESS": {
+                                                "FELT": {
                                                   "description": "A field element. represented by at most 63 hex digits",
                                                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                   "title": "Field element",
@@ -508,7 +508,7 @@
                                               "title": "Contract address"
                                             },
                                             "entry_point_selector": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -533,15 +533,15 @@
                                   "title": "L1 handler transaction"
                                 },
                                 {
-                                  "#/components/schemas/DECLARE_TXN": {
+                                  "DECLARE_TXN": {
                                     "oneOf": [
                                       {
-                                        "#/components/schemas/DECLARE_TXN_V0": {
+                                        "DECLARE_TXN_V0": {
                                           "allOf": [
                                             {
                                               "properties": {
                                                 "class_hash": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -551,7 +551,7 @@
                                                   "title": "Class hash"
                                                 },
                                                 "max_fee": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -561,8 +561,8 @@
                                                   "title": "Max fee"
                                                 },
                                                 "sender_address": {
-                                                  "#/components/schemas/ADDRESS": {
-                                                    "#/components/schemas/FELT": {
+                                                  "ADDRESS": {
+                                                    "FELT": {
                                                       "description": "A field element. represented by at most 63 hex digits",
                                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                       "title": "Field element",
@@ -574,10 +574,10 @@
                                                   "title": "Sender address"
                                                 },
                                                 "signature": {
-                                                  "#/components/schemas/SIGNATURE": {
+                                                  "SIGNATURE": {
                                                     "description": "A transaction signature",
                                                     "items": {
-                                                      "#/components/schemas/FELT": {
+                                                      "FELT": {
                                                         "description": "A field element. represented by at most 63 hex digits",
                                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                         "title": "Field element",
@@ -623,12 +623,12 @@
                                         "title": "Declare transaction V0"
                                       },
                                       {
-                                        "#/components/schemas/DECLARE_TXN_V1": {
+                                        "DECLARE_TXN_V1": {
                                           "allOf": [
                                             {
                                               "properties": {
                                                 "class_hash": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -638,7 +638,7 @@
                                                   "title": "Class hash"
                                                 },
                                                 "max_fee": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -648,7 +648,7 @@
                                                   "title": "Max fee"
                                                 },
                                                 "nonce": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -657,8 +657,8 @@
                                                   "title": "Nonce"
                                                 },
                                                 "sender_address": {
-                                                  "#/components/schemas/ADDRESS": {
-                                                    "#/components/schemas/FELT": {
+                                                  "ADDRESS": {
+                                                    "FELT": {
                                                       "description": "A field element. represented by at most 63 hex digits",
                                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                       "title": "Field element",
@@ -670,10 +670,10 @@
                                                   "title": "Sender address"
                                                 },
                                                 "signature": {
-                                                  "#/components/schemas/SIGNATURE": {
+                                                  "SIGNATURE": {
                                                     "description": "A transaction signature",
                                                     "items": {
-                                                      "#/components/schemas/FELT": {
+                                                      "FELT": {
                                                         "description": "A field element. represented by at most 63 hex digits",
                                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                         "title": "Field element",
@@ -720,12 +720,12 @@
                                         "title": "Declare transaction V1"
                                       },
                                       {
-                                        "#/components/schemas/DECLARE_TXN_V2": {
+                                        "DECLARE_TXN_V2": {
                                           "allOf": [
                                             {
                                               "properties": {
                                                 "class_hash": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -735,7 +735,7 @@
                                                   "title": "Class hash"
                                                 },
                                                 "compiled_class_hash": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -745,7 +745,7 @@
                                                   "title": "Compiled class hash"
                                                 },
                                                 "max_fee": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -755,7 +755,7 @@
                                                   "title": "Max fee"
                                                 },
                                                 "nonce": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -764,8 +764,8 @@
                                                   "title": "Nonce"
                                                 },
                                                 "sender_address": {
-                                                  "#/components/schemas/ADDRESS": {
-                                                    "#/components/schemas/FELT": {
+                                                  "ADDRESS": {
+                                                    "FELT": {
                                                       "description": "A field element. represented by at most 63 hex digits",
                                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                       "title": "Field element",
@@ -777,10 +777,10 @@
                                                   "title": "Sender address"
                                                 },
                                                 "signature": {
-                                                  "#/components/schemas/SIGNATURE": {
+                                                  "SIGNATURE": {
                                                     "description": "A transaction signature",
                                                     "items": {
-                                                      "#/components/schemas/FELT": {
+                                                      "FELT": {
                                                         "description": "A field element. represented by at most 63 hex digits",
                                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                         "title": "Field element",
@@ -833,12 +833,12 @@
                                   "title": "Declare transaction"
                                 },
                                 {
-                                  "#/components/schemas/DEPLOY_TXN": {
+                                  "DEPLOY_TXN": {
                                     "allOf": [
                                       {
                                         "properties": {
                                           "class_hash": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -850,7 +850,7 @@
                                           "constructor_calldata": {
                                             "description": "The parameters passed to the constructor",
                                             "items": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -861,7 +861,7 @@
                                             "type": "array"
                                           },
                                           "contract_address_salt": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -878,7 +878,7 @@
                                             "type": "string"
                                           },
                                           "version": {
-                                            "#/components/schemas/NUM_AS_HEX": {
+                                            "NUM_AS_HEX": {
                                               "description": "An integer number in hex format (0x...)",
                                               "pattern": "^0x[a-fA-F0-9]+$",
                                               "title": "Number as hex",
@@ -905,15 +905,15 @@
                                   "title": "Deploy transaction"
                                 },
                                 {
-                                  "#/components/schemas/DEPLOY_ACCOUNT_TXN": {
+                                  "DEPLOY_ACCOUNT_TXN": {
                                     "description": "deploys a new account contract",
                                     "oneOf": [
                                       {
-                                        "#/components/schemas/DEPLOY_ACCOUNT_TXN_V1": {
+                                        "DEPLOY_ACCOUNT_TXN_V1": {
                                           "description": "Deploys an account contract, charges fee from the pre-funded account addresses",
                                           "properties": {
                                             "class_hash": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -925,7 +925,7 @@
                                             "constructor_calldata": {
                                               "description": "The parameters passed to the constructor",
                                               "items": {
-                                                "#/components/schemas/FELT": {
+                                                "FELT": {
                                                   "description": "A field element. represented by at most 63 hex digits",
                                                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                   "title": "Field element",
@@ -936,7 +936,7 @@
                                               "type": "array"
                                             },
                                             "contract_address_salt": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -946,7 +946,7 @@
                                               "title": "Contract address salt"
                                             },
                                             "max_fee": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -956,7 +956,7 @@
                                               "title": "Max fee"
                                             },
                                             "nonce": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -965,10 +965,10 @@
                                               "title": "Nonce"
                                             },
                                             "signature": {
-                                              "#/components/schemas/SIGNATURE": {
+                                              "SIGNATURE": {
                                                 "description": "A transaction signature",
                                                 "items": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -988,7 +988,7 @@
                                               "type": "string"
                                             },
                                             "version": {
-                                              "#/components/schemas/NUM_AS_HEX": {
+                                              "NUM_AS_HEX": {
                                                 "description": "An integer number in hex format (0x...)",
                                                 "pattern": "^0x[a-fA-F0-9]+$",
                                                 "title": "Number as hex",
@@ -1025,8 +1025,8 @@
                           {
                             "properties": {
                               "transaction_hash": {
-                                "#/components/schemas/TXN_HASH": {
-                                  "#/components/schemas/FELT": {
+                                "TXN_HASH": {
+                                  "FELT": {
                                     "description": "A field element. represented by at most 63 hex digits",
                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                     "title": "Field element",
@@ -1066,32 +1066,32 @@
           "title": "Block with transactions"
         },
         {
-          "#/components/schemas/PENDING_BLOCK_WITH_TXS": {
+          "PENDING_BLOCK_WITH_TXS": {
             "additionalProperties": false,
             "allOf": [
               {
-                "#/components/schemas/BLOCK_BODY_WITH_TXS": {
+                "BLOCK_BODY_WITH_TXS": {
                   "properties": {
                     "transactions": {
                       "description": "The transactions in this block",
                       "items": {
                         "allOf": [
                           {
-                            "#/components/schemas/TXN": {
+                            "TXN": {
                               "description": "The transaction schema, as it appears inside a block",
                               "oneOf": [
                                 {
-                                  "#/components/schemas/INVOKE_TXN": {
+                                  "INVOKE_TXN": {
                                     "description": "Initiate a transaction from an account",
                                     "oneOf": [
                                       {
-                                        "#/components/schemas/INVOKE_TXN_V0": {
+                                        "INVOKE_TXN_V0": {
                                           "description": "invokes a specific function in the desired contract (not necessarily an account)",
                                           "properties": {
                                             "calldata": {
                                               "description": "The parameters passed to the function",
                                               "items": {
-                                                "#/components/schemas/FELT": {
+                                                "FELT": {
                                                   "description": "A field element. represented by at most 63 hex digits",
                                                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                   "title": "Field element",
@@ -1102,8 +1102,8 @@
                                               "type": "array"
                                             },
                                             "contract_address": {
-                                              "#/components/schemas/ADDRESS": {
-                                                "#/components/schemas/FELT": {
+                                              "ADDRESS": {
+                                                "FELT": {
                                                   "description": "A field element. represented by at most 63 hex digits",
                                                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                   "title": "Field element",
@@ -1114,7 +1114,7 @@
                                               "title": "Contract address"
                                             },
                                             "entry_point_selector": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -1123,7 +1123,7 @@
                                               "title": "Entry point selector"
                                             },
                                             "max_fee": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -1133,10 +1133,10 @@
                                               "title": "Max fee"
                                             },
                                             "signature": {
-                                              "#/components/schemas/SIGNATURE": {
+                                              "SIGNATURE": {
                                                 "description": "A transaction signature",
                                                 "items": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1178,14 +1178,14 @@
                                         "title": "Invoke transaction V0"
                                       },
                                       {
-                                        "#/components/schemas/INVOKE_TXN_V1": {
+                                        "INVOKE_TXN_V1": {
                                           "allOf": [
                                             {
                                               "properties": {
                                                 "calldata": {
                                                   "description": "The data expected by the account's `execute` function (in most usecases, this includes the called contract address and a function selector)",
                                                   "items": {
-                                                    "#/components/schemas/FELT": {
+                                                    "FELT": {
                                                       "description": "A field element. represented by at most 63 hex digits",
                                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                       "title": "Field element",
@@ -1196,7 +1196,7 @@
                                                   "type": "array"
                                                 },
                                                 "max_fee": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1206,7 +1206,7 @@
                                                   "title": "Max fee"
                                                 },
                                                 "nonce": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1215,8 +1215,8 @@
                                                   "title": "Nonce"
                                                 },
                                                 "sender_address": {
-                                                  "#/components/schemas/ADDRESS": {
-                                                    "#/components/schemas/FELT": {
+                                                  "ADDRESS": {
+                                                    "FELT": {
                                                       "description": "A field element. represented by at most 63 hex digits",
                                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                       "title": "Field element",
@@ -1227,10 +1227,10 @@
                                                   "title": "sender address"
                                                 },
                                                 "signature": {
-                                                  "#/components/schemas/SIGNATURE": {
+                                                  "SIGNATURE": {
                                                     "description": "A transaction signature",
                                                     "items": {
-                                                      "#/components/schemas/FELT": {
+                                                      "FELT": {
                                                         "description": "A field element. represented by at most 63 hex digits",
                                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                         "title": "Field element",
@@ -1250,7 +1250,7 @@
                                                   "type": "string"
                                                 },
                                                 "version": {
-                                                  "#/components/schemas/NUM_AS_HEX": {
+                                                  "NUM_AS_HEX": {
                                                     "description": "An integer number in hex format (0x...)",
                                                     "pattern": "^0x[a-fA-F0-9]+$",
                                                     "title": "Number as hex",
@@ -1283,13 +1283,13 @@
                                   "title": "Invoke transaction"
                                 },
                                 {
-                                  "#/components/schemas/L1_HANDLER_TXN": {
+                                  "L1_HANDLER_TXN": {
                                     "allOf": [
                                       {
                                         "description": "a call to an l1_handler on an L2 contract induced by a message from L1",
                                         "properties": {
                                           "nonce": {
-                                            "#/components/schemas/NUM_AS_HEX": {
+                                            "NUM_AS_HEX": {
                                               "description": "An integer number in hex format (0x...)",
                                               "pattern": "^0x[a-fA-F0-9]+$",
                                               "title": "Number as hex",
@@ -1306,7 +1306,7 @@
                                             "type": "string"
                                           },
                                           "version": {
-                                            "#/components/schemas/NUM_AS_HEX": {
+                                            "NUM_AS_HEX": {
                                               "description": "An integer number in hex format (0x...)",
                                               "pattern": "^0x[a-fA-F0-9]+$",
                                               "title": "Number as hex",
@@ -1325,13 +1325,13 @@
                                         "type": "object"
                                       },
                                       {
-                                        "#/components/schemas/FUNCTION_CALL": {
+                                        "FUNCTION_CALL": {
                                           "description": "Function call information",
                                           "properties": {
                                             "calldata": {
                                               "description": "The parameters passed to the function",
                                               "items": {
-                                                "#/components/schemas/FELT": {
+                                                "FELT": {
                                                   "description": "A field element. represented by at most 63 hex digits",
                                                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                   "title": "Field element",
@@ -1342,8 +1342,8 @@
                                               "type": "array"
                                             },
                                             "contract_address": {
-                                              "#/components/schemas/ADDRESS": {
-                                                "#/components/schemas/FELT": {
+                                              "ADDRESS": {
+                                                "FELT": {
                                                   "description": "A field element. represented by at most 63 hex digits",
                                                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                   "title": "Field element",
@@ -1354,7 +1354,7 @@
                                               "title": "Contract address"
                                             },
                                             "entry_point_selector": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -1379,15 +1379,15 @@
                                   "title": "L1 handler transaction"
                                 },
                                 {
-                                  "#/components/schemas/DECLARE_TXN": {
+                                  "DECLARE_TXN": {
                                     "oneOf": [
                                       {
-                                        "#/components/schemas/DECLARE_TXN_V0": {
+                                        "DECLARE_TXN_V0": {
                                           "allOf": [
                                             {
                                               "properties": {
                                                 "class_hash": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1397,7 +1397,7 @@
                                                   "title": "Class hash"
                                                 },
                                                 "max_fee": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1407,8 +1407,8 @@
                                                   "title": "Max fee"
                                                 },
                                                 "sender_address": {
-                                                  "#/components/schemas/ADDRESS": {
-                                                    "#/components/schemas/FELT": {
+                                                  "ADDRESS": {
+                                                    "FELT": {
                                                       "description": "A field element. represented by at most 63 hex digits",
                                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                       "title": "Field element",
@@ -1420,10 +1420,10 @@
                                                   "title": "Sender address"
                                                 },
                                                 "signature": {
-                                                  "#/components/schemas/SIGNATURE": {
+                                                  "SIGNATURE": {
                                                     "description": "A transaction signature",
                                                     "items": {
-                                                      "#/components/schemas/FELT": {
+                                                      "FELT": {
                                                         "description": "A field element. represented by at most 63 hex digits",
                                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                         "title": "Field element",
@@ -1469,12 +1469,12 @@
                                         "title": "Declare transaction V0"
                                       },
                                       {
-                                        "#/components/schemas/DECLARE_TXN_V1": {
+                                        "DECLARE_TXN_V1": {
                                           "allOf": [
                                             {
                                               "properties": {
                                                 "class_hash": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1484,7 +1484,7 @@
                                                   "title": "Class hash"
                                                 },
                                                 "max_fee": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1494,7 +1494,7 @@
                                                   "title": "Max fee"
                                                 },
                                                 "nonce": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1503,8 +1503,8 @@
                                                   "title": "Nonce"
                                                 },
                                                 "sender_address": {
-                                                  "#/components/schemas/ADDRESS": {
-                                                    "#/components/schemas/FELT": {
+                                                  "ADDRESS": {
+                                                    "FELT": {
                                                       "description": "A field element. represented by at most 63 hex digits",
                                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                       "title": "Field element",
@@ -1516,10 +1516,10 @@
                                                   "title": "Sender address"
                                                 },
                                                 "signature": {
-                                                  "#/components/schemas/SIGNATURE": {
+                                                  "SIGNATURE": {
                                                     "description": "A transaction signature",
                                                     "items": {
-                                                      "#/components/schemas/FELT": {
+                                                      "FELT": {
                                                         "description": "A field element. represented by at most 63 hex digits",
                                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                         "title": "Field element",
@@ -1566,12 +1566,12 @@
                                         "title": "Declare transaction V1"
                                       },
                                       {
-                                        "#/components/schemas/DECLARE_TXN_V2": {
+                                        "DECLARE_TXN_V2": {
                                           "allOf": [
                                             {
                                               "properties": {
                                                 "class_hash": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1581,7 +1581,7 @@
                                                   "title": "Class hash"
                                                 },
                                                 "compiled_class_hash": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1591,7 +1591,7 @@
                                                   "title": "Compiled class hash"
                                                 },
                                                 "max_fee": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1601,7 +1601,7 @@
                                                   "title": "Max fee"
                                                 },
                                                 "nonce": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1610,8 +1610,8 @@
                                                   "title": "Nonce"
                                                 },
                                                 "sender_address": {
-                                                  "#/components/schemas/ADDRESS": {
-                                                    "#/components/schemas/FELT": {
+                                                  "ADDRESS": {
+                                                    "FELT": {
                                                       "description": "A field element. represented by at most 63 hex digits",
                                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                       "title": "Field element",
@@ -1623,10 +1623,10 @@
                                                   "title": "Sender address"
                                                 },
                                                 "signature": {
-                                                  "#/components/schemas/SIGNATURE": {
+                                                  "SIGNATURE": {
                                                     "description": "A transaction signature",
                                                     "items": {
-                                                      "#/components/schemas/FELT": {
+                                                      "FELT": {
                                                         "description": "A field element. represented by at most 63 hex digits",
                                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                         "title": "Field element",
@@ -1679,12 +1679,12 @@
                                   "title": "Declare transaction"
                                 },
                                 {
-                                  "#/components/schemas/DEPLOY_TXN": {
+                                  "DEPLOY_TXN": {
                                     "allOf": [
                                       {
                                         "properties": {
                                           "class_hash": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -1696,7 +1696,7 @@
                                           "constructor_calldata": {
                                             "description": "The parameters passed to the constructor",
                                             "items": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -1707,7 +1707,7 @@
                                             "type": "array"
                                           },
                                           "contract_address_salt": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -1724,7 +1724,7 @@
                                             "type": "string"
                                           },
                                           "version": {
-                                            "#/components/schemas/NUM_AS_HEX": {
+                                            "NUM_AS_HEX": {
                                               "description": "An integer number in hex format (0x...)",
                                               "pattern": "^0x[a-fA-F0-9]+$",
                                               "title": "Number as hex",
@@ -1751,15 +1751,15 @@
                                   "title": "Deploy transaction"
                                 },
                                 {
-                                  "#/components/schemas/DEPLOY_ACCOUNT_TXN": {
+                                  "DEPLOY_ACCOUNT_TXN": {
                                     "description": "deploys a new account contract",
                                     "oneOf": [
                                       {
-                                        "#/components/schemas/DEPLOY_ACCOUNT_TXN_V1": {
+                                        "DEPLOY_ACCOUNT_TXN_V1": {
                                           "description": "Deploys an account contract, charges fee from the pre-funded account addresses",
                                           "properties": {
                                             "class_hash": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -1771,7 +1771,7 @@
                                             "constructor_calldata": {
                                               "description": "The parameters passed to the constructor",
                                               "items": {
-                                                "#/components/schemas/FELT": {
+                                                "FELT": {
                                                   "description": "A field element. represented by at most 63 hex digits",
                                                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                   "title": "Field element",
@@ -1782,7 +1782,7 @@
                                               "type": "array"
                                             },
                                             "contract_address_salt": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -1792,7 +1792,7 @@
                                               "title": "Contract address salt"
                                             },
                                             "max_fee": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -1802,7 +1802,7 @@
                                               "title": "Max fee"
                                             },
                                             "nonce": {
-                                              "#/components/schemas/FELT": {
+                                              "FELT": {
                                                 "description": "A field element. represented by at most 63 hex digits",
                                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                 "title": "Field element",
@@ -1811,10 +1811,10 @@
                                               "title": "Nonce"
                                             },
                                             "signature": {
-                                              "#/components/schemas/SIGNATURE": {
+                                              "SIGNATURE": {
                                                 "description": "A transaction signature",
                                                 "items": {
-                                                  "#/components/schemas/FELT": {
+                                                  "FELT": {
                                                     "description": "A field element. represented by at most 63 hex digits",
                                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                                     "title": "Field element",
@@ -1834,7 +1834,7 @@
                                               "type": "string"
                                             },
                                             "version": {
-                                              "#/components/schemas/NUM_AS_HEX": {
+                                              "NUM_AS_HEX": {
                                                 "description": "An integer number in hex format (0x...)",
                                                 "pattern": "^0x[a-fA-F0-9]+$",
                                                 "title": "Number as hex",
@@ -1871,8 +1871,8 @@
                           {
                             "properties": {
                               "transaction_hash": {
-                                "#/components/schemas/TXN_HASH": {
-                                  "#/components/schemas/FELT": {
+                                "TXN_HASH": {
+                                  "FELT": {
                                     "description": "A field element. represented by at most 63 hex digits",
                                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                     "title": "Field element",
@@ -1906,14 +1906,14 @@
                 "title": "Block body with transactions"
               },
               {
-                "#/components/schemas/PENDING_BLOCK_HEADER": {
+                "PENDING_BLOCK_HEADER": {
                   "additionalProperties": false,
                   "properties": {
                     "l1_gas_price": {
-                      "#/components/schemas/RESOURCE_PRICE": {
+                      "RESOURCE_PRICE": {
                         "properties": {
                           "price_in_strk": {
-                            "#/components/schemas/NUM_AS_HEX": {
+                            "NUM_AS_HEX": {
                               "description": "An integer number in hex format (0x...)",
                               "pattern": "^0x[a-fA-F0-9]+$",
                               "title": "Number as hex",
@@ -1923,7 +1923,7 @@
                             "title": "price in strk"
                           },
                           "price_in_wei": {
-                            "#/components/schemas/NUM_AS_HEX": {
+                            "NUM_AS_HEX": {
                               "description": "An integer number in hex format (0x...)",
                               "pattern": "^0x[a-fA-F0-9]+$",
                               "title": "Number as hex",
@@ -1942,8 +1942,8 @@
                       "title": "L1 gas price"
                     },
                     "parent_hash": {
-                      "#/components/schemas/BLOCK_HASH": {
-                        "#/components/schemas/FELT": {
+                      "BLOCK_HASH": {
+                        "FELT": {
                           "description": "A field element. represented by at most 63 hex digits",
                           "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                           "title": "Field element",
@@ -1955,7 +1955,7 @@
                       "title": "Parent hash"
                     },
                     "sequencer_address": {
-                      "#/components/schemas/FELT": {
+                      "FELT": {
                         "description": "A field element. represented by at most 63 hex digits",
                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                         "title": "Field element",

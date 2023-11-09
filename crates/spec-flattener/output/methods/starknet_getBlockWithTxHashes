@@ -1,7 +1,7 @@
 {
   "errors": [
     {
-      "#/components/errors/BLOCK_NOT_FOUND": {
+      "BLOCK_NOT_FOUND": {
         "code": 24,
         "message": "Block not found"
       }
@@ -14,14 +14,14 @@
       "name": "block_id",
       "required": true,
       "schema": {
-        "#/components/schemas/BLOCK_ID": {
+        "BLOCK_ID": {
           "description": "Block hash, number or tag",
           "oneOf": [
             {
               "properties": {
                 "block_hash": {
-                  "#/components/schemas/BLOCK_HASH": {
-                    "#/components/schemas/FELT": {
+                  "BLOCK_HASH": {
+                    "FELT": {
                       "description": "A field element. represented by at most 63 hex digits",
                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                       "title": "Field element",
@@ -41,7 +41,7 @@
             {
               "properties": {
                 "block_number": {
-                  "#/components/schemas/BLOCK_NUMBER": {
+                  "BLOCK_NUMBER": {
                     "description": "The block's number (its height)",
                     "minimum": 0,
                     "title": "Block number",
@@ -57,7 +57,7 @@
               "type": "object"
             },
             {
-              "#/components/schemas/BLOCK_TAG": {
+              "BLOCK_TAG": {
                 "description": "A tag specifying a dynamic reference to a block",
                 "enum": [
                   "latest",
@@ -81,12 +81,12 @@
     "schema": {
       "oneOf": [
         {
-          "#/components/schemas/BLOCK_WITH_TX_HASHES": {
+          "BLOCK_WITH_TX_HASHES": {
             "allOf": [
               {
                 "properties": {
                   "status": {
-                    "#/components/schemas/BLOCK_STATUS": {
+                    "BLOCK_STATUS": {
                       "description": "The status of the block",
                       "enum": [
                         "PENDING",
@@ -107,11 +107,11 @@
                 "type": "object"
               },
               {
-                "#/components/schemas/BLOCK_HEADER": {
+                "BLOCK_HEADER": {
                   "properties": {
                     "block_hash": {
-                      "#/components/schemas/BLOCK_HASH": {
-                        "#/components/schemas/FELT": {
+                      "BLOCK_HASH": {
+                        "FELT": {
                           "description": "A field element. represented by at most 63 hex digits",
                           "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                           "title": "Field element",
@@ -122,7 +122,7 @@
                       "title": "Block hash"
                     },
                     "block_number": {
-                      "#/components/schemas/BLOCK_NUMBER": {
+                      "BLOCK_NUMBER": {
                         "description": "The block's number (its height)",
                         "minimum": 0,
                         "title": "Block number",
@@ -132,10 +132,10 @@
                       "title": "Block number"
                     },
                     "l1_gas_price": {
-                      "#/components/schemas/RESOURCE_PRICE": {
+                      "RESOURCE_PRICE": {
                         "properties": {
                           "price_in_strk": {
-                            "#/components/schemas/NUM_AS_HEX": {
+                            "NUM_AS_HEX": {
                               "description": "An integer number in hex format (0x...)",
                               "pattern": "^0x[a-fA-F0-9]+$",
                               "title": "Number as hex",
@@ -145,7 +145,7 @@
                             "title": "price in strk"
                           },
                           "price_in_wei": {
-                            "#/components/schemas/NUM_AS_HEX": {
+                            "NUM_AS_HEX": {
                               "description": "An integer number in hex format (0x...)",
                               "pattern": "^0x[a-fA-F0-9]+$",
                               "title": "Number as hex",
@@ -164,7 +164,7 @@
                       "title": "L1 gas price"
                     },
                     "new_root": {
-                      "#/components/schemas/FELT": {
+                      "FELT": {
                         "description": "A field element. represented by at most 63 hex digits",
                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                         "title": "Field element",
@@ -174,8 +174,8 @@
                       "title": "New root"
                     },
                     "parent_hash": {
-                      "#/components/schemas/BLOCK_HASH": {
-                        "#/components/schemas/FELT": {
+                      "BLOCK_HASH": {
+                        "FELT": {
                           "description": "A field element. represented by at most 63 hex digits",
                           "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                           "title": "Field element",
@@ -187,7 +187,7 @@
                       "title": "Parent hash"
                     },
                     "sequencer_address": {
-                      "#/components/schemas/FELT": {
+                      "FELT": {
                         "description": "A field element. represented by at most 63 hex digits",
                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                         "title": "Field element",
@@ -224,13 +224,13 @@
                 "title": "Block header"
               },
               {
-                "#/components/schemas/BLOCK_BODY_WITH_TX_HASHES": {
+                "BLOCK_BODY_WITH_TX_HASHES": {
                   "properties": {
                     "transactions": {
                       "description": "The hashes of the transactions included in this block",
                       "items": {
-                        "#/components/schemas/TXN_HASH": {
-                          "#/components/schemas/FELT": {
+                        "TXN_HASH": {
+                          "FELT": {
                             "description": "A field element. represented by at most 63 hex digits",
                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                             "title": "Field element",
@@ -260,17 +260,17 @@
           "title": "Block with transaction hashes"
         },
         {
-          "#/components/schemas/PENDING_BLOCK_WITH_TX_HASHES": {
+          "PENDING_BLOCK_WITH_TX_HASHES": {
             "additionalProperties": false,
             "allOf": [
               {
-                "#/components/schemas/BLOCK_BODY_WITH_TX_HASHES": {
+                "BLOCK_BODY_WITH_TX_HASHES": {
                   "properties": {
                     "transactions": {
                       "description": "The hashes of the transactions included in this block",
                       "items": {
-                        "#/components/schemas/TXN_HASH": {
-                          "#/components/schemas/FELT": {
+                        "TXN_HASH": {
+                          "FELT": {
                             "description": "A field element. represented by at most 63 hex digits",
                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                             "title": "Field element",
@@ -294,14 +294,14 @@
                 "title": "Block body with transactions hashes"
               },
               {
-                "#/components/schemas/PENDING_BLOCK_HEADER": {
+                "PENDING_BLOCK_HEADER": {
                   "additionalProperties": false,
                   "properties": {
                     "l1_gas_price": {
-                      "#/components/schemas/RESOURCE_PRICE": {
+                      "RESOURCE_PRICE": {
                         "properties": {
                           "price_in_strk": {
-                            "#/components/schemas/NUM_AS_HEX": {
+                            "NUM_AS_HEX": {
                               "description": "An integer number in hex format (0x...)",
                               "pattern": "^0x[a-fA-F0-9]+$",
                               "title": "Number as hex",
@@ -311,7 +311,7 @@
                             "title": "price in strk"
                           },
                           "price_in_wei": {
-                            "#/components/schemas/NUM_AS_HEX": {
+                            "NUM_AS_HEX": {
                               "description": "An integer number in hex format (0x...)",
                               "pattern": "^0x[a-fA-F0-9]+$",
                               "title": "Number as hex",
@@ -330,8 +330,8 @@
                       "title": "L1 gas price"
                     },
                     "parent_hash": {
-                      "#/components/schemas/BLOCK_HASH": {
-                        "#/components/schemas/FELT": {
+                      "BLOCK_HASH": {
+                        "FELT": {
                           "description": "A field element. represented by at most 63 hex digits",
                           "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                           "title": "Field element",
@@ -343,7 +343,7 @@
                       "title": "Parent hash"
                     },
                     "sequencer_address": {
-                      "#/components/schemas/FELT": {
+                      "FELT": {
                         "description": "A field element. represented by at most 63 hex digits",
                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                         "title": "Field element",

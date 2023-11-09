@@ -1,13 +1,13 @@
 {
   "errors": [
     {
-      "#/components/errors/CONTRACT_NOT_FOUND": {
+      "CONTRACT_NOT_FOUND": {
         "code": 20,
         "message": "Contract not found"
       }
     },
     {
-      "#/components/errors/BLOCK_NOT_FOUND": {
+      "BLOCK_NOT_FOUND": {
         "code": 24,
         "message": "Block not found"
       }
@@ -20,8 +20,8 @@
       "name": "contract_address",
       "required": true,
       "schema": {
-        "#/components/schemas/ADDRESS": {
-          "#/components/schemas/FELT": {
+        "ADDRESS": {
+          "FELT": {
             "description": "A field element. represented by at most 63 hex digits",
             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
             "title": "Field element",
@@ -38,7 +38,7 @@
       "name": "key",
       "required": true,
       "schema": {
-        "#/components/schemas/STORAGE_KEY": {
+        "STORAGE_KEY": {
           "$comment": "A storage key, represented as a string of hex digits",
           "description": "A storage key. Represented as up to 62 hex digits, 3 bits, and 5 leading zeroes.",
           "pattern": "^0x0[0-7]{1}[a-fA-F0-9]{0,62}$",
@@ -54,14 +54,14 @@
       "name": "block_id",
       "required": true,
       "schema": {
-        "#/components/schemas/BLOCK_ID": {
+        "BLOCK_ID": {
           "description": "Block hash, number or tag",
           "oneOf": [
             {
               "properties": {
                 "block_hash": {
-                  "#/components/schemas/BLOCK_HASH": {
-                    "#/components/schemas/FELT": {
+                  "BLOCK_HASH": {
+                    "FELT": {
                       "description": "A field element. represented by at most 63 hex digits",
                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                       "title": "Field element",
@@ -81,7 +81,7 @@
             {
               "properties": {
                 "block_number": {
-                  "#/components/schemas/BLOCK_NUMBER": {
+                  "BLOCK_NUMBER": {
                     "description": "The block's number (its height)",
                     "minimum": 0,
                     "title": "Block number",
@@ -97,7 +97,7 @@
               "type": "object"
             },
             {
-              "#/components/schemas/BLOCK_TAG": {
+              "BLOCK_TAG": {
                 "description": "A tag specifying a dynamic reference to a block",
                 "enum": [
                   "latest",
@@ -119,7 +119,7 @@
     "description": "The value at the given key for the given contract. 0 if no value is found",
     "name": "result",
     "schema": {
-      "#/components/schemas/FELT": {
+      "FELT": {
         "description": "A field element. represented by at most 63 hex digits",
         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
         "title": "Field element",

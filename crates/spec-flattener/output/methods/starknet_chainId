@@ -5,7 +5,7 @@
     "description": "The chain id this node is connected to",
     "name": "result",
     "schema": {
-      "#/components/schemas/CHAIN_ID": {
+      "CHAIN_ID": {
         "description": "StarkNet chain id, given in hex representation.",
         "pattern": "^0x[a-fA-F0-9]+$",
         "title": "Chain id",

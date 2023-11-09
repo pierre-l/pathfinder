@@ -1,13 +1,13 @@
 {
   "errors": [
     {
-      "#/components/errors/BLOCK_NOT_FOUND": {
+      "BLOCK_NOT_FOUND": {
         "code": 24,
         "message": "Block not found"
       }
     },
     {
-      "#/components/errors/CONTRACT_NOT_FOUND": {
+      "CONTRACT_NOT_FOUND": {
         "code": 20,
         "message": "Contract not found"
       }
@@ -20,14 +20,14 @@
       "name": "block_id",
       "required": true,
       "schema": {
-        "#/components/schemas/BLOCK_ID": {
+        "BLOCK_ID": {
           "description": "Block hash, number or tag",
           "oneOf": [
             {
               "properties": {
                 "block_hash": {
-                  "#/components/schemas/BLOCK_HASH": {
-                    "#/components/schemas/FELT": {
+                  "BLOCK_HASH": {
+                    "FELT": {
                       "description": "A field element. represented by at most 63 hex digits",
                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                       "title": "Field element",
@@ -47,7 +47,7 @@
             {
               "properties": {
                 "block_number": {
-                  "#/components/schemas/BLOCK_NUMBER": {
+                  "BLOCK_NUMBER": {
                     "description": "The block's number (its height)",
                     "minimum": 0,
                     "title": "Block number",
@@ -63,7 +63,7 @@
               "type": "object"
             },
             {
-              "#/components/schemas/BLOCK_TAG": {
+              "BLOCK_TAG": {
                 "description": "A tag specifying a dynamic reference to a block",
                 "enum": [
                   "latest",
@@ -85,8 +85,8 @@
       "name": "contract_address",
       "required": true,
       "schema": {
-        "#/components/schemas/ADDRESS": {
-          "#/components/schemas/FELT": {
+        "ADDRESS": {
+          "FELT": {
             "description": "A field element. represented by at most 63 hex digits",
             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
             "title": "Field element",
@@ -104,20 +104,20 @@
     "schema": {
       "oneOf": [
         {
-          "#/components/schemas/DEPRECATED_CONTRACT_CLASS": {
+          "DEPRECATED_CONTRACT_CLASS": {
             "description": "The definition of a StarkNet contract class",
             "properties": {
               "abi": {
-                "#/components/schemas/CONTRACT_ABI": {
+                "CONTRACT_ABI": {
                   "items": {
-                    "#/components/schemas/CONTRACT_ABI_ENTRY": {
+                    "CONTRACT_ABI_ENTRY": {
                       "oneOf": [
                         {
-                          "#/components/schemas/FUNCTION_ABI_ENTRY": {
+                          "FUNCTION_ABI_ENTRY": {
                             "properties": {
                               "inputs": {
                                 "items": {
-                                  "#/components/schemas/TYPED_PARAMETER": {
+                                  "TYPED_PARAMETER": {
                                     "properties": {
                                       "name": {
                                         "description": "The parameter's name",
@@ -148,7 +148,7 @@
                               },
                               "outputs": {
                                 "items": {
-                                  "#/components/schemas/TYPED_PARAMETER": {
+                                  "TYPED_PARAMETER": {
                                     "properties": {
                                       "name": {
                                         "description": "The parameter's name",
@@ -173,7 +173,7 @@
                                 "type": "array"
                               },
                               "stateMutability": {
-                                "#/components/schemas/FUNCTION_STATE_MUTABILITY": {
+                                "FUNCTION_STATE_MUTABILITY": {
                                   "enum": [
                                     "view"
                                   ],
@@ -183,7 +183,7 @@
                                 "title": "Function state mutability"
                               },
                               "type": {
-                                "#/components/schemas/FUNCTION_ABI_TYPE": {
+                                "FUNCTION_ABI_TYPE": {
                                   "enum": [
                                     "function",
                                     "l1_handler",
@@ -207,11 +207,11 @@
                           "title": "Function ABI entry"
                         },
                         {
-                          "#/components/schemas/EVENT_ABI_ENTRY": {
+                          "EVENT_ABI_ENTRY": {
                             "properties": {
                               "data": {
                                 "items": {
-                                  "#/components/schemas/TYPED_PARAMETER": {
+                                  "TYPED_PARAMETER": {
                                     "properties": {
                                       "name": {
                                         "description": "The parameter's name",
@@ -237,7 +237,7 @@
                               },
                               "keys": {
                                 "items": {
-                                  "#/components/schemas/TYPED_PARAMETER": {
+                                  "TYPED_PARAMETER": {
                                     "properties": {
                                       "name": {
                                         "description": "The parameter's name",
@@ -267,7 +267,7 @@
                                 "type": "string"
                               },
                               "type": {
-                                "#/components/schemas/EVENT_ABI_TYPE": {
+                                "EVENT_ABI_TYPE": {
                                   "enum": [
                                     "event"
                                   ],
@@ -289,14 +289,14 @@
                           "title": "Event ABI entry"
                         },
                         {
-                          "#/components/schemas/STRUCT_ABI_ENTRY": {
+                          "STRUCT_ABI_ENTRY": {
                             "properties": {
                               "members": {
                                 "items": {
-                                  "#/components/schemas/STRUCT_MEMBER": {
+                                  "STRUCT_MEMBER": {
                                     "allOf": [
                                       {
-                                        "#/components/schemas/TYPED_PARAMETER": {
+                                        "TYPED_PARAMETER": {
                                           "properties": {
                                             "name": {
                                               "description": "The parameter's name",
@@ -347,7 +347,7 @@
                                 "type": "integer"
                               },
                               "type": {
-                                "#/components/schemas/STRUCT_ABI_TYPE": {
+                                "STRUCT_ABI_TYPE": {
                                   "enum": [
                                     "struct"
                                   ],
@@ -381,10 +381,10 @@
                 "properties": {
                   "CONSTRUCTOR": {
                     "items": {
-                      "#/components/schemas/DEPRECATED_CAIRO_ENTRY_POINT": {
+                      "DEPRECATED_CAIRO_ENTRY_POINT": {
                         "properties": {
                           "offset": {
-                            "#/components/schemas/NUM_AS_HEX": {
+                            "NUM_AS_HEX": {
                               "description": "An integer number in hex format (0x...)",
                               "pattern": "^0x[a-fA-F0-9]+$",
                               "title": "Number as hex",
@@ -394,7 +394,7 @@
                             "title": "Offset"
                           },
                           "selector": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -417,10 +417,10 @@
                   },
                   "EXTERNAL": {
                     "items": {
-                      "#/components/schemas/DEPRECATED_CAIRO_ENTRY_POINT": {
+                      "DEPRECATED_CAIRO_ENTRY_POINT": {
                         "properties": {
                           "offset": {
-                            "#/components/schemas/NUM_AS_HEX": {
+                            "NUM_AS_HEX": {
                               "description": "An integer number in hex format (0x...)",
                               "pattern": "^0x[a-fA-F0-9]+$",
                               "title": "Number as hex",
@@ -430,7 +430,7 @@
                             "title": "Offset"
                           },
                           "selector": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -453,10 +453,10 @@
                   },
                   "L1_HANDLER": {
                     "items": {
-                      "#/components/schemas/DEPRECATED_CAIRO_ENTRY_POINT": {
+                      "DEPRECATED_CAIRO_ENTRY_POINT": {
                         "properties": {
                           "offset": {
-                            "#/components/schemas/NUM_AS_HEX": {
+                            "NUM_AS_HEX": {
                               "description": "An integer number in hex format (0x...)",
                               "pattern": "^0x[a-fA-F0-9]+$",
                               "title": "Number as hex",
@@ -466,7 +466,7 @@
                             "title": "Offset"
                           },
                           "selector": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -508,7 +508,7 @@
           "title": "Deprecated contract class"
         },
         {
-          "#/components/schemas/CONTRACT_CLASS": {
+          "CONTRACT_CLASS": {
             "properties": {
               "abi": {
                 "description": "The class ABI, as supplied by the user declaring the class",
@@ -524,7 +524,7 @@
                 "properties": {
                   "CONSTRUCTOR": {
                     "items": {
-                      "#/components/schemas/SIERRA_ENTRY_POINT": {
+                      "SIERRA_ENTRY_POINT": {
                         "properties": {
                           "function_idx": {
                             "description": "The index of the function in the program",
@@ -532,7 +532,7 @@
                             "type": "integer"
                           },
                           "selector": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -555,7 +555,7 @@
                   },
                   "EXTERNAL": {
                     "items": {
-                      "#/components/schemas/SIERRA_ENTRY_POINT": {
+                      "SIERRA_ENTRY_POINT": {
                         "properties": {
                           "function_idx": {
                             "description": "The index of the function in the program",
@@ -563,7 +563,7 @@
                             "type": "integer"
                           },
                           "selector": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -586,7 +586,7 @@
                   },
                   "L1_HANDLER": {
                     "items": {
-                      "#/components/schemas/SIERRA_ENTRY_POINT": {
+                      "SIERRA_ENTRY_POINT": {
                         "properties": {
                           "function_idx": {
                             "description": "The index of the function in the program",
@@ -594,7 +594,7 @@
                             "type": "integer"
                           },
                           "selector": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -627,7 +627,7 @@
               "sierra_program": {
                 "description": "The list of Sierra instructions of which the program consists",
                 "items": {
-                  "#/components/schemas/FELT": {
+                  "FELT": {
                     "description": "A field element. represented by at most 63 hex digits",
                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                     "title": "Field element",

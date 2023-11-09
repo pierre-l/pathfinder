@@ -2,13 +2,13 @@
   "description": "estimates the resources required by the l1_handler transaction induced by the message",
   "errors": [
     {
-      "#/components/errors/CONTRACT_NOT_FOUND": {
+      "CONTRACT_NOT_FOUND": {
         "code": 20,
         "message": "Contract not found"
       }
     },
     {
-      "#/components/errors/CONTRACT_ERROR": {
+      "CONTRACT_ERROR": {
         "code": 40,
         "data": {
           "description": "More data about the execution failure",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "#/components/errors/BLOCK_NOT_FOUND": {
+      "BLOCK_NOT_FOUND": {
         "code": 24,
         "message": "Block not found"
       }
@@ -39,10 +39,10 @@
       "name": "message",
       "required": true,
       "schema": {
-        "#/components/schemas/MSG_FROM_L1": {
+        "MSG_FROM_L1": {
           "properties": {
             "entry_point_selector": {
-              "#/components/schemas/FELT": {
+              "FELT": {
                 "description": "A field element. represented by at most 63 hex digits",
                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                 "title": "Field element",
@@ -52,7 +52,7 @@
               "title": "Selector"
             },
             "from_address": {
-              "#/components/schemas/ETH_ADDRESS": {
+              "ETH_ADDRESS": {
                 "$comment": "An ethereum address",
                 "description": "an ethereum address represented as 40 hex digits",
                 "pattern": "^0x[a-fA-F0-9]{40}$",
@@ -64,7 +64,7 @@
             "payload": {
               "description": "The payload of the message",
               "items": {
-                "#/components/schemas/FELT": {
+                "FELT": {
                   "description": "A field element. represented by at most 63 hex digits",
                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                   "title": "Field element",
@@ -75,8 +75,8 @@
               "type": "array"
             },
             "to_address": {
-              "#/components/schemas/ADDRESS": {
-                "#/components/schemas/FELT": {
+              "ADDRESS": {
+                "FELT": {
                   "description": "A field element. represented by at most 63 hex digits",
                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                   "title": "Field element",
@@ -104,14 +104,14 @@
       "name": "block_id",
       "required": true,
       "schema": {
-        "#/components/schemas/BLOCK_ID": {
+        "BLOCK_ID": {
           "description": "Block hash, number or tag",
           "oneOf": [
             {
               "properties": {
                 "block_hash": {
-                  "#/components/schemas/BLOCK_HASH": {
-                    "#/components/schemas/FELT": {
+                  "BLOCK_HASH": {
+                    "FELT": {
                       "description": "A field element. represented by at most 63 hex digits",
                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                       "title": "Field element",
@@ -131,7 +131,7 @@
             {
               "properties": {
                 "block_number": {
-                  "#/components/schemas/BLOCK_NUMBER": {
+                  "BLOCK_NUMBER": {
                     "description": "The block's number (its height)",
                     "minimum": 0,
                     "title": "Block number",
@@ -147,7 +147,7 @@
               "type": "object"
             },
             {
-              "#/components/schemas/BLOCK_TAG": {
+              "BLOCK_TAG": {
                 "description": "A tag specifying a dynamic reference to a block",
                 "enum": [
                   "latest",
@@ -169,10 +169,10 @@
     "description": "the fee estimation",
     "name": "result",
     "schema": {
-      "#/components/schemas/FEE_ESTIMATE": {
+      "FEE_ESTIMATE": {
         "properties": {
           "gas_consumed": {
-            "#/components/schemas/NUM_AS_HEX": {
+            "NUM_AS_HEX": {
               "description": "An integer number in hex format (0x...)",
               "pattern": "^0x[a-fA-F0-9]+$",
               "title": "Number as hex",
@@ -182,7 +182,7 @@
             "title": "Gas consumed"
           },
           "gas_price": {
-            "#/components/schemas/NUM_AS_HEX": {
+            "NUM_AS_HEX": {
               "description": "An integer number in hex format (0x...)",
               "pattern": "^0x[a-fA-F0-9]+$",
               "title": "Number as hex",
@@ -192,7 +192,7 @@
             "title": "Gas price"
           },
           "overall_fee": {
-            "#/components/schemas/NUM_AS_HEX": {
+            "NUM_AS_HEX": {
               "description": "An integer number in hex format (0x...)",
               "pattern": "^0x[a-fA-F0-9]+$",
               "title": "Number as hex",

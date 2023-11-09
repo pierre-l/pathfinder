@@ -1,7 +1,7 @@
 {
   "errors": [
     {
-      "#/components/errors/BLOCK_NOT_FOUND": {
+      "BLOCK_NOT_FOUND": {
         "code": 24,
         "message": "Block not found"
       }
@@ -14,14 +14,14 @@
       "name": "block_id",
       "required": true,
       "schema": {
-        "#/components/schemas/BLOCK_ID": {
+        "BLOCK_ID": {
           "description": "Block hash, number or tag",
           "oneOf": [
             {
               "properties": {
                 "block_hash": {
-                  "#/components/schemas/BLOCK_HASH": {
-                    "#/components/schemas/FELT": {
+                  "BLOCK_HASH": {
+                    "FELT": {
                       "description": "A field element. represented by at most 63 hex digits",
                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                       "title": "Field element",
@@ -41,7 +41,7 @@
             {
               "properties": {
                 "block_number": {
-                  "#/components/schemas/BLOCK_NUMBER": {
+                  "BLOCK_NUMBER": {
                     "description": "The block's number (its height)",
                     "minimum": 0,
                     "title": "Block number",
@@ -57,7 +57,7 @@
               "type": "object"
             },
             {
-              "#/components/schemas/BLOCK_TAG": {
+              "BLOCK_TAG": {
                 "description": "A tag specifying a dynamic reference to a block",
                 "enum": [
                   "latest",
@@ -81,11 +81,11 @@
     "schema": {
       "oneOf": [
         {
-          "#/components/schemas/STATE_UPDATE": {
+          "STATE_UPDATE": {
             "properties": {
               "block_hash": {
-                "#/components/schemas/BLOCK_HASH": {
-                  "#/components/schemas/FELT": {
+                "BLOCK_HASH": {
+                  "FELT": {
                     "description": "A field element. represented by at most 63 hex digits",
                     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                     "title": "Field element",
@@ -96,7 +96,7 @@
                 "title": "Block hash"
               },
               "new_root": {
-                "#/components/schemas/FELT": {
+                "FELT": {
                   "description": "A field element. represented by at most 63 hex digits",
                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                   "title": "Field element",
@@ -106,7 +106,7 @@
                 "title": "New root"
               },
               "old_root": {
-                "#/components/schemas/FELT": {
+                "FELT": {
                   "description": "A field element. represented by at most 63 hex digits",
                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                   "title": "Field element",
@@ -116,7 +116,7 @@
                 "title": "Old root"
               },
               "state_diff": {
-                "#/components/schemas/STATE_DIFF": {
+                "STATE_DIFF": {
                   "description": "The change in state applied in this block, given as a mapping of addresses to the new values and/or new contracts",
                   "properties": {
                     "declared_classes": {
@@ -124,7 +124,7 @@
                         "description": "The declared class hash and compiled class hash",
                         "properties": {
                           "class_hash": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -134,7 +134,7 @@
                             "title": "Class hash"
                           },
                           "compiled_class_hash": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -152,10 +152,10 @@
                     },
                     "deployed_contracts": {
                       "items": {
-                        "#/components/schemas/DEPLOYED_CONTRACT_ITEM": {
+                        "DEPLOYED_CONTRACT_ITEM": {
                           "properties": {
                             "address": {
-                              "#/components/schemas/FELT": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -165,7 +165,7 @@
                               "title": "Address"
                             },
                             "class_hash": {
-                              "#/components/schemas/FELT": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -189,7 +189,7 @@
                     },
                     "deprecated_declared_classes": {
                       "items": {
-                        "#/components/schemas/FELT": {
+                        "FELT": {
                           "description": "A field element. represented by at most 63 hex digits",
                           "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                           "title": "Field element",
@@ -205,8 +205,8 @@
                         "description": "The updated nonce per contract address",
                         "properties": {
                           "contract_address": {
-                            "#/components/schemas/ADDRESS": {
-                              "#/components/schemas/FELT": {
+                            "ADDRESS": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -218,7 +218,7 @@
                             "title": "Contract address"
                           },
                           "nonce": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -239,7 +239,7 @@
                         "description": "The list of contracts whose class was replaced",
                         "properties": {
                           "class_hash": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -249,8 +249,8 @@
                             "title": "Class hash"
                           },
                           "contract_address": {
-                            "#/components/schemas/ADDRESS": {
-                              "#/components/schemas/FELT": {
+                            "ADDRESS": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -270,10 +270,10 @@
                     },
                     "storage_diffs": {
                       "items": {
-                        "#/components/schemas/CONTRACT_STORAGE_DIFF_ITEM": {
+                        "CONTRACT_STORAGE_DIFF_ITEM": {
                           "properties": {
                             "address": {
-                              "#/components/schemas/FELT": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -287,7 +287,7 @@
                               "items": {
                                 "properties": {
                                   "key": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -297,7 +297,7 @@
                                     "title": "Key"
                                   },
                                   "value": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -352,12 +352,12 @@
           "title": "State update"
         },
         {
-          "#/components/schemas/PENDING_STATE_UPDATE": {
+          "PENDING_STATE_UPDATE": {
             "additionalProperties": false,
             "description": "Pending state update",
             "properties": {
               "old_root": {
-                "#/components/schemas/FELT": {
+                "FELT": {
                   "description": "A field element. represented by at most 63 hex digits",
                   "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                   "title": "Field element",
@@ -367,7 +367,7 @@
                 "title": "Old root"
               },
               "state_diff": {
-                "#/components/schemas/STATE_DIFF": {
+                "STATE_DIFF": {
                   "description": "The change in state applied in this block, given as a mapping of addresses to the new values and/or new contracts",
                   "properties": {
                     "declared_classes": {
@@ -375,7 +375,7 @@
                         "description": "The declared class hash and compiled class hash",
                         "properties": {
                           "class_hash": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -385,7 +385,7 @@
                             "title": "Class hash"
                           },
                           "compiled_class_hash": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -403,10 +403,10 @@
                     },
                     "deployed_contracts": {
                       "items": {
-                        "#/components/schemas/DEPLOYED_CONTRACT_ITEM": {
+                        "DEPLOYED_CONTRACT_ITEM": {
                           "properties": {
                             "address": {
-                              "#/components/schemas/FELT": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -416,7 +416,7 @@
                               "title": "Address"
                             },
                             "class_hash": {
-                              "#/components/schemas/FELT": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -440,7 +440,7 @@
                     },
                     "deprecated_declared_classes": {
                       "items": {
-                        "#/components/schemas/FELT": {
+                        "FELT": {
                           "description": "A field element. represented by at most 63 hex digits",
                           "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                           "title": "Field element",
@@ -456,8 +456,8 @@
                         "description": "The updated nonce per contract address",
                         "properties": {
                           "contract_address": {
-                            "#/components/schemas/ADDRESS": {
-                              "#/components/schemas/FELT": {
+                            "ADDRESS": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -469,7 +469,7 @@
                             "title": "Contract address"
                           },
                           "nonce": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -490,7 +490,7 @@
                         "description": "The list of contracts whose class was replaced",
                         "properties": {
                           "class_hash": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -500,8 +500,8 @@
                             "title": "Class hash"
                           },
                           "contract_address": {
-                            "#/components/schemas/ADDRESS": {
-                              "#/components/schemas/FELT": {
+                            "ADDRESS": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -521,10 +521,10 @@
                     },
                     "storage_diffs": {
                       "items": {
-                        "#/components/schemas/CONTRACT_STORAGE_DIFF_ITEM": {
+                        "CONTRACT_STORAGE_DIFF_ITEM": {
                           "properties": {
                             "address": {
-                              "#/components/schemas/FELT": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -538,7 +538,7 @@
                               "items": {
                                 "properties": {
                                   "key": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -548,7 +548,7 @@
                                     "title": "Key"
                                   },
                                   "value": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",

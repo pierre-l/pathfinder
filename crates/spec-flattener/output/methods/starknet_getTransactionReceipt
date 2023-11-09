@@ -1,7 +1,7 @@
 {
   "errors": [
     {
-      "#/components/errors/TXN_HASH_NOT_FOUND": {
+      "TXN_HASH_NOT_FOUND": {
         "code": 29,
         "message": "Transaction hash not found"
       }
@@ -14,8 +14,8 @@
       "name": "transaction_hash",
       "required": true,
       "schema": {
-        "#/components/schemas/TXN_HASH": {
-          "#/components/schemas/FELT": {
+        "TXN_HASH": {
+          "FELT": {
             "description": "A field element. represented by at most 63 hex digits",
             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
             "title": "Field element",
@@ -34,10 +34,10 @@
     "schema": {
       "oneOf": [
         {
-          "#/components/schemas/TXN_RECEIPT": {
+          "TXN_RECEIPT": {
             "oneOf": [
               {
-                "#/components/schemas/INVOKE_TXN_RECEIPT": {
+                "INVOKE_TXN_RECEIPT": {
                   "allOf": [
                     {
                       "properties": {
@@ -56,11 +56,11 @@
                       "type": "object"
                     },
                     {
-                      "#/components/schemas/COMMON_RECEIPT_PROPERTIES": {
+                      "COMMON_RECEIPT_PROPERTIES": {
                         "description": "Common properties for a transaction receipt",
                         "properties": {
                           "actual_fee": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -70,8 +70,8 @@
                             "title": "Actual fee"
                           },
                           "block_hash": {
-                            "#/components/schemas/BLOCK_HASH": {
-                              "#/components/schemas/FELT": {
+                            "BLOCK_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -82,7 +82,7 @@
                             "title": "Block hash"
                           },
                           "block_number": {
-                            "#/components/schemas/BLOCK_NUMBER": {
+                            "BLOCK_NUMBER": {
                               "description": "The block's number (its height)",
                               "minimum": 0,
                               "title": "Block number",
@@ -93,13 +93,13 @@
                           "events": {
                             "description": "The events emitted as part of this transaction",
                             "items": {
-                              "#/components/schemas/EVENT": {
+                              "EVENT": {
                                 "allOf": [
                                   {
                                     "properties": {
                                       "from_address": {
-                                        "#/components/schemas/ADDRESS": {
-                                          "#/components/schemas/FELT": {
+                                        "ADDRESS": {
+                                          "FELT": {
                                             "description": "A field element. represented by at most 63 hex digits",
                                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                             "title": "Field element",
@@ -117,12 +117,12 @@
                                     "type": "object"
                                   },
                                   {
-                                    "#/components/schemas/EVENT_CONTENT": {
+                                    "EVENT_CONTENT": {
                                       "description": "The content of an event",
                                       "properties": {
                                         "data": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -134,7 +134,7 @@
                                         },
                                         "keys": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -163,11 +163,11 @@
                             "type": "array"
                           },
                           "execution_resources": {
-                            "#/components/schemas/EXECUTION_RESOURCES": {
+                            "EXECUTION_RESOURCES": {
                               "description": "The resources consumed by the transaction",
                               "properties": {
                                 "bitwise_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -177,7 +177,7 @@
                                   "title": "BITWISE applications"
                                 },
                                 "ec_op_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -187,7 +187,7 @@
                                   "title": "EC_OP applications"
                                 },
                                 "ecdsa_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -197,7 +197,7 @@
                                   "title": "ECDSA applications"
                                 },
                                 "keccak_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -207,7 +207,7 @@
                                   "title": "Keccak applications"
                                 },
                                 "memory_holes": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -217,7 +217,7 @@
                                   "title": "Memory holes"
                                 },
                                 "pedersen_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -227,7 +227,7 @@
                                   "title": "Pedersen applications"
                                 },
                                 "poseidon_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -237,7 +237,7 @@
                                   "title": "Poseidon applications"
                                 },
                                 "range_check_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -247,7 +247,7 @@
                                   "title": "Range check applications"
                                 },
                                 "steps": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -274,7 +274,7 @@
                             "title": "Execution resources"
                           },
                           "execution_status": {
-                            "#/components/schemas/TXN_EXECUTION_STATUS": {
+                            "TXN_EXECUTION_STATUS": {
                               "description": "The execution status of the transaction",
                               "enum": [
                                 "SUCCEEDED",
@@ -286,7 +286,7 @@
                             "title": "Execution status"
                           },
                           "finality_status": {
-                            "#/components/schemas/TXN_FINALITY_STATUS": {
+                            "TXN_FINALITY_STATUS": {
                               "description": "The finality status of the transaction",
                               "enum": [
                                 "ACCEPTED_ON_L2",
@@ -299,10 +299,10 @@
                           },
                           "messages_sent": {
                             "items": {
-                              "#/components/schemas/MSG_TO_L1": {
+                              "MSG_TO_L1": {
                                 "properties": {
                                   "from_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -313,7 +313,7 @@
                                   "payload": {
                                     "description": "The payload of the message",
                                     "items": {
-                                      "#/components/schemas/FELT": {
+                                      "FELT": {
                                         "description": "A field element. represented by at most 63 hex digits",
                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                         "title": "Field element",
@@ -324,7 +324,7 @@
                                     "type": "array"
                                   },
                                   "to_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -353,8 +353,8 @@
                             "type": "string"
                           },
                           "transaction_hash": {
-                            "#/components/schemas/TXN_HASH": {
-                              "#/components/schemas/FELT": {
+                            "TXN_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -389,12 +389,12 @@
                 "title": "Invoke transaction receipt"
               },
               {
-                "#/components/schemas/L1_HANDLER_TXN_RECEIPT": {
+                "L1_HANDLER_TXN_RECEIPT": {
                   "allOf": [
                     {
                       "properties": {
                         "message_hash": {
-                          "#/components/schemas/NUM_AS_HEX": {
+                          "NUM_AS_HEX": {
                             "description": "An integer number in hex format (0x...)",
                             "pattern": "^0x[a-fA-F0-9]+$",
                             "title": "Number as hex",
@@ -419,11 +419,11 @@
                       "type": "object"
                     },
                     {
-                      "#/components/schemas/COMMON_RECEIPT_PROPERTIES": {
+                      "COMMON_RECEIPT_PROPERTIES": {
                         "description": "Common properties for a transaction receipt",
                         "properties": {
                           "actual_fee": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -433,8 +433,8 @@
                             "title": "Actual fee"
                           },
                           "block_hash": {
-                            "#/components/schemas/BLOCK_HASH": {
-                              "#/components/schemas/FELT": {
+                            "BLOCK_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -445,7 +445,7 @@
                             "title": "Block hash"
                           },
                           "block_number": {
-                            "#/components/schemas/BLOCK_NUMBER": {
+                            "BLOCK_NUMBER": {
                               "description": "The block's number (its height)",
                               "minimum": 0,
                               "title": "Block number",
@@ -456,13 +456,13 @@
                           "events": {
                             "description": "The events emitted as part of this transaction",
                             "items": {
-                              "#/components/schemas/EVENT": {
+                              "EVENT": {
                                 "allOf": [
                                   {
                                     "properties": {
                                       "from_address": {
-                                        "#/components/schemas/ADDRESS": {
-                                          "#/components/schemas/FELT": {
+                                        "ADDRESS": {
+                                          "FELT": {
                                             "description": "A field element. represented by at most 63 hex digits",
                                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                             "title": "Field element",
@@ -480,12 +480,12 @@
                                     "type": "object"
                                   },
                                   {
-                                    "#/components/schemas/EVENT_CONTENT": {
+                                    "EVENT_CONTENT": {
                                       "description": "The content of an event",
                                       "properties": {
                                         "data": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -497,7 +497,7 @@
                                         },
                                         "keys": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -526,11 +526,11 @@
                             "type": "array"
                           },
                           "execution_resources": {
-                            "#/components/schemas/EXECUTION_RESOURCES": {
+                            "EXECUTION_RESOURCES": {
                               "description": "The resources consumed by the transaction",
                               "properties": {
                                 "bitwise_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -540,7 +540,7 @@
                                   "title": "BITWISE applications"
                                 },
                                 "ec_op_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -550,7 +550,7 @@
                                   "title": "EC_OP applications"
                                 },
                                 "ecdsa_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -560,7 +560,7 @@
                                   "title": "ECDSA applications"
                                 },
                                 "keccak_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -570,7 +570,7 @@
                                   "title": "Keccak applications"
                                 },
                                 "memory_holes": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -580,7 +580,7 @@
                                   "title": "Memory holes"
                                 },
                                 "pedersen_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -590,7 +590,7 @@
                                   "title": "Pedersen applications"
                                 },
                                 "poseidon_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -600,7 +600,7 @@
                                   "title": "Poseidon applications"
                                 },
                                 "range_check_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -610,7 +610,7 @@
                                   "title": "Range check applications"
                                 },
                                 "steps": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -637,7 +637,7 @@
                             "title": "Execution resources"
                           },
                           "execution_status": {
-                            "#/components/schemas/TXN_EXECUTION_STATUS": {
+                            "TXN_EXECUTION_STATUS": {
                               "description": "The execution status of the transaction",
                               "enum": [
                                 "SUCCEEDED",
@@ -649,7 +649,7 @@
                             "title": "Execution status"
                           },
                           "finality_status": {
-                            "#/components/schemas/TXN_FINALITY_STATUS": {
+                            "TXN_FINALITY_STATUS": {
                               "description": "The finality status of the transaction",
                               "enum": [
                                 "ACCEPTED_ON_L2",
@@ -662,10 +662,10 @@
                           },
                           "messages_sent": {
                             "items": {
-                              "#/components/schemas/MSG_TO_L1": {
+                              "MSG_TO_L1": {
                                 "properties": {
                                   "from_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -676,7 +676,7 @@
                                   "payload": {
                                     "description": "The payload of the message",
                                     "items": {
-                                      "#/components/schemas/FELT": {
+                                      "FELT": {
                                         "description": "A field element. represented by at most 63 hex digits",
                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                         "title": "Field element",
@@ -687,7 +687,7 @@
                                     "type": "array"
                                   },
                                   "to_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -716,8 +716,8 @@
                             "type": "string"
                           },
                           "transaction_hash": {
-                            "#/components/schemas/TXN_HASH": {
-                              "#/components/schemas/FELT": {
+                            "TXN_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -753,7 +753,7 @@
                 "title": "L1 handler transaction receipt"
               },
               {
-                "#/components/schemas/DECLARE_TXN_RECEIPT": {
+                "DECLARE_TXN_RECEIPT": {
                   "allOf": [
                     {
                       "properties": {
@@ -772,11 +772,11 @@
                       "type": "object"
                     },
                     {
-                      "#/components/schemas/COMMON_RECEIPT_PROPERTIES": {
+                      "COMMON_RECEIPT_PROPERTIES": {
                         "description": "Common properties for a transaction receipt",
                         "properties": {
                           "actual_fee": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -786,8 +786,8 @@
                             "title": "Actual fee"
                           },
                           "block_hash": {
-                            "#/components/schemas/BLOCK_HASH": {
-                              "#/components/schemas/FELT": {
+                            "BLOCK_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -798,7 +798,7 @@
                             "title": "Block hash"
                           },
                           "block_number": {
-                            "#/components/schemas/BLOCK_NUMBER": {
+                            "BLOCK_NUMBER": {
                               "description": "The block's number (its height)",
                               "minimum": 0,
                               "title": "Block number",
@@ -809,13 +809,13 @@
                           "events": {
                             "description": "The events emitted as part of this transaction",
                             "items": {
-                              "#/components/schemas/EVENT": {
+                              "EVENT": {
                                 "allOf": [
                                   {
                                     "properties": {
                                       "from_address": {
-                                        "#/components/schemas/ADDRESS": {
-                                          "#/components/schemas/FELT": {
+                                        "ADDRESS": {
+                                          "FELT": {
                                             "description": "A field element. represented by at most 63 hex digits",
                                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                             "title": "Field element",
@@ -833,12 +833,12 @@
                                     "type": "object"
                                   },
                                   {
-                                    "#/components/schemas/EVENT_CONTENT": {
+                                    "EVENT_CONTENT": {
                                       "description": "The content of an event",
                                       "properties": {
                                         "data": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -850,7 +850,7 @@
                                         },
                                         "keys": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -879,11 +879,11 @@
                             "type": "array"
                           },
                           "execution_resources": {
-                            "#/components/schemas/EXECUTION_RESOURCES": {
+                            "EXECUTION_RESOURCES": {
                               "description": "The resources consumed by the transaction",
                               "properties": {
                                 "bitwise_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -893,7 +893,7 @@
                                   "title": "BITWISE applications"
                                 },
                                 "ec_op_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -903,7 +903,7 @@
                                   "title": "EC_OP applications"
                                 },
                                 "ecdsa_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -913,7 +913,7 @@
                                   "title": "ECDSA applications"
                                 },
                                 "keccak_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -923,7 +923,7 @@
                                   "title": "Keccak applications"
                                 },
                                 "memory_holes": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -933,7 +933,7 @@
                                   "title": "Memory holes"
                                 },
                                 "pedersen_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -943,7 +943,7 @@
                                   "title": "Pedersen applications"
                                 },
                                 "poseidon_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -953,7 +953,7 @@
                                   "title": "Poseidon applications"
                                 },
                                 "range_check_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -963,7 +963,7 @@
                                   "title": "Range check applications"
                                 },
                                 "steps": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -990,7 +990,7 @@
                             "title": "Execution resources"
                           },
                           "execution_status": {
-                            "#/components/schemas/TXN_EXECUTION_STATUS": {
+                            "TXN_EXECUTION_STATUS": {
                               "description": "The execution status of the transaction",
                               "enum": [
                                 "SUCCEEDED",
@@ -1002,7 +1002,7 @@
                             "title": "Execution status"
                           },
                           "finality_status": {
-                            "#/components/schemas/TXN_FINALITY_STATUS": {
+                            "TXN_FINALITY_STATUS": {
                               "description": "The finality status of the transaction",
                               "enum": [
                                 "ACCEPTED_ON_L2",
@@ -1015,10 +1015,10 @@
                           },
                           "messages_sent": {
                             "items": {
-                              "#/components/schemas/MSG_TO_L1": {
+                              "MSG_TO_L1": {
                                 "properties": {
                                   "from_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -1029,7 +1029,7 @@
                                   "payload": {
                                     "description": "The payload of the message",
                                     "items": {
-                                      "#/components/schemas/FELT": {
+                                      "FELT": {
                                         "description": "A field element. represented by at most 63 hex digits",
                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                         "title": "Field element",
@@ -1040,7 +1040,7 @@
                                     "type": "array"
                                   },
                                   "to_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -1069,8 +1069,8 @@
                             "type": "string"
                           },
                           "transaction_hash": {
-                            "#/components/schemas/TXN_HASH": {
-                              "#/components/schemas/FELT": {
+                            "TXN_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -1105,14 +1105,14 @@
                 "title": "Declare transaction receipt"
               },
               {
-                "#/components/schemas/DEPLOY_TXN_RECEIPT": {
+                "DEPLOY_TXN_RECEIPT": {
                   "allOf": [
                     {
-                      "#/components/schemas/COMMON_RECEIPT_PROPERTIES": {
+                      "COMMON_RECEIPT_PROPERTIES": {
                         "description": "Common properties for a transaction receipt",
                         "properties": {
                           "actual_fee": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -1122,8 +1122,8 @@
                             "title": "Actual fee"
                           },
                           "block_hash": {
-                            "#/components/schemas/BLOCK_HASH": {
-                              "#/components/schemas/FELT": {
+                            "BLOCK_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -1134,7 +1134,7 @@
                             "title": "Block hash"
                           },
                           "block_number": {
-                            "#/components/schemas/BLOCK_NUMBER": {
+                            "BLOCK_NUMBER": {
                               "description": "The block's number (its height)",
                               "minimum": 0,
                               "title": "Block number",
@@ -1145,13 +1145,13 @@
                           "events": {
                             "description": "The events emitted as part of this transaction",
                             "items": {
-                              "#/components/schemas/EVENT": {
+                              "EVENT": {
                                 "allOf": [
                                   {
                                     "properties": {
                                       "from_address": {
-                                        "#/components/schemas/ADDRESS": {
-                                          "#/components/schemas/FELT": {
+                                        "ADDRESS": {
+                                          "FELT": {
                                             "description": "A field element. represented by at most 63 hex digits",
                                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                             "title": "Field element",
@@ -1169,12 +1169,12 @@
                                     "type": "object"
                                   },
                                   {
-                                    "#/components/schemas/EVENT_CONTENT": {
+                                    "EVENT_CONTENT": {
                                       "description": "The content of an event",
                                       "properties": {
                                         "data": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -1186,7 +1186,7 @@
                                         },
                                         "keys": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -1215,11 +1215,11 @@
                             "type": "array"
                           },
                           "execution_resources": {
-                            "#/components/schemas/EXECUTION_RESOURCES": {
+                            "EXECUTION_RESOURCES": {
                               "description": "The resources consumed by the transaction",
                               "properties": {
                                 "bitwise_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1229,7 +1229,7 @@
                                   "title": "BITWISE applications"
                                 },
                                 "ec_op_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1239,7 +1239,7 @@
                                   "title": "EC_OP applications"
                                 },
                                 "ecdsa_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1249,7 +1249,7 @@
                                   "title": "ECDSA applications"
                                 },
                                 "keccak_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1259,7 +1259,7 @@
                                   "title": "Keccak applications"
                                 },
                                 "memory_holes": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1269,7 +1269,7 @@
                                   "title": "Memory holes"
                                 },
                                 "pedersen_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1279,7 +1279,7 @@
                                   "title": "Pedersen applications"
                                 },
                                 "poseidon_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1289,7 +1289,7 @@
                                   "title": "Poseidon applications"
                                 },
                                 "range_check_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1299,7 +1299,7 @@
                                   "title": "Range check applications"
                                 },
                                 "steps": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1326,7 +1326,7 @@
                             "title": "Execution resources"
                           },
                           "execution_status": {
-                            "#/components/schemas/TXN_EXECUTION_STATUS": {
+                            "TXN_EXECUTION_STATUS": {
                               "description": "The execution status of the transaction",
                               "enum": [
                                 "SUCCEEDED",
@@ -1338,7 +1338,7 @@
                             "title": "Execution status"
                           },
                           "finality_status": {
-                            "#/components/schemas/TXN_FINALITY_STATUS": {
+                            "TXN_FINALITY_STATUS": {
                               "description": "The finality status of the transaction",
                               "enum": [
                                 "ACCEPTED_ON_L2",
@@ -1351,10 +1351,10 @@
                           },
                           "messages_sent": {
                             "items": {
-                              "#/components/schemas/MSG_TO_L1": {
+                              "MSG_TO_L1": {
                                 "properties": {
                                   "from_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -1365,7 +1365,7 @@
                                   "payload": {
                                     "description": "The payload of the message",
                                     "items": {
-                                      "#/components/schemas/FELT": {
+                                      "FELT": {
                                         "description": "A field element. represented by at most 63 hex digits",
                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                         "title": "Field element",
@@ -1376,7 +1376,7 @@
                                     "type": "array"
                                   },
                                   "to_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -1405,8 +1405,8 @@
                             "type": "string"
                           },
                           "transaction_hash": {
-                            "#/components/schemas/TXN_HASH": {
-                              "#/components/schemas/FELT": {
+                            "TXN_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -1438,7 +1438,7 @@
                     {
                       "properties": {
                         "contract_address": {
-                          "#/components/schemas/FELT": {
+                          "FELT": {
                             "description": "A field element. represented by at most 63 hex digits",
                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                             "title": "Field element",
@@ -1468,14 +1468,14 @@
                 "title": "Deploy transaction receipt"
               },
               {
-                "#/components/schemas/DEPLOY_ACCOUNT_TXN_RECEIPT": {
+                "DEPLOY_ACCOUNT_TXN_RECEIPT": {
                   "allOf": [
                     {
-                      "#/components/schemas/COMMON_RECEIPT_PROPERTIES": {
+                      "COMMON_RECEIPT_PROPERTIES": {
                         "description": "Common properties for a transaction receipt",
                         "properties": {
                           "actual_fee": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -1485,8 +1485,8 @@
                             "title": "Actual fee"
                           },
                           "block_hash": {
-                            "#/components/schemas/BLOCK_HASH": {
-                              "#/components/schemas/FELT": {
+                            "BLOCK_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -1497,7 +1497,7 @@
                             "title": "Block hash"
                           },
                           "block_number": {
-                            "#/components/schemas/BLOCK_NUMBER": {
+                            "BLOCK_NUMBER": {
                               "description": "The block's number (its height)",
                               "minimum": 0,
                               "title": "Block number",
@@ -1508,13 +1508,13 @@
                           "events": {
                             "description": "The events emitted as part of this transaction",
                             "items": {
-                              "#/components/schemas/EVENT": {
+                              "EVENT": {
                                 "allOf": [
                                   {
                                     "properties": {
                                       "from_address": {
-                                        "#/components/schemas/ADDRESS": {
-                                          "#/components/schemas/FELT": {
+                                        "ADDRESS": {
+                                          "FELT": {
                                             "description": "A field element. represented by at most 63 hex digits",
                                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                             "title": "Field element",
@@ -1532,12 +1532,12 @@
                                     "type": "object"
                                   },
                                   {
-                                    "#/components/schemas/EVENT_CONTENT": {
+                                    "EVENT_CONTENT": {
                                       "description": "The content of an event",
                                       "properties": {
                                         "data": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -1549,7 +1549,7 @@
                                         },
                                         "keys": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -1578,11 +1578,11 @@
                             "type": "array"
                           },
                           "execution_resources": {
-                            "#/components/schemas/EXECUTION_RESOURCES": {
+                            "EXECUTION_RESOURCES": {
                               "description": "The resources consumed by the transaction",
                               "properties": {
                                 "bitwise_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1592,7 +1592,7 @@
                                   "title": "BITWISE applications"
                                 },
                                 "ec_op_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1602,7 +1602,7 @@
                                   "title": "EC_OP applications"
                                 },
                                 "ecdsa_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1612,7 +1612,7 @@
                                   "title": "ECDSA applications"
                                 },
                                 "keccak_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1622,7 +1622,7 @@
                                   "title": "Keccak applications"
                                 },
                                 "memory_holes": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1632,7 +1632,7 @@
                                   "title": "Memory holes"
                                 },
                                 "pedersen_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1642,7 +1642,7 @@
                                   "title": "Pedersen applications"
                                 },
                                 "poseidon_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1652,7 +1652,7 @@
                                   "title": "Poseidon applications"
                                 },
                                 "range_check_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1662,7 +1662,7 @@
                                   "title": "Range check applications"
                                 },
                                 "steps": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1689,7 +1689,7 @@
                             "title": "Execution resources"
                           },
                           "execution_status": {
-                            "#/components/schemas/TXN_EXECUTION_STATUS": {
+                            "TXN_EXECUTION_STATUS": {
                               "description": "The execution status of the transaction",
                               "enum": [
                                 "SUCCEEDED",
@@ -1701,7 +1701,7 @@
                             "title": "Execution status"
                           },
                           "finality_status": {
-                            "#/components/schemas/TXN_FINALITY_STATUS": {
+                            "TXN_FINALITY_STATUS": {
                               "description": "The finality status of the transaction",
                               "enum": [
                                 "ACCEPTED_ON_L2",
@@ -1714,10 +1714,10 @@
                           },
                           "messages_sent": {
                             "items": {
-                              "#/components/schemas/MSG_TO_L1": {
+                              "MSG_TO_L1": {
                                 "properties": {
                                   "from_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -1728,7 +1728,7 @@
                                   "payload": {
                                     "description": "The payload of the message",
                                     "items": {
-                                      "#/components/schemas/FELT": {
+                                      "FELT": {
                                         "description": "A field element. represented by at most 63 hex digits",
                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                         "title": "Field element",
@@ -1739,7 +1739,7 @@
                                     "type": "array"
                                   },
                                   "to_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -1768,8 +1768,8 @@
                             "type": "string"
                           },
                           "transaction_hash": {
-                            "#/components/schemas/TXN_HASH": {
-                              "#/components/schemas/FELT": {
+                            "TXN_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -1801,7 +1801,7 @@
                     {
                       "properties": {
                         "contract_address": {
-                          "#/components/schemas/FELT": {
+                          "FELT": {
                             "description": "A field element. represented by at most 63 hex digits",
                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                             "title": "Field element",
@@ -1836,10 +1836,10 @@
           "title": "Transaction receipt"
         },
         {
-          "#/components/schemas/PENDING_TXN_RECEIPT": {
+          "PENDING_TXN_RECEIPT": {
             "oneOf": [
               {
-                "#/components/schemas/PENDING_INVOKE_TXN_RECEIPT": {
+                "PENDING_INVOKE_TXN_RECEIPT": {
                   "allOf": [
                     {
                       "properties": {
@@ -1858,11 +1858,11 @@
                       "type": "object"
                     },
                     {
-                      "#/components/schemas/PENDING_COMMON_RECEIPT_PROPERTIES": {
+                      "PENDING_COMMON_RECEIPT_PROPERTIES": {
                         "description": "Common properties for a pending transaction receipt",
                         "properties": {
                           "actual_fee": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -1874,13 +1874,13 @@
                           "events": {
                             "description": "The events emitted as part of this transaction",
                             "items": {
-                              "#/components/schemas/EVENT": {
+                              "EVENT": {
                                 "allOf": [
                                   {
                                     "properties": {
                                       "from_address": {
-                                        "#/components/schemas/ADDRESS": {
-                                          "#/components/schemas/FELT": {
+                                        "ADDRESS": {
+                                          "FELT": {
                                             "description": "A field element. represented by at most 63 hex digits",
                                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                             "title": "Field element",
@@ -1898,12 +1898,12 @@
                                     "type": "object"
                                   },
                                   {
-                                    "#/components/schemas/EVENT_CONTENT": {
+                                    "EVENT_CONTENT": {
                                       "description": "The content of an event",
                                       "properties": {
                                         "data": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -1915,7 +1915,7 @@
                                         },
                                         "keys": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -1944,11 +1944,11 @@
                             "type": "array"
                           },
                           "execution_resources": {
-                            "#/components/schemas/EXECUTION_RESOURCES": {
+                            "EXECUTION_RESOURCES": {
                               "description": "The resources consumed by the transaction",
                               "properties": {
                                 "bitwise_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1958,7 +1958,7 @@
                                   "title": "BITWISE applications"
                                 },
                                 "ec_op_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1968,7 +1968,7 @@
                                   "title": "EC_OP applications"
                                 },
                                 "ecdsa_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1978,7 +1978,7 @@
                                   "title": "ECDSA applications"
                                 },
                                 "keccak_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1988,7 +1988,7 @@
                                   "title": "Keccak applications"
                                 },
                                 "memory_holes": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -1998,7 +1998,7 @@
                                   "title": "Memory holes"
                                 },
                                 "pedersen_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2008,7 +2008,7 @@
                                   "title": "Pedersen applications"
                                 },
                                 "poseidon_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2018,7 +2018,7 @@
                                   "title": "Poseidon applications"
                                 },
                                 "range_check_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2028,7 +2028,7 @@
                                   "title": "Range check applications"
                                 },
                                 "steps": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2055,7 +2055,7 @@
                             "title": "Execution resources"
                           },
                           "execution_status": {
-                            "#/components/schemas/TXN_EXECUTION_STATUS": {
+                            "TXN_EXECUTION_STATUS": {
                               "description": "The execution status of the transaction",
                               "enum": [
                                 "SUCCEEDED",
@@ -2076,10 +2076,10 @@
                           },
                           "messages_sent": {
                             "items": {
-                              "#/components/schemas/MSG_TO_L1": {
+                              "MSG_TO_L1": {
                                 "properties": {
                                   "from_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -2090,7 +2090,7 @@
                                   "payload": {
                                     "description": "The payload of the message",
                                     "items": {
-                                      "#/components/schemas/FELT": {
+                                      "FELT": {
                                         "description": "A field element. represented by at most 63 hex digits",
                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                         "title": "Field element",
@@ -2101,7 +2101,7 @@
                                     "type": "array"
                                   },
                                   "to_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -2130,8 +2130,8 @@
                             "type": "string"
                           },
                           "transaction_hash": {
-                            "#/components/schemas/TXN_HASH": {
-                              "#/components/schemas/FELT": {
+                            "TXN_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -2144,7 +2144,7 @@
                             "title": "Transaction hash"
                           },
                           "type": {
-                            "#/components/schemas/TXN_TYPE": {
+                            "TXN_TYPE": {
                               "description": "The type of the transaction",
                               "enum": [
                                 "DECLARE",
@@ -2180,12 +2180,12 @@
                 "title": "Pending Invoke transaction receipt"
               },
               {
-                "#/components/schemas/PENDING_L1_HANDLER_TXN_RECEIPT": {
+                "PENDING_L1_HANDLER_TXN_RECEIPT": {
                   "allOf": [
                     {
                       "properties": {
                         "message_hash": {
-                          "#/components/schemas/NUM_AS_HEX": {
+                          "NUM_AS_HEX": {
                             "description": "An integer number in hex format (0x...)",
                             "pattern": "^0x[a-fA-F0-9]+$",
                             "title": "Number as hex",
@@ -2210,11 +2210,11 @@
                       "type": "object"
                     },
                     {
-                      "#/components/schemas/PENDING_COMMON_RECEIPT_PROPERTIES": {
+                      "PENDING_COMMON_RECEIPT_PROPERTIES": {
                         "description": "Common properties for a pending transaction receipt",
                         "properties": {
                           "actual_fee": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -2226,13 +2226,13 @@
                           "events": {
                             "description": "The events emitted as part of this transaction",
                             "items": {
-                              "#/components/schemas/EVENT": {
+                              "EVENT": {
                                 "allOf": [
                                   {
                                     "properties": {
                                       "from_address": {
-                                        "#/components/schemas/ADDRESS": {
-                                          "#/components/schemas/FELT": {
+                                        "ADDRESS": {
+                                          "FELT": {
                                             "description": "A field element. represented by at most 63 hex digits",
                                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                             "title": "Field element",
@@ -2250,12 +2250,12 @@
                                     "type": "object"
                                   },
                                   {
-                                    "#/components/schemas/EVENT_CONTENT": {
+                                    "EVENT_CONTENT": {
                                       "description": "The content of an event",
                                       "properties": {
                                         "data": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -2267,7 +2267,7 @@
                                         },
                                         "keys": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -2296,11 +2296,11 @@
                             "type": "array"
                           },
                           "execution_resources": {
-                            "#/components/schemas/EXECUTION_RESOURCES": {
+                            "EXECUTION_RESOURCES": {
                               "description": "The resources consumed by the transaction",
                               "properties": {
                                 "bitwise_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2310,7 +2310,7 @@
                                   "title": "BITWISE applications"
                                 },
                                 "ec_op_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2320,7 +2320,7 @@
                                   "title": "EC_OP applications"
                                 },
                                 "ecdsa_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2330,7 +2330,7 @@
                                   "title": "ECDSA applications"
                                 },
                                 "keccak_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2340,7 +2340,7 @@
                                   "title": "Keccak applications"
                                 },
                                 "memory_holes": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2350,7 +2350,7 @@
                                   "title": "Memory holes"
                                 },
                                 "pedersen_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2360,7 +2360,7 @@
                                   "title": "Pedersen applications"
                                 },
                                 "poseidon_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2370,7 +2370,7 @@
                                   "title": "Poseidon applications"
                                 },
                                 "range_check_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2380,7 +2380,7 @@
                                   "title": "Range check applications"
                                 },
                                 "steps": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2407,7 +2407,7 @@
                             "title": "Execution resources"
                           },
                           "execution_status": {
-                            "#/components/schemas/TXN_EXECUTION_STATUS": {
+                            "TXN_EXECUTION_STATUS": {
                               "description": "The execution status of the transaction",
                               "enum": [
                                 "SUCCEEDED",
@@ -2428,10 +2428,10 @@
                           },
                           "messages_sent": {
                             "items": {
-                              "#/components/schemas/MSG_TO_L1": {
+                              "MSG_TO_L1": {
                                 "properties": {
                                   "from_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -2442,7 +2442,7 @@
                                   "payload": {
                                     "description": "The payload of the message",
                                     "items": {
-                                      "#/components/schemas/FELT": {
+                                      "FELT": {
                                         "description": "A field element. represented by at most 63 hex digits",
                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                         "title": "Field element",
@@ -2453,7 +2453,7 @@
                                     "type": "array"
                                   },
                                   "to_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -2482,8 +2482,8 @@
                             "type": "string"
                           },
                           "transaction_hash": {
-                            "#/components/schemas/TXN_HASH": {
-                              "#/components/schemas/FELT": {
+                            "TXN_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -2496,7 +2496,7 @@
                             "title": "Transaction hash"
                           },
                           "type": {
-                            "#/components/schemas/TXN_TYPE": {
+                            "TXN_TYPE": {
                               "description": "The type of the transaction",
                               "enum": [
                                 "DECLARE",
@@ -2533,7 +2533,7 @@
                 "title": "Pending L1 handler transaction receipt"
               },
               {
-                "#/components/schemas/PENDING_DECLARE_TXN_RECEIPT": {
+                "PENDING_DECLARE_TXN_RECEIPT": {
                   "allOf": [
                     {
                       "properties": {
@@ -2552,11 +2552,11 @@
                       "type": "object"
                     },
                     {
-                      "#/components/schemas/PENDING_COMMON_RECEIPT_PROPERTIES": {
+                      "PENDING_COMMON_RECEIPT_PROPERTIES": {
                         "description": "Common properties for a pending transaction receipt",
                         "properties": {
                           "actual_fee": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -2568,13 +2568,13 @@
                           "events": {
                             "description": "The events emitted as part of this transaction",
                             "items": {
-                              "#/components/schemas/EVENT": {
+                              "EVENT": {
                                 "allOf": [
                                   {
                                     "properties": {
                                       "from_address": {
-                                        "#/components/schemas/ADDRESS": {
-                                          "#/components/schemas/FELT": {
+                                        "ADDRESS": {
+                                          "FELT": {
                                             "description": "A field element. represented by at most 63 hex digits",
                                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                             "title": "Field element",
@@ -2592,12 +2592,12 @@
                                     "type": "object"
                                   },
                                   {
-                                    "#/components/schemas/EVENT_CONTENT": {
+                                    "EVENT_CONTENT": {
                                       "description": "The content of an event",
                                       "properties": {
                                         "data": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -2609,7 +2609,7 @@
                                         },
                                         "keys": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -2638,11 +2638,11 @@
                             "type": "array"
                           },
                           "execution_resources": {
-                            "#/components/schemas/EXECUTION_RESOURCES": {
+                            "EXECUTION_RESOURCES": {
                               "description": "The resources consumed by the transaction",
                               "properties": {
                                 "bitwise_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2652,7 +2652,7 @@
                                   "title": "BITWISE applications"
                                 },
                                 "ec_op_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2662,7 +2662,7 @@
                                   "title": "EC_OP applications"
                                 },
                                 "ecdsa_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2672,7 +2672,7 @@
                                   "title": "ECDSA applications"
                                 },
                                 "keccak_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2682,7 +2682,7 @@
                                   "title": "Keccak applications"
                                 },
                                 "memory_holes": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2692,7 +2692,7 @@
                                   "title": "Memory holes"
                                 },
                                 "pedersen_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2702,7 +2702,7 @@
                                   "title": "Pedersen applications"
                                 },
                                 "poseidon_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2712,7 +2712,7 @@
                                   "title": "Poseidon applications"
                                 },
                                 "range_check_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2722,7 +2722,7 @@
                                   "title": "Range check applications"
                                 },
                                 "steps": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2749,7 +2749,7 @@
                             "title": "Execution resources"
                           },
                           "execution_status": {
-                            "#/components/schemas/TXN_EXECUTION_STATUS": {
+                            "TXN_EXECUTION_STATUS": {
                               "description": "The execution status of the transaction",
                               "enum": [
                                 "SUCCEEDED",
@@ -2770,10 +2770,10 @@
                           },
                           "messages_sent": {
                             "items": {
-                              "#/components/schemas/MSG_TO_L1": {
+                              "MSG_TO_L1": {
                                 "properties": {
                                   "from_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -2784,7 +2784,7 @@
                                   "payload": {
                                     "description": "The payload of the message",
                                     "items": {
-                                      "#/components/schemas/FELT": {
+                                      "FELT": {
                                         "description": "A field element. represented by at most 63 hex digits",
                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                         "title": "Field element",
@@ -2795,7 +2795,7 @@
                                     "type": "array"
                                   },
                                   "to_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -2824,8 +2824,8 @@
                             "type": "string"
                           },
                           "transaction_hash": {
-                            "#/components/schemas/TXN_HASH": {
-                              "#/components/schemas/FELT": {
+                            "TXN_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -2838,7 +2838,7 @@
                             "title": "Transaction hash"
                           },
                           "type": {
-                            "#/components/schemas/TXN_TYPE": {
+                            "TXN_TYPE": {
                               "description": "The type of the transaction",
                               "enum": [
                                 "DECLARE",
@@ -2874,14 +2874,14 @@
                 "title": "Pending Declare transaction receipt"
               },
               {
-                "#/components/schemas/PENDING_DEPLOY_ACCOUNT_TXN_RECEIPT": {
+                "PENDING_DEPLOY_ACCOUNT_TXN_RECEIPT": {
                   "allOf": [
                     {
-                      "#/components/schemas/PENDING_COMMON_RECEIPT_PROPERTIES": {
+                      "PENDING_COMMON_RECEIPT_PROPERTIES": {
                         "description": "Common properties for a pending transaction receipt",
                         "properties": {
                           "actual_fee": {
-                            "#/components/schemas/FELT": {
+                            "FELT": {
                               "description": "A field element. represented by at most 63 hex digits",
                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                               "title": "Field element",
@@ -2893,13 +2893,13 @@
                           "events": {
                             "description": "The events emitted as part of this transaction",
                             "items": {
-                              "#/components/schemas/EVENT": {
+                              "EVENT": {
                                 "allOf": [
                                   {
                                     "properties": {
                                       "from_address": {
-                                        "#/components/schemas/ADDRESS": {
-                                          "#/components/schemas/FELT": {
+                                        "ADDRESS": {
+                                          "FELT": {
                                             "description": "A field element. represented by at most 63 hex digits",
                                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                             "title": "Field element",
@@ -2917,12 +2917,12 @@
                                     "type": "object"
                                   },
                                   {
-                                    "#/components/schemas/EVENT_CONTENT": {
+                                    "EVENT_CONTENT": {
                                       "description": "The content of an event",
                                       "properties": {
                                         "data": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -2934,7 +2934,7 @@
                                         },
                                         "keys": {
                                           "items": {
-                                            "#/components/schemas/FELT": {
+                                            "FELT": {
                                               "description": "A field element. represented by at most 63 hex digits",
                                               "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                               "title": "Field element",
@@ -2963,11 +2963,11 @@
                             "type": "array"
                           },
                           "execution_resources": {
-                            "#/components/schemas/EXECUTION_RESOURCES": {
+                            "EXECUTION_RESOURCES": {
                               "description": "The resources consumed by the transaction",
                               "properties": {
                                 "bitwise_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2977,7 +2977,7 @@
                                   "title": "BITWISE applications"
                                 },
                                 "ec_op_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2987,7 +2987,7 @@
                                   "title": "EC_OP applications"
                                 },
                                 "ecdsa_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -2997,7 +2997,7 @@
                                   "title": "ECDSA applications"
                                 },
                                 "keccak_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -3007,7 +3007,7 @@
                                   "title": "Keccak applications"
                                 },
                                 "memory_holes": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -3017,7 +3017,7 @@
                                   "title": "Memory holes"
                                 },
                                 "pedersen_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -3027,7 +3027,7 @@
                                   "title": "Pedersen applications"
                                 },
                                 "poseidon_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -3037,7 +3037,7 @@
                                   "title": "Poseidon applications"
                                 },
                                 "range_check_builtin_applications": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -3047,7 +3047,7 @@
                                   "title": "Range check applications"
                                 },
                                 "steps": {
-                                  "#/components/schemas/NUM_AS_HEX": {
+                                  "NUM_AS_HEX": {
                                     "description": "An integer number in hex format (0x...)",
                                     "pattern": "^0x[a-fA-F0-9]+$",
                                     "title": "Number as hex",
@@ -3074,7 +3074,7 @@
                             "title": "Execution resources"
                           },
                           "execution_status": {
-                            "#/components/schemas/TXN_EXECUTION_STATUS": {
+                            "TXN_EXECUTION_STATUS": {
                               "description": "The execution status of the transaction",
                               "enum": [
                                 "SUCCEEDED",
@@ -3095,10 +3095,10 @@
                           },
                           "messages_sent": {
                             "items": {
-                              "#/components/schemas/MSG_TO_L1": {
+                              "MSG_TO_L1": {
                                 "properties": {
                                   "from_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -3109,7 +3109,7 @@
                                   "payload": {
                                     "description": "The payload of the message",
                                     "items": {
-                                      "#/components/schemas/FELT": {
+                                      "FELT": {
                                         "description": "A field element. represented by at most 63 hex digits",
                                         "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                         "title": "Field element",
@@ -3120,7 +3120,7 @@
                                     "type": "array"
                                   },
                                   "to_address": {
-                                    "#/components/schemas/FELT": {
+                                    "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
                                       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                       "title": "Field element",
@@ -3149,8 +3149,8 @@
                             "type": "string"
                           },
                           "transaction_hash": {
-                            "#/components/schemas/TXN_HASH": {
-                              "#/components/schemas/FELT": {
+                            "TXN_HASH": {
+                              "FELT": {
                                 "description": "A field element. represented by at most 63 hex digits",
                                 "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                                 "title": "Field element",
@@ -3163,7 +3163,7 @@
                             "title": "Transaction hash"
                           },
                           "type": {
-                            "#/components/schemas/TXN_TYPE": {
+                            "TXN_TYPE": {
                               "description": "The type of the transaction",
                               "enum": [
                                 "DECLARE",
@@ -3196,7 +3196,7 @@
                     {
                       "properties": {
                         "contract_address": {
-                          "#/components/schemas/FELT": {
+                          "FELT": {
                             "description": "A field element. represented by at most 63 hex digits",
                             "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
                             "title": "Field element",

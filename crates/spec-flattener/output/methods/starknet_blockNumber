@@ -1,7 +1,7 @@
 {
   "errors": [
     {
-      "#/components/errors/NO_BLOCKS": {
+      "NO_BLOCKS": {
         "code": 32,
         "message": "There are no blocks"
       }
@@ -13,7 +13,7 @@
     "description": "The latest block number",
     "name": "result",
     "schema": {
-      "#/components/schemas/BLOCK_NUMBER": {
+      "BLOCK_NUMBER": {
         "description": "The block's number (its height)",
         "minimum": 0,
         "title": "Block number",

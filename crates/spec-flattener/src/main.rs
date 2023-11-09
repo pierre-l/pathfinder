@@ -78,8 +78,8 @@ fn trim_ref_layer(obj: &mut Map<String, Value>) {
             // Remove the original reference.
             obj.remove(&key);
             // Replace it with the pointer object
-            // TODO Trim the pointer
-            obj.insert(pointer.to_string(), flat.clone());
+            let pointer_end = pointer.split("/").last().unwrap().to_string();
+            obj.insert(pointer_end, flat.clone());
         }
     }
 }
