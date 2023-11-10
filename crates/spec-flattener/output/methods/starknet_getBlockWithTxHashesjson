@@ -101,13 +101,11 @@
                       },
                       "description": "The hash of a single transaction"
                     },
+                    "required": true,
                     "title": "Transaction hashes",
                     "type": "array"
                   }
                 },
-                "required": [
-                  "transactions"
-                ],
                 "title": "Block body with transaction hashes",
                 "type": "object"
               },
@@ -123,6 +121,7 @@
                       },
                       "title": "Block hash"
                     },
+                    "required": true,
                     "title": "Block hash"
                   },
                   "block_number": {
@@ -133,6 +132,7 @@
                       "type": "integer"
                     },
                     "description": "The block number (its height)",
+                    "required": true,
                     "title": "Block number"
                   },
                   "l1_gas_price": {
@@ -156,15 +156,14 @@
                             "type": "string"
                           },
                           "description": "the price of one unit of the given resource, denominated in wei",
+                          "required": true,
                           "title": "price in wei"
                         }
                       },
-                      "required": [
-                        "price_in_wei"
-                      ],
                       "type": "object"
                     },
                     "descritpion": "The price of l1 gas in the block",
+                    "required": true,
                     "title": "L1 gas price"
                   },
                   "new_root": {
@@ -175,6 +174,7 @@
                       "type": "string"
                     },
                     "description": "The new global state root",
+                    "required": true,
                     "title": "New root"
                   },
                   "parent_hash": {
@@ -188,6 +188,7 @@
                       "title": "Block hash"
                     },
                     "description": "The hash of this block's parent",
+                    "required": true,
                     "title": "Parent hash"
                   },
                   "sequencer_address": {
@@ -198,30 +199,23 @@
                       "type": "string"
                     },
                     "description": "The StarkNet identity of the sequencer submitting this block",
+                    "required": true,
                     "title": "Sequencer address"
                   },
                   "starknet_version": {
                     "description": "Semver of the current Starknet protocol",
+                    "required": true,
                     "title": "Starknet version",
                     "type": "string"
                   },
                   "timestamp": {
                     "description": "The time in which the block was created, encoded in Unix time",
                     "minimum": 0,
+                    "required": true,
                     "title": "Timestamp",
                     "type": "integer"
                   }
                 },
-                "required": [
-                  "block_hash",
-                  "parent_hash",
-                  "block_number",
-                  "new_root",
-                  "timestamp",
-                  "sequencer_address",
-                  "l1_gas_price",
-                  "starknet_version"
-                ],
                 "title": "Block header",
                 "type": "object"
               },
@@ -237,7 +231,6 @@
                   "title": "Block status",
                   "type": "string"
                 },
-                "required": true,
                 "title": "Status"
               }
             },
@@ -266,13 +259,11 @@
                       },
                       "description": "The hash of a single transaction"
                     },
+                    "required": true,
                     "title": "Transaction hashes",
                     "type": "array"
                   }
                 },
-                "required": [
-                  "transactions"
-                ],
                 "title": "Block body with transaction hashes",
                 "type": "object"
               },
@@ -300,15 +291,14 @@
                             "type": "string"
                           },
                           "description": "the price of one unit of the given resource, denominated in wei",
+                          "required": true,
                           "title": "price in wei"
                         }
                       },
-                      "required": [
-                        "price_in_wei"
-                      ],
                       "type": "object"
                     },
                     "descritpion": "The price of l1 gas in the block",
+                    "required": true,
                     "title": "L1 gas price"
                   },
                   "parent_hash": {
@@ -322,6 +312,7 @@
                       "title": "Block hash"
                     },
                     "description": "The hash of this block's parent",
+                    "required": true,
                     "title": "Parent hash"
                   },
                   "sequencer_address": {
@@ -332,27 +323,23 @@
                       "type": "string"
                     },
                     "description": "The StarkNet identity of the sequencer submitting this block",
+                    "required": true,
                     "title": "Sequencer address"
                   },
                   "starknet_version": {
                     "description": "Semver of the current Starknet protocol",
+                    "required": true,
                     "title": "Starknet version",
                     "type": "string"
                   },
                   "timestamp": {
                     "description": "The time in which the block was created, encoded in Unix time",
                     "minimum": 0,
+                    "required": true,
                     "title": "Timestamp",
                     "type": "integer"
                   }
                 },
-                "required": [
-                  "parent_hash",
-                  "timestamp",
-                  "sequencer_address",
-                  "l1_gas_price",
-                  "starknet_version"
-                ],
                 "title": "Pending block header",
                 "type": "object"
               }

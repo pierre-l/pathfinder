@@ -118,28 +118,28 @@
                                     "properties": {
                                       "name": {
                                         "description": "The parameter's name",
+                                        "required": true,
                                         "title": "Parameter name",
                                         "type": "string"
                                       },
                                       "type": {
                                         "description": "The parameter's type",
+                                        "required": true,
                                         "title": "Parameter type",
                                         "type": "string"
                                       }
                                     },
-                                    "required": [
-                                      "name",
-                                      "type"
-                                    ],
                                     "title": "Typed parameter",
                                     "type": "object"
                                   }
                                 },
+                                "required": true,
                                 "title": "Typed parameter",
                                 "type": "array"
                               },
                               "name": {
                                 "description": "The function name",
+                                "required": true,
                                 "title": "Function name",
                                 "type": "string"
                               },
@@ -149,23 +149,22 @@
                                     "properties": {
                                       "name": {
                                         "description": "The parameter's name",
+                                        "required": true,
                                         "title": "Parameter name",
                                         "type": "string"
                                       },
                                       "type": {
                                         "description": "The parameter's type",
+                                        "required": true,
                                         "title": "Parameter type",
                                         "type": "string"
                                       }
                                     },
-                                    "required": [
-                                      "name",
-                                      "type"
-                                    ],
                                     "title": "Typed parameter",
                                     "type": "object"
                                   }
                                 },
+                                "required": true,
                                 "title": "Typed parameter",
                                 "type": "array"
                               },
@@ -189,15 +188,10 @@
                                   "title": "Function ABI type",
                                   "type": "string"
                                 },
+                                "required": true,
                                 "title": "Function ABI type"
                               }
                             },
-                            "required": [
-                              "type",
-                              "name",
-                              "inputs",
-                              "outputs"
-                            ],
                             "title": "Function ABI entry",
                             "type": "object"
                           },
@@ -212,23 +206,22 @@
                                     "properties": {
                                       "name": {
                                         "description": "The parameter's name",
+                                        "required": true,
                                         "title": "Parameter name",
                                         "type": "string"
                                       },
                                       "type": {
                                         "description": "The parameter's type",
+                                        "required": true,
                                         "title": "Parameter type",
                                         "type": "string"
                                       }
                                     },
-                                    "required": [
-                                      "name",
-                                      "type"
-                                    ],
                                     "title": "Typed parameter",
                                     "type": "object"
                                   }
                                 },
+                                "required": true,
                                 "title": "Typed parameter",
                                 "type": "array"
                               },
@@ -238,28 +231,28 @@
                                     "properties": {
                                       "name": {
                                         "description": "The parameter's name",
+                                        "required": true,
                                         "title": "Parameter name",
                                         "type": "string"
                                       },
                                       "type": {
                                         "description": "The parameter's type",
+                                        "required": true,
                                         "title": "Parameter type",
                                         "type": "string"
                                       }
                                     },
-                                    "required": [
-                                      "name",
-                                      "type"
-                                    ],
                                     "title": "Typed parameter",
                                     "type": "object"
                                   }
                                 },
+                                "required": true,
                                 "title": "Typed parameter",
                                 "type": "array"
                               },
                               "name": {
                                 "description": "The event name",
+                                "required": true,
                                 "title": "Event name",
                                 "type": "string"
                               },
@@ -271,15 +264,10 @@
                                   "title": "Event ABI type",
                                   "type": "string"
                                 },
+                                "required": true,
                                 "title": "Event ABI type"
                               }
                             },
-                            "required": [
-                              "type",
-                              "name",
-                              "keys",
-                              "data"
-                            ],
                             "title": "Event ABI entry",
                             "type": "object"
                           },
@@ -297,19 +285,17 @@
                                         "properties": {
                                           "name": {
                                             "description": "The parameter's name",
+                                            "required": true,
                                             "title": "Parameter name",
                                             "type": "string"
                                           },
                                           "type": {
                                             "description": "The parameter's type",
+                                            "required": true,
                                             "title": "Parameter type",
                                             "type": "string"
                                           }
                                         },
-                                        "required": [
-                                          "name",
-                                          "type"
-                                        ],
                                         "title": "Typed parameter",
                                         "type": "object"
                                       },
@@ -322,16 +308,19 @@
                                     "title": "Struct member"
                                   }
                                 },
+                                "required": true,
                                 "title": "Members",
                                 "type": "array"
                               },
                               "name": {
                                 "description": "The struct name",
+                                "required": true,
                                 "title": "Struct name",
                                 "type": "string"
                               },
                               "size": {
                                 "minimum": 1,
+                                "required": true,
                                 "title": "Size",
                                 "type": "integer"
                               },
@@ -343,15 +332,10 @@
                                   "title": "Struct ABI type",
                                   "type": "string"
                                 },
+                                "required": true,
                                 "title": "Struct ABI type"
                               }
                             },
-                            "required": [
-                              "type",
-                              "name",
-                              "size",
-                              "members"
-                            ],
                             "title": "Struct ABI entry",
                             "type": "object"
                           },
@@ -380,6 +364,7 @@
                               "type": "string"
                             },
                             "description": "The offset of the entry point in the program",
+                            "required": true,
                             "title": "Offset"
                           },
                           "selector": {
@@ -390,13 +375,10 @@
                               "type": "string"
                             },
                             "description": "A unique identifier of the entry point (function) in the program",
+                            "required": true,
                             "title": "Selector"
                           }
                         },
-                        "required": [
-                          "offset",
-                          "selector"
-                        ],
                         "title": "Deprecated Cairo entry point",
                         "type": "object"
                       }
@@ -416,6 +398,7 @@
                               "type": "string"
                             },
                             "description": "The offset of the entry point in the program",
+                            "required": true,
                             "title": "Offset"
                           },
                           "selector": {
@@ -426,13 +409,10 @@
                               "type": "string"
                             },
                             "description": "A unique identifier of the entry point (function) in the program",
+                            "required": true,
                             "title": "Selector"
                           }
                         },
-                        "required": [
-                          "offset",
-                          "selector"
-                        ],
                         "title": "Deprecated Cairo entry point",
                         "type": "object"
                       }
@@ -452,6 +432,7 @@
                               "type": "string"
                             },
                             "description": "The offset of the entry point in the program",
+                            "required": true,
                             "title": "Offset"
                           },
                           "selector": {
@@ -462,13 +443,10 @@
                               "type": "string"
                             },
                             "description": "A unique identifier of the entry point (function) in the program",
+                            "required": true,
                             "title": "Selector"
                           }
                         },
-                        "required": [
-                          "offset",
-                          "selector"
-                        ],
                         "title": "Deprecated Cairo entry point",
                         "type": "object"
                       }
@@ -477,20 +455,18 @@
                     "type": "array"
                   }
                 },
+                "required": true,
                 "title": "Deprecated entry points by type",
                 "type": "object"
               },
               "program": {
                 "description": "A base64 representation of the compressed program code",
                 "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$",
+                "required": true,
                 "title": "Program",
                 "type": "string"
               }
             },
-            "required": [
-              "program",
-              "entry_points_by_type"
-            ],
             "title": "Deprecated contract class",
             "type": "object"
           },
@@ -506,6 +482,7 @@
               },
               "contract_class_version": {
                 "description": "The version of the contract class object. Currently, the Starknet OS supports version 0.1.0",
+                "required": true,
                 "title": "Contract class version",
                 "type": "string"
               },
@@ -517,6 +494,7 @@
                         "properties": {
                           "function_idx": {
                             "description": "The index of the function in the program",
+                            "required": true,
                             "title": "Function index",
                             "type": "integer"
                           },
@@ -528,17 +506,15 @@
                               "type": "string"
                             },
                             "description": "A unique identifier of the entry point (function) in the program",
+                            "required": true,
                             "title": "Selector"
                           }
                         },
-                        "required": [
-                          "selector",
-                          "function_idx"
-                        ],
                         "title": "Sierra entry point",
                         "type": "object"
                       }
                     },
+                    "required": true,
                     "title": "Constructor",
                     "type": "array"
                   },
@@ -548,6 +524,7 @@
                         "properties": {
                           "function_idx": {
                             "description": "The index of the function in the program",
+                            "required": true,
                             "title": "Function index",
                             "type": "integer"
                           },
@@ -559,17 +536,15 @@
                               "type": "string"
                             },
                             "description": "A unique identifier of the entry point (function) in the program",
+                            "required": true,
                             "title": "Selector"
                           }
                         },
-                        "required": [
-                          "selector",
-                          "function_idx"
-                        ],
                         "title": "Sierra entry point",
                         "type": "object"
                       }
                     },
+                    "required": true,
                     "title": "External",
                     "type": "array"
                   },
@@ -579,6 +554,7 @@
                         "properties": {
                           "function_idx": {
                             "description": "The index of the function in the program",
+                            "required": true,
                             "title": "Function index",
                             "type": "integer"
                           },
@@ -590,26 +566,20 @@
                               "type": "string"
                             },
                             "description": "A unique identifier of the entry point (function) in the program",
+                            "required": true,
                             "title": "Selector"
                           }
                         },
-                        "required": [
-                          "selector",
-                          "function_idx"
-                        ],
                         "title": "Sierra entry point",
                         "type": "object"
                       }
                     },
+                    "required": true,
                     "title": "L1 handler",
                     "type": "array"
                   }
                 },
-                "required": [
-                  "CONSTRUCTOR",
-                  "EXTERNAL",
-                  "L1_HANDLER"
-                ],
+                "required": true,
                 "title": "Entry points by type",
                 "type": "object"
               },
@@ -623,15 +593,11 @@
                     "type": "string"
                   }
                 },
+                "required": true,
                 "title": "Sierra program",
                 "type": "array"
               }
             },
-            "required": [
-              "sierra_program",
-              "contract_class_version",
-              "entry_points_by_type"
-            ],
             "title": "Contract class",
             "type": "object"
           },

@@ -57,12 +57,10 @@
             "title": "Transaction status",
             "type": "string"
           },
+          "required": true,
           "title": "finality status"
         }
       },
-      "required": [
-        "finality_status"
-      ],
       "title": "Transaction status",
       "type": "object"
     }

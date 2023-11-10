@@ -126,37 +126,17 @@ impl From<AllOfInput> for MergedAllOf {
                     title: _,
                     type_,
                     mut properties,
-                    mut required,
+                    required,
                 } => {
                     assert_eq!(type_, "object");
 
+                    // TODO Keep?
                     if properties.iter().any(|(key, _)| {
                         ["description", "title", "required"].contains(&key.as_str())
                     }) {
                         panic!("Reserved name already in use")
                     }
 
-                    // TODO Move this out of here, make it a separate step, just before the allOf merge.
-                    // Embed the "required" field in the properties.
-                    properties.iter_mut().for_each(|(key, value)| {
-                        if let Ok(index) = required.binary_search(key) {
-                            required.remove(index);
-
-                            let prop = value
-                                .as_object_mut()
-                                .expect("Properties are expected to be objects");
-                            prop.insert("required".to_string(), Value::Bool(true));
-                        }
-                    });
-
-                    if !required.is_empty() {
-                        /* TODO
-                        panic!(
-                            "Properties are marked as required while absent from the actual property list: {:?}",
-                            required
-                        )
-                         */
-                    }
                     // TODO Check pre-existence
                     // Now add these to the merged props
                     merged_properties.append(&mut properties);

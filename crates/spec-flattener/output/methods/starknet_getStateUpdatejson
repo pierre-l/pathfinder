@@ -93,6 +93,7 @@
                   },
                   "title": "Block hash"
                 },
+                "required": true,
                 "title": "Block hash"
               },
               "new_root": {
@@ -103,6 +104,7 @@
                   "type": "string"
                 },
                 "description": "The new global state root",
+                "required": true,
                 "title": "New root"
               },
               "old_root": {
@@ -113,6 +115,7 @@
                   "type": "string"
                 },
                 "description": "The previous global state root",
+                "required": true,
                 "title": "Old root"
               },
               "state_diff": {
@@ -147,6 +150,7 @@
                         "title": "New classes",
                         "type": "object"
                       },
+                      "required": true,
                       "title": "Declared classes",
                       "type": "array"
                     },
@@ -162,6 +166,7 @@
                                 "type": "string"
                               },
                               "description": "The address of the contract",
+                              "required": true,
                               "title": "Address"
                             },
                             "class_hash": {
@@ -172,18 +177,16 @@
                                 "type": "string"
                               },
                               "description": "The hash of the contract code",
+                              "required": true,
                               "title": "Class hash"
                             }
                           },
-                          "required": [
-                            "address",
-                            "class_hash"
-                          ],
                           "title": "Deployed contract item",
                           "type": "object"
                         },
                         "description": "A new contract deployed as part of the state update"
                       },
+                      "required": true,
                       "title": "Deployed contracts",
                       "type": "array"
                     },
@@ -197,6 +200,7 @@
                         },
                         "description": "The hash of the declared class"
                       },
+                      "required": true,
                       "title": "Deprecated declared classes",
                       "type": "array"
                     },
@@ -231,6 +235,7 @@
                         "title": "Nonce update",
                         "type": "object"
                       },
+                      "required": true,
                       "title": "Nonces",
                       "type": "array"
                     },
@@ -265,6 +270,7 @@
                         "title": "Replaced class",
                         "type": "object"
                       },
+                      "required": true,
                       "title": "Replaced classes",
                       "type": "array"
                     },
@@ -280,6 +286,7 @@
                                 "type": "string"
                               },
                               "description": "The contract address for which the storage changed",
+                              "required": true,
                               "title": "Address"
                             },
                             "storage_entries": {
@@ -310,42 +317,27 @@
                                 "title": "Storage diff item",
                                 "type": "object"
                               },
+                              "required": true,
                               "title": "Storage entries",
                               "type": "array"
                             }
                           },
-                          "required": [
-                            "address",
-                            "storage_entries"
-                          ],
                           "title": "Contract storage diff item",
                           "type": "object"
                         },
                         "description": "The changes in the storage per contract address"
                       },
+                      "required": true,
                       "title": "Storage diffs",
                       "type": "array"
                     }
                   },
-                  "required": [
-                    "storage_diffs",
-                    "deprecated_declared_classes",
-                    "declared_classes",
-                    "replaced_classes",
-                    "deployed_contracts",
-                    "nonces"
-                  ],
                   "type": "object"
                 },
+                "required": true,
                 "title": "State diff"
               }
             },
-            "required": [
-              "state_diff",
-              "block_hash",
-              "old_root",
-              "new_root"
-            ],
             "title": "State update",
             "type": "object"
           },
@@ -364,6 +356,7 @@
                   "type": "string"
                 },
                 "description": "The previous global state root",
+                "required": true,
                 "title": "Old root"
               },
               "state_diff": {
@@ -398,6 +391,7 @@
                         "title": "New classes",
                         "type": "object"
                       },
+                      "required": true,
                       "title": "Declared classes",
                       "type": "array"
                     },
@@ -413,6 +407,7 @@
                                 "type": "string"
                               },
                               "description": "The address of the contract",
+                              "required": true,
                               "title": "Address"
                             },
                             "class_hash": {
@@ -423,18 +418,16 @@
                                 "type": "string"
                               },
                               "description": "The hash of the contract code",
+                              "required": true,
                               "title": "Class hash"
                             }
                           },
-                          "required": [
-                            "address",
-                            "class_hash"
-                          ],
                           "title": "Deployed contract item",
                           "type": "object"
                         },
                         "description": "A new contract deployed as part of the state update"
                       },
+                      "required": true,
                       "title": "Deployed contracts",
                       "type": "array"
                     },
@@ -448,6 +441,7 @@
                         },
                         "description": "The hash of the declared class"
                       },
+                      "required": true,
                       "title": "Deprecated declared classes",
                       "type": "array"
                     },
@@ -482,6 +476,7 @@
                         "title": "Nonce update",
                         "type": "object"
                       },
+                      "required": true,
                       "title": "Nonces",
                       "type": "array"
                     },
@@ -516,6 +511,7 @@
                         "title": "Replaced class",
                         "type": "object"
                       },
+                      "required": true,
                       "title": "Replaced classes",
                       "type": "array"
                     },
@@ -531,6 +527,7 @@
                                 "type": "string"
                               },
                               "description": "The contract address for which the storage changed",
+                              "required": true,
                               "title": "Address"
                             },
                             "storage_entries": {
@@ -561,40 +558,27 @@
                                 "title": "Storage diff item",
                                 "type": "object"
                               },
+                              "required": true,
                               "title": "Storage entries",
                               "type": "array"
                             }
                           },
-                          "required": [
-                            "address",
-                            "storage_entries"
-                          ],
                           "title": "Contract storage diff item",
                           "type": "object"
                         },
                         "description": "The changes in the storage per contract address"
                       },
+                      "required": true,
                       "title": "Storage diffs",
                       "type": "array"
                     }
                   },
-                  "required": [
-                    "storage_diffs",
-                    "deprecated_declared_classes",
-                    "declared_classes",
-                    "replaced_classes",
-                    "deployed_contracts",
-                    "nonces"
-                  ],
                   "type": "object"
                 },
+                "required": true,
                 "title": "State diff"
               }
             },
-            "required": [
-              "old_root",
-              "state_diff"
-            ],
             "title": "Pending state update",
             "type": "object"
           },

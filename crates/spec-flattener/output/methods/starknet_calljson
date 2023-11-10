@@ -51,6 +51,7 @@
                   "type": "string"
                 }
               },
+              "required": true,
               "title": "Calldata",
               "type": "array"
             },
@@ -64,6 +65,7 @@
                 },
                 "title": "Address"
               },
+              "required": true,
               "title": "Contract address"
             },
             "entry_point_selector": {
@@ -73,14 +75,10 @@
                 "title": "Field element",
                 "type": "string"
               },
+              "required": true,
               "title": "Entry point selector"
             }
           },
-          "required": [
-            "contract_address",
-            "entry_point_selector",
-            "calldata"
-          ],
           "title": "Function call",
           "type": "object"
         },

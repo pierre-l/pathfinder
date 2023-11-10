@@ -24,6 +24,7 @@
             },
             "title": "Block hash"
           },
+          "required": true,
           "title": "Block hash"
         },
         "block_number": {
@@ -33,13 +34,10 @@
             "title": "Block number",
             "type": "integer"
           },
+          "required": true,
           "title": "Block number"
         }
       },
-      "required": [
-        "block_hash",
-        "block_number"
-      ],
       "title": "Starknet block hash and number result",
       "type": "object"
     }

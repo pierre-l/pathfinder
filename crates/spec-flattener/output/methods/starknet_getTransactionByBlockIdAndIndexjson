@@ -118,6 +118,7 @@
                               "type": "string"
                             }
                           },
+                          "required": true,
                           "title": "Calldata",
                           "type": "array"
                         },
@@ -131,6 +132,7 @@
                             },
                             "title": "Address"
                           },
+                          "required": true,
                           "title": "Contract address"
                         },
                         "entry_point_selector": {
@@ -140,6 +142,7 @@
                             "title": "Field element",
                             "type": "string"
                           },
+                          "required": true,
                           "title": "Entry point selector"
                         },
                         "max_fee": {
@@ -150,6 +153,7 @@
                             "type": "string"
                           },
                           "description": "The maximal fee that can be charged for including the transaction",
+                          "required": true,
                           "title": "Max fee"
                         },
                         "signature": {
@@ -166,12 +170,14 @@
                             "title": "Signature",
                             "type": "array"
                           },
+                          "required": true,
                           "title": "Signature"
                         },
                         "type": {
                           "enum": [
                             "INVOKE"
                           ],
+                          "required": true,
                           "title": "Type",
                           "type": "string"
                         },
@@ -180,19 +186,11 @@
                           "enum": [
                             "0x0"
                           ],
+                          "required": true,
                           "title": "Version",
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "type",
-                        "contract_address",
-                        "entry_point_selector",
-                        "calldata",
-                        "max_fee",
-                        "version",
-                        "signature"
-                      ],
                       "title": "Invoke transaction V0"
                     },
                     "title": "Invoke transaction V0"
@@ -222,7 +220,6 @@
                             "type": "string"
                           },
                           "description": "The maximal fee that can be charged for including the transaction",
-                          "required": true,
                           "title": "Max fee"
                         },
                         "nonce": {
@@ -244,7 +241,6 @@
                             },
                             "title": "Address"
                           },
-                          "required": true,
                           "title": "sender address"
                         },
                         "signature": {
@@ -278,7 +274,6 @@
                             "type": "string"
                           },
                           "description": "Version of the transaction scheme",
-                          "required": true,
                           "title": "Version"
                         }
                       },
@@ -308,6 +303,7 @@
                             "type": "string"
                           }
                         },
+                        "required": true,
                         "title": "Calldata",
                         "type": "array"
                       },
@@ -321,6 +317,7 @@
                           },
                           "title": "Address"
                         },
+                        "required": true,
                         "title": "Contract address"
                       },
                       "entry_point_selector": {
@@ -330,14 +327,10 @@
                           "title": "Field element",
                           "type": "string"
                         },
+                        "required": true,
                         "title": "Entry point selector"
                       }
                     },
-                    "required": [
-                      "contract_address",
-                      "entry_point_selector",
-                      "calldata"
-                    ],
                     "title": "Function call",
                     "type": "object"
                   },
@@ -355,7 +348,6 @@
                     "enum": [
                       "L1_HANDLER"
                     ],
-                    "required": true,
                     "title": "type",
                     "type": "string"
                   },
@@ -412,7 +404,6 @@
                             "title": "Address"
                           },
                           "description": "The address of the account contract sending the declaration transaction",
-                          "required": true,
                           "title": "Sender address"
                         },
                         "signature": {
@@ -443,7 +434,6 @@
                           "enum": [
                             "0x0"
                           ],
-                          "required": true,
                           "title": "Version",
                           "type": "string"
                         }
@@ -496,7 +486,6 @@
                             "title": "Address"
                           },
                           "description": "The address of the account contract sending the declaration transaction",
-                          "required": true,
                           "title": "Sender address"
                         },
                         "signature": {
@@ -513,7 +502,6 @@
                             "title": "Signature",
                             "type": "array"
                           },
-                          "required": true,
                           "title": "Signature"
                         },
                         "type": {
@@ -528,7 +516,6 @@
                           "enum": [
                             "0x1"
                           ],
-                          "required": true,
                           "title": "Version",
                           "type": "string"
                         }
@@ -559,7 +546,6 @@
                             "type": "string"
                           },
                           "description": "The hash of the Cairo assembly resulting from the Sierra compilation",
-                          "required": true,
                           "title": "Compiled class hash"
                         },
                         "max_fee": {
@@ -592,7 +578,6 @@
                             "title": "Address"
                           },
                           "description": "The address of the account contract sending the declaration transaction",
-                          "required": true,
                           "title": "Sender address"
                         },
                         "signature": {
@@ -609,7 +594,6 @@
                             "title": "Signature",
                             "type": "array"
                           },
-                          "required": true,
                           "title": "Signature"
                         },
                         "type": {
@@ -624,7 +608,6 @@
                           "enum": [
                             "0x2"
                           ],
-                          "required": true,
                           "title": "Version",
                           "type": "string"
                         }
@@ -662,7 +645,6 @@
                         "type": "string"
                       }
                     },
-                    "required": true,
                     "title": "Constructor calldata",
                     "type": "array"
                   },
@@ -674,14 +656,12 @@
                       "type": "string"
                     },
                     "description": "The salt for the address of the deployed contract",
-                    "required": true,
                     "title": "Contract address salt"
                   },
                   "type": {
                     "enum": [
                       "DEPLOY"
                     ],
-                    "required": true,
                     "title": "Deploy",
                     "type": "string"
                   },
@@ -716,6 +696,7 @@
                             "type": "string"
                           },
                           "description": "The hash of the deployed contract's class",
+                          "required": true,
                           "title": "Class hash"
                         },
                         "constructor_calldata": {
@@ -728,6 +709,7 @@
                               "type": "string"
                             }
                           },
+                          "required": true,
                           "title": "Constructor calldata",
                           "type": "array"
                         },
@@ -739,6 +721,7 @@
                             "type": "string"
                           },
                           "description": "The salt for the address of the deployed contract",
+                          "required": true,
                           "title": "Contract address salt"
                         },
                         "max_fee": {
@@ -749,6 +732,7 @@
                             "type": "string"
                           },
                           "description": "The maximal fee that can be charged for including the transaction",
+                          "required": true,
                           "title": "Max fee"
                         },
                         "nonce": {
@@ -758,6 +742,7 @@
                             "title": "Field element",
                             "type": "string"
                           },
+                          "required": true,
                           "title": "Nonce"
                         },
                         "signature": {
@@ -774,12 +759,14 @@
                             "title": "Signature",
                             "type": "array"
                           },
+                          "required": true,
                           "title": "Signature"
                         },
                         "type": {
                           "enum": [
                             "DEPLOY_ACCOUNT"
                           ],
+                          "required": true,
                           "title": "Deploy account",
                           "type": "string"
                         },
@@ -791,19 +778,10 @@
                             "type": "string"
                           },
                           "description": "Version of the transaction scheme",
+                          "required": true,
                           "title": "Version"
                         }
                       },
-                      "required": [
-                        "max_fee",
-                        "version",
-                        "signature",
-                        "nonce",
-                        "type",
-                        "contract_address_salt",
-                        "constructor_calldata",
-                        "class_hash"
-                      ],
                       "title": "Deploy account transaction"
                     },
                     "title": "Deploy account V1"
@@ -827,7 +805,6 @@
             "description": "The transaction hash, as assigned in StarkNet",
             "title": "Transaction hash"
           },
-          "required": true,
           "title": "transaction hash"
         }
       },

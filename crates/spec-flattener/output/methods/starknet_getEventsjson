@@ -188,7 +188,6 @@
                 "title": "to block"
               }
             },
-            "required": [],
             "title": "Event filter",
             "type": "object"
           },
@@ -196,6 +195,7 @@
             "properties": {
               "chunk_size": {
                 "minimum": 1,
+                "required": true,
                 "title": "Chunk size",
                 "type": "integer"
               },
@@ -205,9 +205,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "chunk_size"
-            ],
             "title": "Result page request",
             "type": "object"
           }
@@ -248,6 +245,7 @@
                                 "type": "string"
                               }
                             },
+                            "required": true,
                             "title": "Data",
                             "type": "array"
                           },
@@ -260,14 +258,11 @@
                                 "type": "string"
                               }
                             },
+                            "required": true,
                             "title": "Keys",
                             "type": "array"
                           }
                         },
-                        "required": [
-                          "keys",
-                          "data"
-                        ],
                         "title": "Event content",
                         "type": "object"
                       },
@@ -281,7 +276,6 @@
                           },
                           "title": "Address"
                         },
-                        "required": true,
                         "title": "From address"
                       }
                     },
@@ -298,7 +292,6 @@
                       "title": "Block hash"
                     },
                     "description": "The hash of the block in which the event was emitted",
-                    "required": true,
                     "title": "Block hash"
                   },
                   "block_number": {
@@ -309,7 +302,6 @@
                       "type": "integer"
                     },
                     "description": "The number of the block in which the event was emitted",
-                    "required": true,
                     "title": "Block number"
                   },
                   "transaction_hash": {
@@ -324,20 +316,17 @@
                       "title": "Transaction hash"
                     },
                     "description": "The transaction that emitted the event",
-                    "required": true,
                     "title": "Transaction hash"
                   }
                 },
                 "title": "Emitted event"
               }
             },
+            "required": true,
             "title": "Matching Events",
             "type": "array"
           }
         },
-        "required": [
-          "events"
-        ],
         "title": "Events chunk",
         "type": "object"
       },

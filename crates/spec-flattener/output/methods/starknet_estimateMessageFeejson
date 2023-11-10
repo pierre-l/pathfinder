@@ -49,6 +49,7 @@
                 "type": "string"
               },
               "description": "The selector of the l1_handler in invoke in the target contract",
+              "required": true,
               "title": "Selector"
             },
             "from_address": {
@@ -59,7 +60,8 @@
                 "title": "Ethereum address",
                 "type": "string"
               },
-              "description": "The address of the L1 contract sending the message"
+              "description": "The address of the L1 contract sending the message",
+              "required": true
             },
             "payload": {
               "description": "The payload of the message",
@@ -71,6 +73,7 @@
                   "type": "string"
                 }
               },
+              "required": true,
               "title": "Payload",
               "type": "array"
             },
@@ -85,15 +88,10 @@
                 "title": "Address"
               },
               "description": "The target L2 address the message is sent to",
+              "required": true,
               "title": "To address"
             }
           },
-          "required": [
-            "from_address",
-            "to_address",
-            "payload",
-            "entry_point_selector"
-          ],
           "title": "Message from L1",
           "type": "object"
         }
@@ -179,6 +177,7 @@
               "type": "string"
             },
             "description": "The Ethereum gas cost of the transaction (see https://docs.starknet.io/docs/Fees/fee-mechanism for more info)",
+            "required": true,
             "title": "Gas consumed"
           },
           "gas_price": {
@@ -189,6 +188,7 @@
               "type": "string"
             },
             "description": "The gas price (in gwei) that was used in the cost estimation",
+            "required": true,
             "title": "Gas price"
           },
           "overall_fee": {
@@ -199,14 +199,10 @@
               "type": "string"
             },
             "description": "The estimated fee for the transaction (in gwei), product of gas_consumed and gas_price",
+            "required": true,
             "title": "Overall fee"
           }
         },
-        "required": [
-          "gas_consumed",
-          "gas_price",
-          "overall_fee"
-        ],
         "title": "Fee estimation",
         "type": "object"
       }

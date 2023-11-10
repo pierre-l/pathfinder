@@ -26,6 +26,7 @@
                   "title": "Block hash"
                 },
                 "description": "The hash of the current block being synchronized",
+                "required": true,
                 "title": "Current block hash"
               },
               "current_block_num": {
@@ -36,6 +37,7 @@
                   "type": "integer"
                 },
                 "description": "The number (height) of the current block being synchronized",
+                "required": true,
                 "title": "Current block number"
               },
               "highest_block_hash": {
@@ -49,6 +51,7 @@
                   "title": "Block hash"
                 },
                 "description": "The hash of the estimated highest block to be synchronized",
+                "required": true,
                 "title": "Highest block hash"
               },
               "highest_block_num": {
@@ -59,6 +62,7 @@
                   "type": "integer"
                 },
                 "description": "The number (height) of the estimated highest block to be synchronized",
+                "required": true,
                 "title": "Highest block number"
               },
               "starting_block_hash": {
@@ -72,6 +76,7 @@
                   "title": "Block hash"
                 },
                 "description": "The hash of the block from which the sync started",
+                "required": true,
                 "title": "Starting block hash"
               },
               "starting_block_num": {
@@ -82,17 +87,10 @@
                   "type": "integer"
                 },
                 "description": "The number (height) of the block from which the sync started",
+                "required": true,
                 "title": "Starting block number"
               }
             },
-            "required": [
-              "starting_block_hash",
-              "starting_block_num",
-              "current_block_hash",
-              "current_block_num",
-              "highest_block_hash",
-              "highest_block_num"
-            ],
             "title": "Sync status",
             "type": "object"
           },

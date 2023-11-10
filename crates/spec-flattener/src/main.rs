@@ -46,19 +46,28 @@ async fn main() {
 
     // Trim: remove the intermediate layers of flattened references: the "$ref" field, the pointer object.
     let trimmed = {
-        let mut clone = Value::Object(sorted.clone());
-        for_each_object(&mut clone, &|object| {
+        let mut object_as_value = Value::Object(sorted);
+        for_each_object(&mut object_as_value, &|object| {
             trim_ref_layer(object);
         });
-        clone.as_object().unwrap().clone()
+        object_as_value.as_object().unwrap().clone()
     };
 
+    let embedded_required = {
+        let mut object_as_value = Value::Object(trimmed);
+        for_each_object(&mut object_as_value, &|object| {
+            embed_required(object);
+        });
+        object_as_value.as_object().unwrap().clone()
+    };
+
+    // Merge the "allOf" objects, regroup their item properties into a single object
     let merged_allof = {
-        let mut clone = Value::Object(trimmed.clone());
-        for_each_object(&mut clone, &|object| {
+        let mut object_as_value = Value::Object(embedded_required);
+        for_each_object(&mut object_as_value, &|object| {
             merge_allofs(object);
         });
-        clone.as_object().unwrap().clone()
+        object_as_value.as_object().unwrap().clone()
     };
 
     // TODO We could have an output dir per step and write output for every step for easier debugging
@@ -97,6 +106,53 @@ fn trim_ref_layer(obj: &mut Map<String, Value>) {
     }
 }
 
+/// When an object has a "properties" field and a "required" array field, embed the "required" prop
+/// as a boolean inside the corresponding property
+fn embed_required(obj: &mut Map<String, Value>) {
+    for child in obj.values_mut() {
+        // TODO Let else?
+        let child = if let Some(value) = child.as_object_mut() {
+            value
+        } else {
+            continue;
+        };
+
+        let required = if let Some(required) = child
+            .get("required")
+            .map(|v| v.as_array().cloned())
+            .flatten()
+        {
+            required
+        } else {
+            continue;
+        };
+
+        let properties = if let Some(properties) = child
+            .get_mut("properties")
+            .map(|value| value.as_object_mut())
+            .flatten()
+        {
+            properties
+        } else {
+            continue;
+        };
+
+        required.into_iter().for_each(|key| {
+            let child_prop = properties
+                .get_mut(key.as_str().unwrap())
+                .expect(
+                    "A property marked as \"required\" should already exist in the property map",
+                )
+                .as_object_mut()
+                .expect("Properties are expected to be objects");
+            child_prop.insert("required".to_string(), Value::Bool(true));
+        });
+
+        // TODO This isn't perfect, two occurrences are left. Write unit tests.
+        child.remove("required");
+    }
+}
+
 fn merge_allofs(obj: &mut Map<String, Value>) {
     for (key, value) in obj.clone() {
         if value.get("allOf").is_some() {
@@ -104,18 +160,6 @@ fn merge_allofs(obj: &mut Map<String, Value>) {
             let merged = MergedAllOf::from(allof);
             obj.insert(key, serde_json::to_value(&merged).unwrap());
         }
-        /* TODO
-        if key == "allOf" {
-            if let Ok(allof) = serde_json::from_value::<AllOfInput>(value.clone()) {
-                let merged = MergedAllOf::from(allof);
-                obj.insert(key, serde_json::to_value(&merged).unwrap());
-            }
-            // TODO
-            let allof = serde_json::from_value::<AllOfInput>(value.clone()).unwrap();
-            let merged = MergedAllOf::from(allof);
-            obj.insert(key, serde_json::to_value(&merged).unwrap());
-        }
-         */
     }
 }
 
