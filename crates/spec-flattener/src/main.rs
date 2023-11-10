@@ -62,7 +62,9 @@ async fn main() {
                 None
             }
         })
-        .for_each(|(name, schema)| write_to_file(schema, "output/methods/".to_string() + name));
+        .for_each(|(name, schema)| {
+            write_to_file(schema, "output/methods/".to_string() + name + "json")
+        });
 
     // Write the whole file
     write_to_file(&Value::Object(trimmed), format!("output/{}", file));
