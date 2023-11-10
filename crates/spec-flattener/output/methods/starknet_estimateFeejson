@@ -140,100 +140,89 @@
                     },
                     {
                       "INVOKE_TXN_V1": {
-                        "allOf": [
-                          {
-                            "properties": {
-                              "calldata": {
-                                "description": "The data expected by the account's `execute` function (in most usecases, this includes the called contract address and a function selector)",
-                                "items": {
-                                  "FELT": {
-                                    "description": "A field element. represented by at most 63 hex digits",
-                                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                    "title": "Field element",
-                                    "type": "string"
-                                  }
-                                },
-                                "title": "calldata",
-                                "type": "array"
-                              },
-                              "max_fee": {
-                                "FELT": {
-                                  "description": "A field element. represented by at most 63 hex digits",
-                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                  "title": "Field element",
-                                  "type": "string"
-                                },
-                                "description": "The maximal fee that can be charged for including the transaction",
-                                "title": "Max fee"
-                              },
-                              "nonce": {
-                                "FELT": {
-                                  "description": "A field element. represented by at most 63 hex digits",
-                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                  "title": "Field element",
-                                  "type": "string"
-                                },
-                                "title": "Nonce"
-                              },
-                              "sender_address": {
-                                "ADDRESS": {
-                                  "FELT": {
-                                    "description": "A field element. represented by at most 63 hex digits",
-                                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                    "title": "Field element",
-                                    "type": "string"
-                                  },
-                                  "title": "Address"
-                                },
-                                "title": "sender address"
-                              },
-                              "signature": {
-                                "SIGNATURE": {
-                                  "description": "A transaction signature",
-                                  "items": {
-                                    "FELT": {
-                                      "description": "A field element. represented by at most 63 hex digits",
-                                      "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                      "title": "Field element",
-                                      "type": "string"
-                                    }
-                                  },
-                                  "title": "Signature",
-                                  "type": "array"
-                                },
-                                "title": "Signature"
-                              },
-                              "type": {
-                                "enum": [
-                                  "INVOKE"
-                                ],
-                                "title": "Type",
+                        "description": "initiates a transaction from a given account",
+                        "properties": {
+                          "calldata": {
+                            "description": "The data expected by the account's `execute` function (in most usecases, this includes the called contract address and a function selector)",
+                            "items": {
+                              "FELT": {
+                                "description": "A field element. represented by at most 63 hex digits",
+                                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                "title": "Field element",
                                 "type": "string"
-                              },
-                              "version": {
-                                "NUM_AS_HEX": {
-                                  "description": "An integer number in hex format (0x...)",
-                                  "pattern": "^0x[a-fA-F0-9]+$",
-                                  "title": "Number as hex",
-                                  "type": "string"
-                                },
-                                "description": "Version of the transaction scheme",
-                                "title": "Version"
                               }
                             },
-                            "required": [
-                              "type",
-                              "sender_address",
-                              "calldata",
-                              "max_fee",
-                              "version",
-                              "signature",
-                              "nonce"
+                            "title": "calldata",
+                            "type": "array"
+                          },
+                          "max_fee": {
+                            "FELT": {
+                              "description": "A field element. represented by at most 63 hex digits",
+                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                              "title": "Field element",
+                              "type": "string"
+                            },
+                            "description": "The maximal fee that can be charged for including the transaction",
+                            "required": true,
+                            "title": "Max fee"
+                          },
+                          "nonce": {
+                            "FELT": {
+                              "description": "A field element. represented by at most 63 hex digits",
+                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                              "title": "Field element",
+                              "type": "string"
+                            },
+                            "title": "Nonce"
+                          },
+                          "sender_address": {
+                            "ADDRESS": {
+                              "FELT": {
+                                "description": "A field element. represented by at most 63 hex digits",
+                                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                "title": "Field element",
+                                "type": "string"
+                              },
+                              "title": "Address"
+                            },
+                            "required": true,
+                            "title": "sender address"
+                          },
+                          "signature": {
+                            "SIGNATURE": {
+                              "description": "A transaction signature",
+                              "items": {
+                                "FELT": {
+                                  "description": "A field element. represented by at most 63 hex digits",
+                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                  "title": "Field element",
+                                  "type": "string"
+                                }
+                              },
+                              "title": "Signature",
+                              "type": "array"
+                            },
+                            "title": "Signature"
+                          },
+                          "type": {
+                            "enum": [
+                              "INVOKE"
                             ],
-                            "type": "object"
+                            "title": "Type",
+                            "type": "string"
+                          },
+                          "version": {
+                            "NUM_AS_HEX": {
+                              "description": "An integer number in hex format (0x...)",
+                              "pattern": "^0x[a-fA-F0-9]+$",
+                              "title": "Number as hex",
+                              "type": "string"
+                            },
+                            "description": "Version of the transaction scheme",
+                            "required": true,
+                            "title": "Version"
                           }
-                        ],
-                        "description": "initiates a transaction from a given account",
+                        },
                         "title": "Invoke transaction V1"
                       },
                       "title": "Broadcasted invoke transaction V1"
@@ -247,689 +236,612 @@
                   "oneOf": [
                     {
                       "BROADCASTED_DECLARE_TXN_V1": {
-                        "allOf": [
-                          {
-                            "properties": {
-                              "contract_class": {
-                                "DEPRECATED_CONTRACT_CLASS": {
-                                  "description": "The definition of a StarkNet contract class",
-                                  "properties": {
-                                    "abi": {
-                                      "CONTRACT_ABI": {
-                                        "items": {
-                                          "CONTRACT_ABI_ENTRY": {
-                                            "oneOf": [
-                                              {
-                                                "FUNCTION_ABI_ENTRY": {
-                                                  "properties": {
-                                                    "inputs": {
-                                                      "items": {
-                                                        "TYPED_PARAMETER": {
-                                                          "properties": {
-                                                            "name": {
-                                                              "description": "The parameter's name",
-                                                              "title": "Parameter name",
-                                                              "type": "string"
-                                                            },
-                                                            "type": {
-                                                              "description": "The parameter's type",
-                                                              "title": "Parameter type",
-                                                              "type": "string"
-                                                            }
-                                                          },
-                                                          "required": [
-                                                            "name",
-                                                            "type"
-                                                          ],
-                                                          "title": "Typed parameter",
-                                                          "type": "object"
+                        "description": "",
+                        "properties": {
+                          "contract_class": {
+                            "DEPRECATED_CONTRACT_CLASS": {
+                              "description": "The definition of a StarkNet contract class",
+                              "properties": {
+                                "abi": {
+                                  "CONTRACT_ABI": {
+                                    "items": {
+                                      "CONTRACT_ABI_ENTRY": {
+                                        "oneOf": [
+                                          {
+                                            "FUNCTION_ABI_ENTRY": {
+                                              "properties": {
+                                                "inputs": {
+                                                  "items": {
+                                                    "TYPED_PARAMETER": {
+                                                      "properties": {
+                                                        "name": {
+                                                          "description": "The parameter's name",
+                                                          "title": "Parameter name",
+                                                          "type": "string"
+                                                        },
+                                                        "type": {
+                                                          "description": "The parameter's type",
+                                                          "title": "Parameter type",
+                                                          "type": "string"
                                                         }
                                                       },
+                                                      "required": [
+                                                        "name",
+                                                        "type"
+                                                      ],
                                                       "title": "Typed parameter",
-                                                      "type": "array"
-                                                    },
-                                                    "name": {
-                                                      "description": "The function name",
-                                                      "title": "Function name",
-                                                      "type": "string"
-                                                    },
-                                                    "outputs": {
-                                                      "items": {
-                                                        "TYPED_PARAMETER": {
-                                                          "properties": {
-                                                            "name": {
-                                                              "description": "The parameter's name",
-                                                              "title": "Parameter name",
-                                                              "type": "string"
-                                                            },
-                                                            "type": {
-                                                              "description": "The parameter's type",
-                                                              "title": "Parameter type",
-                                                              "type": "string"
-                                                            }
-                                                          },
-                                                          "required": [
-                                                            "name",
-                                                            "type"
-                                                          ],
-                                                          "title": "Typed parameter",
-                                                          "type": "object"
-                                                        }
-                                                      },
-                                                      "title": "Typed parameter",
-                                                      "type": "array"
-                                                    },
-                                                    "stateMutability": {
-                                                      "FUNCTION_STATE_MUTABILITY": {
-                                                        "enum": [
-                                                          "view"
-                                                        ],
-                                                        "title": "Function state mutability type",
-                                                        "type": "string"
-                                                      },
-                                                      "title": "Function state mutability"
-                                                    },
-                                                    "type": {
-                                                      "FUNCTION_ABI_TYPE": {
-                                                        "enum": [
-                                                          "function",
-                                                          "l1_handler",
-                                                          "constructor"
-                                                        ],
-                                                        "title": "Function ABI type",
-                                                        "type": "string"
-                                                      },
-                                                      "title": "Function ABI type"
+                                                      "type": "object"
                                                     }
                                                   },
-                                                  "required": [
-                                                    "type",
-                                                    "name",
-                                                    "inputs",
-                                                    "outputs"
-                                                  ],
-                                                  "title": "Function ABI entry",
-                                                  "type": "object"
+                                                  "title": "Typed parameter",
+                                                  "type": "array"
                                                 },
-                                                "title": "Function ABI entry"
+                                                "name": {
+                                                  "description": "The function name",
+                                                  "title": "Function name",
+                                                  "type": "string"
+                                                },
+                                                "outputs": {
+                                                  "items": {
+                                                    "TYPED_PARAMETER": {
+                                                      "properties": {
+                                                        "name": {
+                                                          "description": "The parameter's name",
+                                                          "title": "Parameter name",
+                                                          "type": "string"
+                                                        },
+                                                        "type": {
+                                                          "description": "The parameter's type",
+                                                          "title": "Parameter type",
+                                                          "type": "string"
+                                                        }
+                                                      },
+                                                      "required": [
+                                                        "name",
+                                                        "type"
+                                                      ],
+                                                      "title": "Typed parameter",
+                                                      "type": "object"
+                                                    }
+                                                  },
+                                                  "title": "Typed parameter",
+                                                  "type": "array"
+                                                },
+                                                "stateMutability": {
+                                                  "FUNCTION_STATE_MUTABILITY": {
+                                                    "enum": [
+                                                      "view"
+                                                    ],
+                                                    "title": "Function state mutability type",
+                                                    "type": "string"
+                                                  },
+                                                  "title": "Function state mutability"
+                                                },
+                                                "type": {
+                                                  "FUNCTION_ABI_TYPE": {
+                                                    "enum": [
+                                                      "function",
+                                                      "l1_handler",
+                                                      "constructor"
+                                                    ],
+                                                    "title": "Function ABI type",
+                                                    "type": "string"
+                                                  },
+                                                  "title": "Function ABI type"
+                                                }
                                               },
-                                              {
-                                                "EVENT_ABI_ENTRY": {
-                                                  "properties": {
-                                                    "data": {
-                                                      "items": {
-                                                        "TYPED_PARAMETER": {
-                                                          "properties": {
-                                                            "name": {
-                                                              "description": "The parameter's name",
-                                                              "title": "Parameter name",
-                                                              "type": "string"
-                                                            },
-                                                            "type": {
-                                                              "description": "The parameter's type",
-                                                              "title": "Parameter type",
-                                                              "type": "string"
-                                                            }
-                                                          },
-                                                          "required": [
-                                                            "name",
-                                                            "type"
-                                                          ],
-                                                          "title": "Typed parameter",
-                                                          "type": "object"
+                                              "required": [
+                                                "type",
+                                                "name",
+                                                "inputs",
+                                                "outputs"
+                                              ],
+                                              "title": "Function ABI entry",
+                                              "type": "object"
+                                            },
+                                            "title": "Function ABI entry"
+                                          },
+                                          {
+                                            "EVENT_ABI_ENTRY": {
+                                              "properties": {
+                                                "data": {
+                                                  "items": {
+                                                    "TYPED_PARAMETER": {
+                                                      "properties": {
+                                                        "name": {
+                                                          "description": "The parameter's name",
+                                                          "title": "Parameter name",
+                                                          "type": "string"
+                                                        },
+                                                        "type": {
+                                                          "description": "The parameter's type",
+                                                          "title": "Parameter type",
+                                                          "type": "string"
                                                         }
                                                       },
+                                                      "required": [
+                                                        "name",
+                                                        "type"
+                                                      ],
                                                       "title": "Typed parameter",
-                                                      "type": "array"
-                                                    },
-                                                    "keys": {
-                                                      "items": {
-                                                        "TYPED_PARAMETER": {
-                                                          "properties": {
-                                                            "name": {
-                                                              "description": "The parameter's name",
-                                                              "title": "Parameter name",
-                                                              "type": "string"
-                                                            },
-                                                            "type": {
-                                                              "description": "The parameter's type",
-                                                              "title": "Parameter type",
-                                                              "type": "string"
-                                                            }
-                                                          },
-                                                          "required": [
-                                                            "name",
-                                                            "type"
-                                                          ],
-                                                          "title": "Typed parameter",
-                                                          "type": "object"
-                                                        }
-                                                      },
-                                                      "title": "Typed parameter",
-                                                      "type": "array"
-                                                    },
-                                                    "name": {
-                                                      "description": "The event name",
-                                                      "title": "Event name",
-                                                      "type": "string"
-                                                    },
-                                                    "type": {
-                                                      "EVENT_ABI_TYPE": {
-                                                        "enum": [
-                                                          "event"
-                                                        ],
-                                                        "title": "Event ABI type",
-                                                        "type": "string"
-                                                      },
-                                                      "title": "Event ABI type"
+                                                      "type": "object"
                                                     }
                                                   },
-                                                  "required": [
-                                                    "type",
-                                                    "name",
-                                                    "keys",
-                                                    "data"
-                                                  ],
-                                                  "title": "Event ABI entry",
-                                                  "type": "object"
+                                                  "title": "Typed parameter",
+                                                  "type": "array"
                                                 },
-                                                "title": "Event ABI entry"
+                                                "keys": {
+                                                  "items": {
+                                                    "TYPED_PARAMETER": {
+                                                      "properties": {
+                                                        "name": {
+                                                          "description": "The parameter's name",
+                                                          "title": "Parameter name",
+                                                          "type": "string"
+                                                        },
+                                                        "type": {
+                                                          "description": "The parameter's type",
+                                                          "title": "Parameter type",
+                                                          "type": "string"
+                                                        }
+                                                      },
+                                                      "required": [
+                                                        "name",
+                                                        "type"
+                                                      ],
+                                                      "title": "Typed parameter",
+                                                      "type": "object"
+                                                    }
+                                                  },
+                                                  "title": "Typed parameter",
+                                                  "type": "array"
+                                                },
+                                                "name": {
+                                                  "description": "The event name",
+                                                  "title": "Event name",
+                                                  "type": "string"
+                                                },
+                                                "type": {
+                                                  "EVENT_ABI_TYPE": {
+                                                    "enum": [
+                                                      "event"
+                                                    ],
+                                                    "title": "Event ABI type",
+                                                    "type": "string"
+                                                  },
+                                                  "title": "Event ABI type"
+                                                }
                                               },
-                                              {
-                                                "STRUCT_ABI_ENTRY": {
-                                                  "properties": {
-                                                    "members": {
-                                                      "items": {
-                                                        "STRUCT_MEMBER": {
-                                                          "allOf": [
-                                                            {
-                                                              "TYPED_PARAMETER": {
-                                                                "properties": {
-                                                                  "name": {
-                                                                    "description": "The parameter's name",
-                                                                    "title": "Parameter name",
-                                                                    "type": "string"
-                                                                  },
-                                                                  "type": {
-                                                                    "description": "The parameter's type",
-                                                                    "title": "Parameter type",
-                                                                    "type": "string"
-                                                                  }
-                                                                },
-                                                                "required": [
-                                                                  "name",
-                                                                  "type"
-                                                                ],
-                                                                "title": "Typed parameter",
-                                                                "type": "object"
-                                                              },
-                                                              "title": "Typed parameter"
+                                              "required": [
+                                                "type",
+                                                "name",
+                                                "keys",
+                                                "data"
+                                              ],
+                                              "title": "Event ABI entry",
+                                              "type": "object"
+                                            },
+                                            "title": "Event ABI entry"
+                                          },
+                                          {
+                                            "STRUCT_ABI_ENTRY": {
+                                              "properties": {
+                                                "members": {
+                                                  "items": {
+                                                    "STRUCT_MEMBER": {
+                                                      "description": "",
+                                                      "properties": {
+                                                        "TYPED_PARAMETER": {
+                                                          "properties": {
+                                                            "name": {
+                                                              "description": "The parameter's name",
+                                                              "title": "Parameter name",
+                                                              "type": "string"
                                                             },
-                                                            {
-                                                              "properties": {
-                                                                "offset": {
-                                                                  "description": "offset of this property within the struct",
-                                                                  "title": "Offset",
-                                                                  "type": "integer"
-                                                                }
-                                                              },
-                                                              "title": "Offset",
-                                                              "type": "object"
+                                                            "type": {
+                                                              "description": "The parameter's type",
+                                                              "title": "Parameter type",
+                                                              "type": "string"
                                                             }
+                                                          },
+                                                          "required": [
+                                                            "name",
+                                                            "type"
                                                           ],
-                                                          "title": "Struct member"
+                                                          "title": "Typed parameter",
+                                                          "type": "object"
+                                                        },
+                                                        "offset": {
+                                                          "description": "offset of this property within the struct",
+                                                          "title": "Offset",
+                                                          "type": "integer"
                                                         }
                                                       },
-                                                      "title": "Members",
-                                                      "type": "array"
-                                                    },
-                                                    "name": {
-                                                      "description": "The struct name",
-                                                      "title": "Struct name",
-                                                      "type": "string"
-                                                    },
-                                                    "size": {
-                                                      "minimum": 1,
-                                                      "title": "Size",
-                                                      "type": "integer"
-                                                    },
-                                                    "type": {
-                                                      "STRUCT_ABI_TYPE": {
-                                                        "enum": [
-                                                          "struct"
-                                                        ],
-                                                        "title": "Struct ABI type",
-                                                        "type": "string"
-                                                      },
-                                                      "title": "Struct ABI type"
+                                                      "title": "Struct member"
                                                     }
                                                   },
-                                                  "required": [
-                                                    "type",
-                                                    "name",
-                                                    "size",
-                                                    "members"
-                                                  ],
-                                                  "title": "Struct ABI entry",
-                                                  "type": "object"
+                                                  "title": "Members",
+                                                  "type": "array"
                                                 },
-                                                "title": "Struct ABI entry"
-                                              }
-                                            ],
-                                            "title": "Contract ABI entry"
+                                                "name": {
+                                                  "description": "The struct name",
+                                                  "title": "Struct name",
+                                                  "type": "string"
+                                                },
+                                                "size": {
+                                                  "minimum": 1,
+                                                  "title": "Size",
+                                                  "type": "integer"
+                                                },
+                                                "type": {
+                                                  "STRUCT_ABI_TYPE": {
+                                                    "enum": [
+                                                      "struct"
+                                                    ],
+                                                    "title": "Struct ABI type",
+                                                    "type": "string"
+                                                  },
+                                                  "title": "Struct ABI type"
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "name",
+                                                "size",
+                                                "members"
+                                              ],
+                                              "title": "Struct ABI entry",
+                                              "type": "object"
+                                            },
+                                            "title": "Struct ABI entry"
                                           }
-                                        },
-                                        "title": "Contract ABI",
-                                        "type": "array"
-                                      },
-                                      "title": "Contract ABI"
+                                        ],
+                                        "title": "Contract ABI entry"
+                                      }
                                     },
-                                    "entry_points_by_type": {
-                                      "properties": {
-                                        "CONSTRUCTOR": {
-                                          "items": {
-                                            "DEPRECATED_CAIRO_ENTRY_POINT": {
-                                              "properties": {
-                                                "offset": {
-                                                  "NUM_AS_HEX": {
-                                                    "description": "An integer number in hex format (0x...)",
-                                                    "pattern": "^0x[a-fA-F0-9]+$",
-                                                    "title": "Number as hex",
-                                                    "type": "string"
-                                                  },
-                                                  "description": "The offset of the entry point in the program",
-                                                  "title": "Offset"
-                                                },
-                                                "selector": {
-                                                  "FELT": {
-                                                    "description": "A field element. represented by at most 63 hex digits",
-                                                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                                    "title": "Field element",
-                                                    "type": "string"
-                                                  },
-                                                  "description": "A unique identifier of the entry point (function) in the program",
-                                                  "title": "Selector"
-                                                }
+                                    "title": "Contract ABI",
+                                    "type": "array"
+                                  },
+                                  "title": "Contract ABI"
+                                },
+                                "entry_points_by_type": {
+                                  "properties": {
+                                    "CONSTRUCTOR": {
+                                      "items": {
+                                        "DEPRECATED_CAIRO_ENTRY_POINT": {
+                                          "properties": {
+                                            "offset": {
+                                              "NUM_AS_HEX": {
+                                                "description": "An integer number in hex format (0x...)",
+                                                "pattern": "^0x[a-fA-F0-9]+$",
+                                                "title": "Number as hex",
+                                                "type": "string"
                                               },
-                                              "required": [
-                                                "offset",
-                                                "selector"
-                                              ],
-                                              "title": "Deprecated Cairo entry point",
-                                              "type": "object"
+                                              "description": "The offset of the entry point in the program",
+                                              "title": "Offset"
+                                            },
+                                            "selector": {
+                                              "FELT": {
+                                                "description": "A field element. represented by at most 63 hex digits",
+                                                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                                "title": "Field element",
+                                                "type": "string"
+                                              },
+                                              "description": "A unique identifier of the entry point (function) in the program",
+                                              "title": "Selector"
                                             }
                                           },
-                                          "title": "Deprecated constructor",
-                                          "type": "array"
-                                        },
-                                        "EXTERNAL": {
-                                          "items": {
-                                            "DEPRECATED_CAIRO_ENTRY_POINT": {
-                                              "properties": {
-                                                "offset": {
-                                                  "NUM_AS_HEX": {
-                                                    "description": "An integer number in hex format (0x...)",
-                                                    "pattern": "^0x[a-fA-F0-9]+$",
-                                                    "title": "Number as hex",
-                                                    "type": "string"
-                                                  },
-                                                  "description": "The offset of the entry point in the program",
-                                                  "title": "Offset"
-                                                },
-                                                "selector": {
-                                                  "FELT": {
-                                                    "description": "A field element. represented by at most 63 hex digits",
-                                                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                                    "title": "Field element",
-                                                    "type": "string"
-                                                  },
-                                                  "description": "A unique identifier of the entry point (function) in the program",
-                                                  "title": "Selector"
-                                                }
-                                              },
-                                              "required": [
-                                                "offset",
-                                                "selector"
-                                              ],
-                                              "title": "Deprecated Cairo entry point",
-                                              "type": "object"
-                                            }
-                                          },
-                                          "title": "Deprecated external",
-                                          "type": "array"
-                                        },
-                                        "L1_HANDLER": {
-                                          "items": {
-                                            "DEPRECATED_CAIRO_ENTRY_POINT": {
-                                              "properties": {
-                                                "offset": {
-                                                  "NUM_AS_HEX": {
-                                                    "description": "An integer number in hex format (0x...)",
-                                                    "pattern": "^0x[a-fA-F0-9]+$",
-                                                    "title": "Number as hex",
-                                                    "type": "string"
-                                                  },
-                                                  "description": "The offset of the entry point in the program",
-                                                  "title": "Offset"
-                                                },
-                                                "selector": {
-                                                  "FELT": {
-                                                    "description": "A field element. represented by at most 63 hex digits",
-                                                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                                    "title": "Field element",
-                                                    "type": "string"
-                                                  },
-                                                  "description": "A unique identifier of the entry point (function) in the program",
-                                                  "title": "Selector"
-                                                }
-                                              },
-                                              "required": [
-                                                "offset",
-                                                "selector"
-                                              ],
-                                              "title": "Deprecated Cairo entry point",
-                                              "type": "object"
-                                            }
-                                          },
-                                          "title": "Deprecated L1 handler",
-                                          "type": "array"
+                                          "required": [
+                                            "offset",
+                                            "selector"
+                                          ],
+                                          "title": "Deprecated Cairo entry point",
+                                          "type": "object"
                                         }
                                       },
-                                      "title": "Deprecated entry points by type",
-                                      "type": "object"
+                                      "title": "Deprecated constructor",
+                                      "type": "array"
                                     },
-                                    "program": {
-                                      "description": "A base64 representation of the compressed program code",
-                                      "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$",
-                                      "title": "Program",
-                                      "type": "string"
+                                    "EXTERNAL": {
+                                      "items": {
+                                        "DEPRECATED_CAIRO_ENTRY_POINT": {
+                                          "properties": {
+                                            "offset": {
+                                              "NUM_AS_HEX": {
+                                                "description": "An integer number in hex format (0x...)",
+                                                "pattern": "^0x[a-fA-F0-9]+$",
+                                                "title": "Number as hex",
+                                                "type": "string"
+                                              },
+                                              "description": "The offset of the entry point in the program",
+                                              "title": "Offset"
+                                            },
+                                            "selector": {
+                                              "FELT": {
+                                                "description": "A field element. represented by at most 63 hex digits",
+                                                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                                "title": "Field element",
+                                                "type": "string"
+                                              },
+                                              "description": "A unique identifier of the entry point (function) in the program",
+                                              "title": "Selector"
+                                            }
+                                          },
+                                          "required": [
+                                            "offset",
+                                            "selector"
+                                          ],
+                                          "title": "Deprecated Cairo entry point",
+                                          "type": "object"
+                                        }
+                                      },
+                                      "title": "Deprecated external",
+                                      "type": "array"
+                                    },
+                                    "L1_HANDLER": {
+                                      "items": {
+                                        "DEPRECATED_CAIRO_ENTRY_POINT": {
+                                          "properties": {
+                                            "offset": {
+                                              "NUM_AS_HEX": {
+                                                "description": "An integer number in hex format (0x...)",
+                                                "pattern": "^0x[a-fA-F0-9]+$",
+                                                "title": "Number as hex",
+                                                "type": "string"
+                                              },
+                                              "description": "The offset of the entry point in the program",
+                                              "title": "Offset"
+                                            },
+                                            "selector": {
+                                              "FELT": {
+                                                "description": "A field element. represented by at most 63 hex digits",
+                                                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                                "title": "Field element",
+                                                "type": "string"
+                                              },
+                                              "description": "A unique identifier of the entry point (function) in the program",
+                                              "title": "Selector"
+                                            }
+                                          },
+                                          "required": [
+                                            "offset",
+                                            "selector"
+                                          ],
+                                          "title": "Deprecated Cairo entry point",
+                                          "type": "object"
+                                        }
+                                      },
+                                      "title": "Deprecated L1 handler",
+                                      "type": "array"
                                     }
                                   },
-                                  "required": [
-                                    "program",
-                                    "entry_points_by_type"
-                                  ],
-                                  "title": "Deprecated contract class",
+                                  "title": "Deprecated entry points by type",
                                   "type": "object"
                                 },
-                                "description": "The class to be declared",
-                                "title": "Contract class"
-                              },
-                              "max_fee": {
-                                "FELT": {
-                                  "description": "A field element. represented by at most 63 hex digits",
-                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                  "title": "Field element",
+                                "program": {
+                                  "description": "A base64 representation of the compressed program code",
+                                  "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$",
+                                  "title": "Program",
                                   "type": "string"
-                                },
-                                "description": "The maximal fee that can be charged for including the transaction",
-                                "title": "Max fee"
+                                }
                               },
-                              "nonce": {
-                                "FELT": {
-                                  "description": "A field element. represented by at most 63 hex digits",
-                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                  "title": "Field element",
-                                  "type": "string"
-                                },
-                                "title": "Nonce"
-                              },
-                              "sender_address": {
-                                "ADDRESS": {
-                                  "FELT": {
-                                    "description": "A field element. represented by at most 63 hex digits",
-                                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                    "title": "Field element",
-                                    "type": "string"
-                                  },
-                                  "title": "Address"
-                                },
-                                "description": "The address of the account contract sending the declaration transaction",
-                                "title": "Sender address"
-                              },
-                              "signature": {
-                                "SIGNATURE": {
-                                  "description": "A transaction signature",
-                                  "items": {
-                                    "FELT": {
-                                      "description": "A field element. represented by at most 63 hex digits",
-                                      "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                      "title": "Field element",
-                                      "type": "string"
-                                    }
-                                  },
-                                  "title": "Signature",
-                                  "type": "array"
-                                },
-                                "title": "Signature"
-                              },
-                              "type": {
-                                "enum": [
-                                  "DECLARE"
-                                ],
-                                "title": "Declare",
+                              "required": [
+                                "program",
+                                "entry_points_by_type"
+                              ],
+                              "title": "Deprecated contract class",
+                              "type": "object"
+                            },
+                            "description": "The class to be declared",
+                            "title": "Contract class"
+                          },
+                          "max_fee": {
+                            "FELT": {
+                              "description": "A field element. represented by at most 63 hex digits",
+                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                              "title": "Field element",
+                              "type": "string"
+                            },
+                            "description": "The maximal fee that can be charged for including the transaction",
+                            "title": "Max fee"
+                          },
+                          "nonce": {
+                            "FELT": {
+                              "description": "A field element. represented by at most 63 hex digits",
+                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                              "title": "Field element",
+                              "type": "string"
+                            },
+                            "title": "Nonce"
+                          },
+                          "sender_address": {
+                            "ADDRESS": {
+                              "FELT": {
+                                "description": "A field element. represented by at most 63 hex digits",
+                                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                "title": "Field element",
                                 "type": "string"
                               },
-                              "version": {
-                                "NUM_AS_HEX": {
-                                  "description": "An integer number in hex format (0x...)",
-                                  "pattern": "^0x[a-fA-F0-9]+$",
-                                  "title": "Number as hex",
-                                  "type": "string"
-                                },
-                                "description": "Version of the transaction scheme",
-                                "title": "Version"
-                              }
+                              "title": "Address"
                             },
-                            "required": [
-                              "type",
-                              "sender_address",
-                              "max_fee",
-                              "version",
-                              "signature",
-                              "nonce",
-                              "contract_class"
+                            "description": "The address of the account contract sending the declaration transaction",
+                            "required": true,
+                            "title": "Sender address"
+                          },
+                          "signature": {
+                            "SIGNATURE": {
+                              "description": "A transaction signature",
+                              "items": {
+                                "FELT": {
+                                  "description": "A field element. represented by at most 63 hex digits",
+                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                  "title": "Field element",
+                                  "type": "string"
+                                }
+                              },
+                              "title": "Signature",
+                              "type": "array"
+                            },
+                            "required": true,
+                            "title": "Signature"
+                          },
+                          "type": {
+                            "enum": [
+                              "DECLARE"
                             ],
-                            "title": "Declare txn v1",
-                            "type": "object"
+                            "title": "Declare",
+                            "type": "string"
+                          },
+                          "version": {
+                            "NUM_AS_HEX": {
+                              "description": "An integer number in hex format (0x...)",
+                              "pattern": "^0x[a-fA-F0-9]+$",
+                              "title": "Number as hex",
+                              "type": "string"
+                            },
+                            "description": "Version of the transaction scheme",
+                            "required": true,
+                            "title": "Version"
                           }
-                        ],
+                        },
                         "title": "Broadcasted declare contract transaction V1"
                       },
                       "title": "Broadcasted declare transaction V1"
                     },
                     {
                       "BROADCASTED_DECLARE_TXN_V2": {
-                        "allOf": [
-                          {
-                            "properties": {
-                              "compiled_class_hash": {
-                                "FELT": {
-                                  "description": "A field element. represented by at most 63 hex digits",
-                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                  "title": "Field element",
+                        "description": "Broadcasted declare Contract Transaction V2",
+                        "properties": {
+                          "compiled_class_hash": {
+                            "FELT": {
+                              "description": "A field element. represented by at most 63 hex digits",
+                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                              "title": "Field element",
+                              "type": "string"
+                            },
+                            "description": "The hash of the Cairo assembly resulting from the Sierra compilation",
+                            "required": true,
+                            "title": "Compiled class hash"
+                          },
+                          "contract_class": {
+                            "CONTRACT_CLASS": {
+                              "properties": {
+                                "abi": {
+                                  "description": "The class ABI, as supplied by the user declaring the class",
+                                  "title": "ABI",
                                   "type": "string"
                                 },
-                                "description": "The hash of the Cairo assembly resulting from the Sierra compilation",
-                                "title": "Compiled class hash"
-                              },
-                              "contract_class": {
-                                "CONTRACT_CLASS": {
+                                "contract_class_version": {
+                                  "description": "The version of the contract class object. Currently, the Starknet OS supports version 0.1.0",
+                                  "title": "Contract class version",
+                                  "type": "string"
+                                },
+                                "entry_points_by_type": {
                                   "properties": {
-                                    "abi": {
-                                      "description": "The class ABI, as supplied by the user declaring the class",
-                                      "title": "ABI",
-                                      "type": "string"
-                                    },
-                                    "contract_class_version": {
-                                      "description": "The version of the contract class object. Currently, the Starknet OS supports version 0.1.0",
-                                      "title": "Contract class version",
-                                      "type": "string"
-                                    },
-                                    "entry_points_by_type": {
-                                      "properties": {
-                                        "CONSTRUCTOR": {
-                                          "items": {
-                                            "SIERRA_ENTRY_POINT": {
-                                              "properties": {
-                                                "function_idx": {
-                                                  "description": "The index of the function in the program",
-                                                  "title": "Function index",
-                                                  "type": "integer"
-                                                },
-                                                "selector": {
-                                                  "FELT": {
-                                                    "description": "A field element. represented by at most 63 hex digits",
-                                                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                                    "title": "Field element",
-                                                    "type": "string"
-                                                  },
-                                                  "description": "A unique identifier of the entry point (function) in the program",
-                                                  "title": "Selector"
-                                                }
-                                              },
-                                              "required": [
-                                                "selector",
-                                                "function_idx"
-                                              ],
-                                              "title": "Sierra entry point",
-                                              "type": "object"
-                                            }
-                                          },
-                                          "title": "Constructor",
-                                          "type": "array"
-                                        },
-                                        "EXTERNAL": {
-                                          "items": {
-                                            "SIERRA_ENTRY_POINT": {
-                                              "properties": {
-                                                "function_idx": {
-                                                  "description": "The index of the function in the program",
-                                                  "title": "Function index",
-                                                  "type": "integer"
-                                                },
-                                                "selector": {
-                                                  "FELT": {
-                                                    "description": "A field element. represented by at most 63 hex digits",
-                                                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                                    "title": "Field element",
-                                                    "type": "string"
-                                                  },
-                                                  "description": "A unique identifier of the entry point (function) in the program",
-                                                  "title": "Selector"
-                                                }
-                                              },
-                                              "required": [
-                                                "selector",
-                                                "function_idx"
-                                              ],
-                                              "title": "Sierra entry point",
-                                              "type": "object"
-                                            }
-                                          },
-                                          "title": "External",
-                                          "type": "array"
-                                        },
-                                        "L1_HANDLER": {
-                                          "items": {
-                                            "SIERRA_ENTRY_POINT": {
-                                              "properties": {
-                                                "function_idx": {
-                                                  "description": "The index of the function in the program",
-                                                  "title": "Function index",
-                                                  "type": "integer"
-                                                },
-                                                "selector": {
-                                                  "FELT": {
-                                                    "description": "A field element. represented by at most 63 hex digits",
-                                                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                                    "title": "Field element",
-                                                    "type": "string"
-                                                  },
-                                                  "description": "A unique identifier of the entry point (function) in the program",
-                                                  "title": "Selector"
-                                                }
-                                              },
-                                              "required": [
-                                                "selector",
-                                                "function_idx"
-                                              ],
-                                              "title": "Sierra entry point",
-                                              "type": "object"
-                                            }
-                                          },
-                                          "title": "L1 handler",
-                                          "type": "array"
-                                        }
-                                      },
-                                      "required": [
-                                        "CONSTRUCTOR",
-                                        "EXTERNAL",
-                                        "L1_HANDLER"
-                                      ],
-                                      "title": "Entry points by type",
-                                      "type": "object"
-                                    },
-                                    "sierra_program": {
-                                      "description": "The list of Sierra instructions of which the program consists",
+                                    "CONSTRUCTOR": {
                                       "items": {
-                                        "FELT": {
-                                          "description": "A field element. represented by at most 63 hex digits",
-                                          "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                          "title": "Field element",
-                                          "type": "string"
+                                        "SIERRA_ENTRY_POINT": {
+                                          "properties": {
+                                            "function_idx": {
+                                              "description": "The index of the function in the program",
+                                              "title": "Function index",
+                                              "type": "integer"
+                                            },
+                                            "selector": {
+                                              "FELT": {
+                                                "description": "A field element. represented by at most 63 hex digits",
+                                                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                                "title": "Field element",
+                                                "type": "string"
+                                              },
+                                              "description": "A unique identifier of the entry point (function) in the program",
+                                              "title": "Selector"
+                                            }
+                                          },
+                                          "required": [
+                                            "selector",
+                                            "function_idx"
+                                          ],
+                                          "title": "Sierra entry point",
+                                          "type": "object"
                                         }
                                       },
-                                      "title": "Sierra program",
+                                      "title": "Constructor",
+                                      "type": "array"
+                                    },
+                                    "EXTERNAL": {
+                                      "items": {
+                                        "SIERRA_ENTRY_POINT": {
+                                          "properties": {
+                                            "function_idx": {
+                                              "description": "The index of the function in the program",
+                                              "title": "Function index",
+                                              "type": "integer"
+                                            },
+                                            "selector": {
+                                              "FELT": {
+                                                "description": "A field element. represented by at most 63 hex digits",
+                                                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                                "title": "Field element",
+                                                "type": "string"
+                                              },
+                                              "description": "A unique identifier of the entry point (function) in the program",
+                                              "title": "Selector"
+                                            }
+                                          },
+                                          "required": [
+                                            "selector",
+                                            "function_idx"
+                                          ],
+                                          "title": "Sierra entry point",
+                                          "type": "object"
+                                        }
+                                      },
+                                      "title": "External",
+                                      "type": "array"
+                                    },
+                                    "L1_HANDLER": {
+                                      "items": {
+                                        "SIERRA_ENTRY_POINT": {
+                                          "properties": {
+                                            "function_idx": {
+                                              "description": "The index of the function in the program",
+                                              "title": "Function index",
+                                              "type": "integer"
+                                            },
+                                            "selector": {
+                                              "FELT": {
+                                                "description": "A field element. represented by at most 63 hex digits",
+                                                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                                "title": "Field element",
+                                                "type": "string"
+                                              },
+                                              "description": "A unique identifier of the entry point (function) in the program",
+                                              "title": "Selector"
+                                            }
+                                          },
+                                          "required": [
+                                            "selector",
+                                            "function_idx"
+                                          ],
+                                          "title": "Sierra entry point",
+                                          "type": "object"
+                                        }
+                                      },
+                                      "title": "L1 handler",
                                       "type": "array"
                                     }
                                   },
                                   "required": [
-                                    "sierra_program",
-                                    "contract_class_version",
-                                    "entry_points_by_type"
+                                    "CONSTRUCTOR",
+                                    "EXTERNAL",
+                                    "L1_HANDLER"
                                   ],
-                                  "title": "Contract class",
+                                  "title": "Entry points by type",
                                   "type": "object"
                                 },
-                                "description": "The class to be declared",
-                                "title": "Contract class"
-                              },
-                              "max_fee": {
-                                "FELT": {
-                                  "description": "A field element. represented by at most 63 hex digits",
-                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                  "title": "Field element",
-                                  "type": "string"
-                                },
-                                "description": "The maximal fee that can be charged for including the transaction",
-                                "title": "Max fee"
-                              },
-                              "nonce": {
-                                "FELT": {
-                                  "description": "A field element. represented by at most 63 hex digits",
-                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                  "title": "Field element",
-                                  "type": "string"
-                                },
-                                "title": "Nonce"
-                              },
-                              "sender_address": {
-                                "ADDRESS": {
-                                  "FELT": {
-                                    "description": "A field element. represented by at most 63 hex digits",
-                                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                    "title": "Field element",
-                                    "type": "string"
-                                  },
-                                  "title": "Address"
-                                },
-                                "description": "The address of the account contract sending the declaration transaction",
-                                "title": "Sender address"
-                              },
-                              "signature": {
-                                "SIGNATURE": {
-                                  "description": "A transaction signature",
+                                "sierra_program": {
+                                  "description": "The list of Sierra instructions of which the program consists",
                                   "items": {
                                     "FELT": {
                                       "description": "A field element. represented by at most 63 hex digits",
@@ -938,44 +850,90 @@
                                       "type": "string"
                                     }
                                   },
-                                  "title": "Signature",
+                                  "title": "Sierra program",
                                   "type": "array"
-                                },
-                                "title": "Signature"
+                                }
                               },
-                              "type": {
-                                "enum": [
-                                  "DECLARE"
-                                ],
-                                "title": "Declare",
+                              "required": [
+                                "sierra_program",
+                                "contract_class_version",
+                                "entry_points_by_type"
+                              ],
+                              "title": "Contract class",
+                              "type": "object"
+                            },
+                            "description": "The class to be declared",
+                            "title": "Contract class"
+                          },
+                          "max_fee": {
+                            "FELT": {
+                              "description": "A field element. represented by at most 63 hex digits",
+                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                              "title": "Field element",
+                              "type": "string"
+                            },
+                            "description": "The maximal fee that can be charged for including the transaction",
+                            "title": "Max fee"
+                          },
+                          "nonce": {
+                            "FELT": {
+                              "description": "A field element. represented by at most 63 hex digits",
+                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                              "title": "Field element",
+                              "type": "string"
+                            },
+                            "title": "Nonce"
+                          },
+                          "sender_address": {
+                            "ADDRESS": {
+                              "FELT": {
+                                "description": "A field element. represented by at most 63 hex digits",
+                                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                "title": "Field element",
                                 "type": "string"
                               },
-                              "version": {
-                                "NUM_AS_HEX": {
-                                  "description": "An integer number in hex format (0x...)",
-                                  "pattern": "^0x[a-fA-F0-9]+$",
-                                  "title": "Number as hex",
-                                  "type": "string"
-                                },
-                                "description": "Version of the transaction scheme",
-                                "title": "Version"
-                              }
+                              "title": "Address"
                             },
-                            "required": [
-                              "type",
-                              "sender_address",
-                              "compiled_class_hash",
-                              "max_fee",
-                              "version",
-                              "signature",
-                              "nonce",
-                              "contract_class"
+                            "description": "The address of the account contract sending the declaration transaction",
+                            "required": true,
+                            "title": "Sender address"
+                          },
+                          "signature": {
+                            "SIGNATURE": {
+                              "description": "A transaction signature",
+                              "items": {
+                                "FELT": {
+                                  "description": "A field element. represented by at most 63 hex digits",
+                                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
+                                  "title": "Field element",
+                                  "type": "string"
+                                }
+                              },
+                              "title": "Signature",
+                              "type": "array"
+                            },
+                            "required": true,
+                            "title": "Signature"
+                          },
+                          "type": {
+                            "enum": [
+                              "DECLARE"
                             ],
-                            "title": "Declare txn v2",
-                            "type": "object"
+                            "title": "Declare",
+                            "type": "string"
+                          },
+                          "version": {
+                            "NUM_AS_HEX": {
+                              "description": "An integer number in hex format (0x...)",
+                              "pattern": "^0x[a-fA-F0-9]+$",
+                              "title": "Number as hex",
+                              "type": "string"
+                            },
+                            "description": "Version of the transaction scheme",
+                            "required": true,
+                            "title": "Version"
                           }
-                        ],
-                        "description": "Broadcasted declare Contract Transaction V2",
+                        },
                         "title": "Broadcasted declare Transaction V2"
                       },
                       "title": "Broadcasted declare transaction V2"

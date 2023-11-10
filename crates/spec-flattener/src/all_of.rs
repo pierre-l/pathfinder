@@ -1,0 +1,173 @@
+use serde::de::Error;
+use serde::{Deserialize, Deserializer, Serialize};
+use serde_json::{Map, Value};
+
+/// An "AllOf" object as represented in the spec.
+/// "AllOf" represents multiple objects merged into one, cumulating the properties of all its items.
+#[derive(Deserialize)]
+pub struct AllOfInput {
+    #[serde(rename = "allOf")]
+    items: Vec<AllOfItem>,
+    // TODO Option is probably better
+    #[serde(default)]
+    description: String,
+    title: String,
+}
+
+pub enum AllOfItem {
+    Reference {
+        description: String,
+        title: String,
+        reference: (String, Value),
+    },
+    Custom {
+        description: String,
+        title: String,
+        type_: String,
+        properties: Map<String, Value>,
+        required: Vec<String>,
+    },
+}
+
+impl<'a> Deserialize<'a> for AllOfItem {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'a>,
+    {
+        let value = Value::deserialize(deserializer)?;
+        AllOfItem::try_from(&value).map_err(|()| Error::custom("Invalid \"AllOfItem\""))
+    }
+}
+
+impl TryFrom<&Value> for AllOfItem {
+    type Error = ();
+
+    fn try_from(value: &Value) -> Result<Self, Self::Error> {
+        let mut obj: Map<String, Value> = value.as_object().unwrap().clone();
+
+        if obj.get("type").is_some() {
+            let output = AllOfItem::Custom {
+                description: obj
+                    .get("description")
+                    .unwrap_or(&Value::String("".to_string()))
+                    .as_str()
+                    .unwrap()
+                    .to_string(),
+                // TODO Apparently this isn't mandatory? Good, we don't need it anyway.
+                title: obj
+                    .get("title")
+                    .unwrap_or(&Value::String("".to_string()))
+                    .as_str()
+                    .unwrap()
+                    .to_string(),
+                type_: obj.get("type").unwrap().as_str().unwrap().to_string(),
+                // TODO Optional?
+                properties: obj.get("properties").unwrap().as_object().unwrap().clone(),
+                required: serde_json::from_value(
+                    obj.get("required").unwrap_or(&Value::Array(vec![])).clone(),
+                )
+                .unwrap(),
+            };
+            Ok(output)
+        } else {
+            let title = obj
+                .remove("title")
+                .unwrap_or(Value::String("".to_string()))
+                .as_str()
+                .unwrap()
+                .to_string();
+            let description = obj
+                .remove("description")
+                .unwrap_or(Value::String("".to_string()))
+                .as_str()
+                .unwrap()
+                .to_string();
+            assert_eq!(obj.len(), 1);
+            let reference = obj.into_iter().next().unwrap();
+
+            Ok(AllOfItem::Reference {
+                description,
+                title,
+                reference,
+            })
+        }
+    }
+}
+
+/// A merged "AllOf", with all of its item properties merged in a single object.
+#[derive(Serialize)]
+pub struct MergedAllOf {
+    properties: Map<String, Value>,
+    description: String,
+    title: String,
+}
+
+impl From<AllOfInput> for MergedAllOf {
+    fn from(value: AllOfInput) -> Self {
+        let AllOfInput {
+            items,
+            description,
+            title,
+        } = value;
+
+        let mut merged_properties = Map::new();
+
+        items.into_iter().for_each(|item| {
+            match item {
+                AllOfItem::Reference {
+                    description: _,
+                    title: _,
+                    reference: (key, value),
+                } => {
+                    merged_properties.insert(key, value);
+                }
+                AllOfItem::Custom {
+                    description: _,
+                    title: _,
+                    type_,
+                    mut properties,
+                    mut required,
+                } => {
+                    assert_eq!(type_, "object");
+
+                    if properties.iter().any(|(key, _)| {
+                        ["description", "title", "required"].contains(&key.as_str())
+                    }) {
+                        panic!("Reserved name already in use")
+                    }
+
+                    // TODO Move this out of here, make it a separate step, just before the allOf merge.
+                    // Embed the "required" field in the properties.
+                    properties.iter_mut().for_each(|(key, value)| {
+                        if let Ok(index) = required.binary_search(key) {
+                            required.remove(index);
+
+                            let prop = value
+                                .as_object_mut()
+                                .expect("Properties are expected to be objects");
+                            prop.insert("required".to_string(), Value::Bool(true));
+                        }
+                    });
+
+                    if !required.is_empty() {
+                        /* TODO
+                        panic!(
+                            "Properties are marked as required while absent from the actual property list: {:?}",
+                            required
+                        )
+                         */
+                    }
+                    // TODO Check pre-existence
+                    // Now add these to the merged props
+                    merged_properties.append(&mut properties);
+                }
+            }
+        });
+
+        Self {
+            properties: merged_properties,
+            description,
+            title,
+        }
+    }
+}

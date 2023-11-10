@@ -1,3 +1,6 @@
+mod all_of;
+
+use crate::all_of::{AllOfInput, MergedAllOf};
 use serde_json::{Map, Value};
 
 #[tokio::main]
@@ -14,7 +17,6 @@ async fn main() {
     let mut root = serde_json::from_str::<Value>(&spec).unwrap();
 
     let mut flattened_schemas = serde_json::Map::new();
-
     flatten_section(&mut root, &mut flattened_schemas, "/components/errors");
     flatten_section(&mut root, &mut flattened_schemas, "/components/schemas");
     // TODO Find a better solution?
@@ -51,8 +53,17 @@ async fn main() {
         clone.as_object().unwrap().clone()
     };
 
+    let merged_allof = {
+        let mut clone = Value::Object(trimmed.clone());
+        for_each_object(&mut clone, &|object| {
+            merge_allofs(object);
+        });
+        clone.as_object().unwrap().clone()
+    };
+
+    // TODO We could have an output dir per step and write output for every step for easier debugging
     // Write the method files
-    trimmed
+    merged_allof
         .iter()
         .filter_map(|(pointer, schema)| {
             if pointer.starts_with("#/methods") {
@@ -67,7 +78,7 @@ async fn main() {
         });
 
     // Write the whole file
-    write_to_file(&Value::Object(trimmed), format!("output/{}", file));
+    write_to_file(&Value::Object(merged_allof), format!("output/{}", file));
 }
 
 fn trim_ref_layer(obj: &mut Map<String, Value>) {
@@ -83,6 +94,28 @@ fn trim_ref_layer(obj: &mut Map<String, Value>) {
             let pointer_end = pointer.split("/").last().unwrap().to_string();
             obj.insert(pointer_end, flat.clone());
         }
+    }
+}
+
+fn merge_allofs(obj: &mut Map<String, Value>) {
+    for (key, value) in obj.clone() {
+        if value.get("allOf").is_some() {
+            let allof = serde_json::from_value::<AllOfInput>(value.clone()).unwrap();
+            let merged = MergedAllOf::from(allof);
+            obj.insert(key, serde_json::to_value(&merged).unwrap());
+        }
+        /* TODO
+        if key == "allOf" {
+            if let Ok(allof) = serde_json::from_value::<AllOfInput>(value.clone()) {
+                let merged = MergedAllOf::from(allof);
+                obj.insert(key, serde_json::to_value(&merged).unwrap());
+            }
+            // TODO
+            let allof = serde_json::from_value::<AllOfInput>(value.clone()).unwrap();
+            let merged = MergedAllOf::from(allof);
+            obj.insert(key, serde_json::to_value(&merged).unwrap());
+        }
+         */
     }
 }
 

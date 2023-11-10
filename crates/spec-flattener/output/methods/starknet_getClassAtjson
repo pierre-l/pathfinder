@@ -294,42 +294,34 @@
                               "members": {
                                 "items": {
                                   "STRUCT_MEMBER": {
-                                    "allOf": [
-                                      {
-                                        "TYPED_PARAMETER": {
-                                          "properties": {
-                                            "name": {
-                                              "description": "The parameter's name",
-                                              "title": "Parameter name",
-                                              "type": "string"
-                                            },
-                                            "type": {
-                                              "description": "The parameter's type",
-                                              "title": "Parameter type",
-                                              "type": "string"
-                                            }
-                                          },
-                                          "required": [
-                                            "name",
-                                            "type"
-                                          ],
-                                          "title": "Typed parameter",
-                                          "type": "object"
-                                        },
-                                        "title": "Typed parameter"
-                                      },
-                                      {
+                                    "description": "",
+                                    "properties": {
+                                      "TYPED_PARAMETER": {
                                         "properties": {
-                                          "offset": {
-                                            "description": "offset of this property within the struct",
-                                            "title": "Offset",
-                                            "type": "integer"
+                                          "name": {
+                                            "description": "The parameter's name",
+                                            "title": "Parameter name",
+                                            "type": "string"
+                                          },
+                                          "type": {
+                                            "description": "The parameter's type",
+                                            "title": "Parameter type",
+                                            "type": "string"
                                           }
                                         },
-                                        "title": "Offset",
+                                        "required": [
+                                          "name",
+                                          "type"
+                                        ],
+                                        "title": "Typed parameter",
                                         "type": "object"
+                                      },
+                                      "offset": {
+                                        "description": "offset of this property within the struct",
+                                        "title": "Offset",
+                                        "type": "integer"
                                       }
-                                    ],
+                                    },
                                     "title": "Struct member"
                                   }
                                 },
