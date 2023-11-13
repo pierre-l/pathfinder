@@ -23,8 +23,8 @@ async fn main() -> anyhow::Result<()> {
     let mut root = serde_json::from_str::<Value>(&spec).expect("The spec file isn't valid JSON");
 
     let mut flattened_schemas = serde_json::Map::new();
-    flatten_section(&mut root, &mut flattened_schemas, "/components/errors");
-    flatten_section(&mut root, &mut flattened_schemas, "/components/schemas");
+    flatten_refs(&mut root, &mut flattened_schemas, "/components/errors");
+    flatten_refs(&mut root, &mut flattened_schemas, "/components/schemas");
     // TODO Find a better solution?
     {
         // Just make the methods an object.
@@ -49,7 +49,7 @@ async fn main() -> anyhow::Result<()> {
             .pointer_mut("/methods")
             .context("The spec file must have a methods section")? = Value::Object(object);
     }
-    flatten_section(&mut root, &mut flattened_schemas, "/methods");
+    flatten_refs(&mut root, &mut flattened_schemas, "/methods");
 
     let sorted = {
         let mut raw: Vec<(String, Value)> = flattened_schemas.into_iter().collect();
@@ -202,8 +202,17 @@ fn write_to_file(sorted: &Value, path: String) -> anyhow::Result<()> {
     .context("Failed to write to file")
 }
 
-// TODO Document the transformations
-fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>, pointer: &str) {
+/// Flattens the "$ref" fields.
+/// "$ref" fields originally are strings formatted like this: `"$ref": "#/components/schemas/EVENT"`
+/// This function lists all schemas, and for every "$ref", replaces the pointer string with the schema object.
+/// By doing this iteratively, eventually all the schemas gets fully flat and all "$ref" fields contain objects.
+///
+/// # Panics
+/// This function will panic in two main cases:
+/// * the values don't fit the expected schema (eg: $refs are anything else than strings and objects,
+///     or the pointer value is formatted in an unexpected way
+/// * a flattening pass doesn't result in fewer schemas to flatten (eg: there's a $ref cycle).
+fn flatten_refs(root: &mut Value, flattened_schemas: &mut Map<String, Value>, pointer: &str) {
     let mut schemas = root.pointer(pointer).unwrap().as_object().unwrap().clone();
     let reference_prefix = "#".to_string() + pointer + "/";
 
