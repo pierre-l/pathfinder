@@ -167,30 +167,23 @@ fn trim_ref_layer(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
 /// TODO Unit test
 fn embed_required(obj: &mut Map<String, Value>) {
     for child in obj.values_mut() {
-        // TODO Let else?
-        let child = if let Some(value) = child.as_object_mut() {
-            value
-        } else {
+        let Some(child) = child.as_object_mut() else {
             continue;
         };
 
-        let required = if let Some(required) = child
+        let Some(required) = child
             .get("required")
             .map(|v| v.as_array().cloned())
             .flatten()
-        {
-            required
-        } else {
+        else {
             continue;
         };
 
-        let properties = if let Some(properties) = child
+        let Some(properties) = child
             .get_mut("properties")
             .map(|value| value.as_object_mut())
             .flatten()
-        {
-            properties
-        } else {
+        else {
             continue;
         };
 
