@@ -111,8 +111,7 @@ async fn fetch_spec_file(url: String) -> Value {
         .await
         .expect("Failed to parse the spec file to a string");
 
-    let mut root = serde_json::from_str::<Value>(&spec).expect("The spec file isn't valid JSON");
-    root
+    serde_json::from_str::<Value>(&spec).expect("The spec file isn't valid JSON")
 }
 
 /// Trim: remove the intermediate layers of flattened references: the "$ref" field, the pointer object.
@@ -258,17 +257,20 @@ fn flatten_refs(root: &mut Value, flattened_schemas: &mut Map<String, Value>, po
 
     let mut schemas_left = usize::MAX;
     while schemas_left > 0 {
-        // Collect the schemas that are flat
-        // TODO Ugly
-        let mut flat = vec![];
-        for (name, definition) in schemas.iter_mut() {
-            if !leaf_fields(definition)
-                .into_iter()
-                .any(|(key, value)| key == "$ref" && value.as_str().is_some())
-            {
-                flat.push(name.clone());
-            }
-        }
+        // Collect the names of the flat schemas
+        let flat = schemas
+            .iter_mut()
+            .filter_map(|(name, definition)| {
+                if !leaf_fields(definition)
+                    .into_iter()
+                    .any(|(key, value)| key == "$ref" && value.as_str().is_some())
+                {
+                    Some(name.clone())
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<String>>();
 
         for flat in flat {
             let definition = schemas.remove(flat.as_str()).unwrap();
@@ -279,7 +281,7 @@ fn flatten_refs(root: &mut Value, flattened_schemas: &mut Map<String, Value>, po
             }
         }
 
-        // Perform a flattening pass
+        // Perform a flattening pass: if a "$ref" is mentioned, make it a pointer object.
         for definition in schemas.values_mut() {
             leaf_fields(definition)
                 .into_iter()
