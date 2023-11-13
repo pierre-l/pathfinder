@@ -45,13 +45,11 @@
                           "enum": [
                             "INVOKE"
                           ],
+                          "required": true,
                           "title": "Type",
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "type"
-                      ],
                       "title": "Type",
                       "type": "object"
                     },
@@ -110,12 +108,10 @@
                                           },
                                           "title": "Address"
                                         },
+                                        "required": true,
                                         "title": "From address"
                                       }
                                     },
-                                    "required": [
-                                      "from_address"
-                                    ],
                                     "title": "Event emitter",
                                     "type": "object"
                                   },
@@ -393,20 +389,18 @@
                             "type": "string"
                           },
                           "description": "The message hash as it appears on the L1 core contract",
+                          "required": true,
                           "title": "Message hash"
                         },
                         "type": {
                           "enum": [
                             "L1_HANDLER"
                           ],
+                          "required": true,
                           "title": "type",
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "type",
-                        "message_hash"
-                      ],
                       "title": "Transaction type",
                       "type": "object"
                     },
@@ -465,12 +459,10 @@
                                           },
                                           "title": "Address"
                                         },
+                                        "required": true,
                                         "title": "From address"
                                       }
                                     },
-                                    "required": [
-                                      "from_address"
-                                    ],
                                     "title": "Event emitter",
                                     "type": "object"
                                   },
@@ -745,13 +737,11 @@
                           "enum": [
                             "DECLARE"
                           ],
+                          "required": true,
                           "title": "Declare",
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "type"
-                      ],
                       "title": "Declare txn receipt",
                       "type": "object"
                     },
@@ -810,12 +800,10 @@
                                           },
                                           "title": "Address"
                                         },
+                                        "required": true,
                                         "title": "From address"
                                       }
                                     },
-                                    "required": [
-                                      "from_address"
-                                    ],
                                     "title": "Event emitter",
                                     "type": "object"
                                   },
@@ -1138,12 +1126,10 @@
                                           },
                                           "title": "Address"
                                         },
+                                        "required": true,
                                         "title": "From address"
                                       }
                                     },
-                                    "required": [
-                                      "from_address"
-                                    ],
                                     "title": "Event emitter",
                                     "type": "object"
                                   },
@@ -1413,20 +1399,18 @@
                             "type": "string"
                           },
                           "description": "The address of the deployed contract",
+                          "required": true,
                           "title": "Contract address"
                         },
                         "type": {
                           "enum": [
                             "DEPLOY"
                           ],
+                          "required": true,
                           "title": "Deploy",
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "type",
-                        "contract_address"
-                      ],
                       "title": "Deploy txn receipt",
                       "type": "object"
                     }
@@ -1493,12 +1477,10 @@
                                           },
                                           "title": "Address"
                                         },
+                                        "required": true,
                                         "title": "From address"
                                       }
                                     },
-                                    "required": [
-                                      "from_address"
-                                    ],
                                     "title": "Event emitter",
                                     "type": "object"
                                   },
@@ -1768,20 +1750,18 @@
                             "type": "string"
                           },
                           "description": "The address of the deployed contract",
+                          "required": true,
                           "title": "Contract address"
                         },
                         "type": {
                           "enum": [
                             "DEPLOY_ACCOUNT"
                           ],
+                          "required": true,
                           "title": "Deploy account",
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "type",
-                        "contract_address"
-                      ],
                       "title": "DeployAccount txn receipt",
                       "type": "object"
                     }
@@ -1807,13 +1787,11 @@
                           "enum": [
                             "INVOKE"
                           ],
+                          "required": true,
                           "title": "Type",
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "type"
-                      ],
                       "title": "Type",
                       "type": "object"
                     },
@@ -1849,12 +1827,10 @@
                                           },
                                           "title": "Address"
                                         },
+                                        "required": true,
                                         "title": "From address"
                                       }
                                     },
-                                    "required": [
-                                      "from_address"
-                                    ],
                                     "title": "Event emitter",
                                     "type": "object"
                                   },
@@ -2144,20 +2120,18 @@
                             "type": "string"
                           },
                           "description": "The message hash as it appears on the L1 core contract",
+                          "required": true,
                           "title": "Message hash"
                         },
                         "type": {
                           "enum": [
                             "L1_HANDLER"
                           ],
+                          "required": true,
                           "title": "type",
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "type",
-                        "message_hash"
-                      ],
                       "title": "Transaction type",
                       "type": "object"
                     },
@@ -2193,12 +2167,10 @@
                                           },
                                           "title": "Address"
                                         },
+                                        "required": true,
                                         "title": "From address"
                                       }
                                     },
-                                    "required": [
-                                      "from_address"
-                                    ],
                                     "title": "Event emitter",
                                     "type": "object"
                                   },
@@ -2485,13 +2457,11 @@
                           "enum": [
                             "DECLARE"
                           ],
+                          "required": true,
                           "title": "Declare",
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "type"
-                      ],
                       "title": "Declare txn receipt",
                       "type": "object"
                     },
@@ -2527,12 +2497,10 @@
                                           },
                                           "title": "Address"
                                         },
+                                        "required": true,
                                         "title": "From address"
                                       }
                                     },
-                                    "required": [
-                                      "from_address"
-                                    ],
                                     "title": "Event emitter",
                                     "type": "object"
                                   },
@@ -2844,12 +2812,10 @@
                                           },
                                           "title": "Address"
                                         },
+                                        "required": true,
                                         "title": "From address"
                                       }
                                     },
-                                    "required": [
-                                      "from_address"
-                                    ],
                                     "title": "Event emitter",
                                     "type": "object"
                                   },
@@ -3131,20 +3097,18 @@
                             "type": "string"
                           },
                           "description": "The address of the deployed contract",
+                          "required": true,
                           "title": "Contract address"
                         },
                         "type": {
                           "enum": [
                             "DEPLOY_ACCOUNT"
                           ],
+                          "required": true,
                           "title": "Deploy account",
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "type",
-                        "contract_address"
-                      ],
                       "title": "DeployAccount txn receipt",
                       "type": "object"
                     }

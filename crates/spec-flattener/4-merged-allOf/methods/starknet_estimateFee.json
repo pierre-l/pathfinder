@@ -150,6 +150,7 @@
                                 "type": "string"
                               }
                             },
+                            "required": true,
                             "title": "calldata",
                             "type": "array"
                           },
@@ -161,6 +162,7 @@
                               "type": "string"
                             },
                             "description": "The maximal fee that can be charged for including the transaction",
+                            "required": true,
                             "title": "Max fee"
                           },
                           "nonce": {
@@ -170,6 +172,7 @@
                               "title": "Field element",
                               "type": "string"
                             },
+                            "required": true,
                             "title": "Nonce"
                           },
                           "sender_address": {
@@ -182,6 +185,7 @@
                               },
                               "title": "Address"
                             },
+                            "required": true,
                             "title": "sender address"
                           },
                           "signature": {
@@ -198,12 +202,14 @@
                               "title": "Signature",
                               "type": "array"
                             },
+                            "required": true,
                             "title": "Signature"
                           },
                           "type": {
                             "enum": [
                               "INVOKE"
                             ],
+                            "required": true,
                             "title": "Type",
                             "type": "string"
                           },
@@ -215,6 +221,7 @@
                               "type": "string"
                             },
                             "description": "Version of the transaction scheme",
+                            "required": true,
                             "title": "Version"
                           }
                         },
@@ -604,6 +611,7 @@
                               "type": "object"
                             },
                             "description": "The class to be declared",
+                            "required": true,
                             "title": "Contract class"
                           },
                           "max_fee": {
@@ -614,6 +622,7 @@
                               "type": "string"
                             },
                             "description": "The maximal fee that can be charged for including the transaction",
+                            "required": true,
                             "title": "Max fee"
                           },
                           "nonce": {
@@ -623,6 +632,7 @@
                               "title": "Field element",
                               "type": "string"
                             },
+                            "required": true,
                             "title": "Nonce"
                           },
                           "sender_address": {
@@ -636,6 +646,7 @@
                               "title": "Address"
                             },
                             "description": "The address of the account contract sending the declaration transaction",
+                            "required": true,
                             "title": "Sender address"
                           },
                           "signature": {
@@ -652,12 +663,14 @@
                               "title": "Signature",
                               "type": "array"
                             },
+                            "required": true,
                             "title": "Signature"
                           },
                           "type": {
                             "enum": [
                               "DECLARE"
                             ],
+                            "required": true,
                             "title": "Declare",
                             "type": "string"
                           },
@@ -669,6 +682,7 @@
                               "type": "string"
                             },
                             "description": "Version of the transaction scheme",
+                            "required": true,
                             "title": "Version"
                           }
                         },
@@ -688,6 +702,7 @@
                               "type": "string"
                             },
                             "description": "The hash of the Cairo assembly resulting from the Sierra compilation",
+                            "required": true,
                             "title": "Compiled class hash"
                           },
                           "contract_class": {
@@ -820,6 +835,7 @@
                               "type": "object"
                             },
                             "description": "The class to be declared",
+                            "required": true,
                             "title": "Contract class"
                           },
                           "max_fee": {
@@ -830,6 +846,7 @@
                               "type": "string"
                             },
                             "description": "The maximal fee that can be charged for including the transaction",
+                            "required": true,
                             "title": "Max fee"
                           },
                           "nonce": {
@@ -839,6 +856,7 @@
                               "title": "Field element",
                               "type": "string"
                             },
+                            "required": true,
                             "title": "Nonce"
                           },
                           "sender_address": {
@@ -852,6 +870,7 @@
                               "title": "Address"
                             },
                             "description": "The address of the account contract sending the declaration transaction",
+                            "required": true,
                             "title": "Sender address"
                           },
                           "signature": {
@@ -868,12 +887,14 @@
                               "title": "Signature",
                               "type": "array"
                             },
+                            "required": true,
                             "title": "Signature"
                           },
                           "type": {
                             "enum": [
                               "DECLARE"
                             ],
+                            "required": true,
                             "title": "Declare",
                             "type": "string"
                           },
@@ -885,6 +906,7 @@
                               "type": "string"
                             },
                             "description": "Version of the transaction scheme",
+                            "required": true,
                             "title": "Version"
                           }
                         },
@@ -1037,12 +1059,10 @@
                     },
                     "title": "Block hash"
                   },
+                  "required": true,
                   "title": "Block hash"
                 }
               },
-              "required": [
-                "block_hash"
-              ],
               "title": "Block hash",
               "type": "object"
             },
@@ -1055,12 +1075,10 @@
                     "title": "Block number",
                     "type": "integer"
                   },
+                  "required": true,
                   "title": "Block number"
                 }
               },
-              "required": [
-                "block_number"
-              ],
               "title": "Block number",
               "type": "object"
             },

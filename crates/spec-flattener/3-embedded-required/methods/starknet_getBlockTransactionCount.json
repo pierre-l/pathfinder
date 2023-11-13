@@ -30,12 +30,10 @@
                     },
                     "title": "Block hash"
                   },
+                  "required": true,
                   "title": "Block hash"
                 }
               },
-              "required": [
-                "block_hash"
-              ],
               "title": "Block hash",
               "type": "object"
             },
@@ -48,12 +46,10 @@
                     "title": "Block number",
                     "type": "integer"
                   },
+                  "required": true,
                   "title": "Block number"
                 }
               },
-              "required": [
-                "block_number"
-              ],
               "title": "Block number",
               "type": "object"
             },

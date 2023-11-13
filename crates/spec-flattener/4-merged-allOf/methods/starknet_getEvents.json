@@ -65,12 +65,10 @@
                             },
                             "title": "Block hash"
                           },
+                          "required": true,
                           "title": "Block hash"
                         }
                       },
-                      "required": [
-                        "block_hash"
-                      ],
                       "title": "Block hash",
                       "type": "object"
                     },
@@ -83,12 +81,10 @@
                             "title": "Block number",
                             "type": "integer"
                           },
+                          "required": true,
                           "title": "Block number"
                         }
                       },
-                      "required": [
-                        "block_number"
-                      ],
                       "title": "Block number",
                       "type": "object"
                     },
@@ -143,12 +139,10 @@
                             },
                             "title": "Block hash"
                           },
+                          "required": true,
                           "title": "Block hash"
                         }
                       },
-                      "required": [
-                        "block_hash"
-                      ],
                       "title": "Block hash",
                       "type": "object"
                     },
@@ -161,12 +155,10 @@
                             "title": "Block number",
                             "type": "integer"
                           },
+                          "required": true,
                           "title": "Block number"
                         }
                       },
-                      "required": [
-                        "block_number"
-                      ],
                       "title": "Block number",
                       "type": "object"
                     },
@@ -276,6 +268,7 @@
                           },
                           "title": "Address"
                         },
+                        "required": true,
                         "title": "From address"
                       }
                     },
@@ -292,6 +285,7 @@
                       "title": "Block hash"
                     },
                     "description": "The hash of the block in which the event was emitted",
+                    "required": true,
                     "title": "Block hash"
                   },
                   "block_number": {
@@ -302,6 +296,7 @@
                       "type": "integer"
                     },
                     "description": "The number of the block in which the event was emitted",
+                    "required": true,
                     "title": "Block number"
                   },
                   "transaction_hash": {
@@ -316,6 +311,7 @@
                       "title": "Transaction hash"
                     },
                     "description": "The transaction that emitted the event",
+                    "required": true,
                     "title": "Transaction hash"
                   }
                 },

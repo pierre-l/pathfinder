@@ -23,7 +23,7 @@ async fn main() -> anyhow::Result<()> {
     write_output("1-flatten", file, sorted.clone())?;
 
     // Trim the "$ref" layer, effectively inlining the pointer object and getting completely rid of the original "$ref" field
-    let mut trimmed = {
+    let trimmed = {
         let mut object_as_value = Value::Object(sorted);
         for_each_object(&mut object_as_value, &|object| {
             trim_ref_layer(object).unwrap();
@@ -174,43 +174,33 @@ fn trim_ref_layer(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
 
 /// When an object has a "properties" field and a "required" array field, embed the "required" prop
 /// as a boolean inside the corresponding property object.
-/// TODO Unit test
 fn embed_required(obj: &mut Map<String, Value>) {
-    for child in obj.values_mut() {
-        let Some(child) = child.as_object_mut() else {
-            continue;
-        };
+    let Some(required) = obj.get("required").and_then(|v| v.as_array().cloned()) else {
+        return;
+    };
 
-        let Some(required) = child.get("required").and_then(|v| v.as_array().cloned()) else {
-            continue;
-        };
+    let Some(properties) = obj
+        .get_mut("properties")
+        .and_then(|value| value.as_object_mut())
+    else {
+        return;
+    };
 
-        let Some(properties) = child
-            .get_mut("properties")
-            .and_then(|value| value.as_object_mut())
-        else {
-            continue;
-        };
+    required.into_iter().for_each(|property_name| {
+        let child_prop = properties
+            .get_mut(
+                property_name
+                    .as_str()
+                    .context("Property names in the required array are supposed to be strings")
+                    .unwrap(),
+            )
+            .expect("A property marked as \"required\" should already exist in the property map")
+            .as_object_mut()
+            .expect("Properties are expected to be objects");
+        child_prop.insert("required".to_string(), Value::Bool(true));
+    });
 
-        required.into_iter().for_each(|property_name| {
-            let child_prop = properties
-                .get_mut(
-                    property_name
-                        .as_str()
-                        .context("Property names in the required array are supposed to be strings")
-                        .unwrap(),
-                )
-                .expect(
-                    "A property marked as \"required\" should already exist in the property map",
-                )
-                .as_object_mut()
-                .expect("Properties are expected to be objects");
-            child_prop.insert("required".to_string(), Value::Bool(true));
-        });
-
-        // TODO This isn't perfect, two occurrences are left. Write unit tests.
-        child.remove("required");
-    }
+    obj.remove("required");
 }
 
 fn merge_allofs(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
@@ -408,6 +398,6 @@ mod tests {
 
         let mut result = original.as_object().unwrap().clone();
         embed_required(&mut result);
-        assert_eq!(Value::Object(result), original)
+        assert_eq!(Value::Object(result), expected)
     }
 }

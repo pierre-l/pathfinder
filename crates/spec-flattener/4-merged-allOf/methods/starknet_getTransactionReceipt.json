@@ -126,6 +126,7 @@
                                     },
                                     "title": "Address"
                                   },
+                                  "required": true,
                                   "title": "From address"
                                 }
                               },
@@ -349,6 +350,7 @@
                       "enum": [
                         "INVOKE"
                       ],
+                      "required": true,
                       "title": "Type",
                       "type": "string"
                     }
@@ -447,6 +449,7 @@
                                     },
                                     "title": "Address"
                                   },
+                                  "required": true,
                                   "title": "From address"
                                 }
                               },
@@ -674,12 +677,14 @@
                         "type": "string"
                       },
                       "description": "The message hash as it appears on the L1 core contract",
+                      "required": true,
                       "title": "Message hash"
                     },
                     "type": {
                       "enum": [
                         "L1_HANDLER"
                       ],
+                      "required": true,
                       "title": "type",
                       "type": "string"
                     }
@@ -778,6 +783,7 @@
                                     },
                                     "title": "Address"
                                   },
+                                  "required": true,
                                   "title": "From address"
                                 }
                               },
@@ -1001,6 +1007,7 @@
                       "enum": [
                         "DECLARE"
                       ],
+                      "required": true,
                       "title": "Declare",
                       "type": "string"
                     }
@@ -1099,6 +1106,7 @@
                                     },
                                     "title": "Address"
                                   },
+                                  "required": true,
                                   "title": "From address"
                                 }
                               },
@@ -1326,12 +1334,14 @@
                         "type": "string"
                       },
                       "description": "The address of the deployed contract",
+                      "required": true,
                       "title": "Contract address"
                     },
                     "type": {
                       "enum": [
                         "DEPLOY"
                       ],
+                      "required": true,
                       "title": "Deploy",
                       "type": "string"
                     }
@@ -1430,6 +1440,7 @@
                                     },
                                     "title": "Address"
                                   },
+                                  "required": true,
                                   "title": "From address"
                                 }
                               },
@@ -1657,12 +1668,14 @@
                         "type": "string"
                       },
                       "description": "The address of the deployed contract",
+                      "required": true,
                       "title": "Contract address"
                     },
                     "type": {
                       "enum": [
                         "DEPLOY_ACCOUNT"
                       ],
+                      "required": true,
                       "title": "Deploy account",
                       "type": "string"
                     }
@@ -1746,6 +1759,7 @@
                                     },
                                     "title": "Address"
                                   },
+                                  "required": true,
                                   "title": "From address"
                                 }
                               },
@@ -1981,6 +1995,7 @@
                       "enum": [
                         "INVOKE"
                       ],
+                      "required": true,
                       "title": "Type",
                       "type": "string"
                     }
@@ -2056,6 +2071,7 @@
                                     },
                                     "title": "Address"
                                   },
+                                  "required": true,
                                   "title": "From address"
                                 }
                               },
@@ -2295,12 +2311,14 @@
                         "type": "string"
                       },
                       "description": "The message hash as it appears on the L1 core contract",
+                      "required": true,
                       "title": "Message hash"
                     },
                     "type": {
                       "enum": [
                         "L1_HANDLER"
                       ],
+                      "required": true,
                       "title": "type",
                       "type": "string"
                     }
@@ -2376,6 +2394,7 @@
                                     },
                                     "title": "Address"
                                   },
+                                  "required": true,
                                   "title": "From address"
                                 }
                               },
@@ -2611,6 +2630,7 @@
                       "enum": [
                         "DECLARE"
                       ],
+                      "required": true,
                       "title": "Declare",
                       "type": "string"
                     }
@@ -2686,6 +2706,7 @@
                                     },
                                     "title": "Address"
                                   },
+                                  "required": true,
                                   "title": "From address"
                                 }
                               },
@@ -2925,12 +2946,14 @@
                         "type": "string"
                       },
                       "description": "The address of the deployed contract",
+                      "required": true,
                       "title": "Contract address"
                     },
                     "type": {
                       "enum": [
                         "DEPLOY_ACCOUNT"
                       ],
+                      "required": true,
                       "title": "Deploy account",
                       "type": "string"
                     }

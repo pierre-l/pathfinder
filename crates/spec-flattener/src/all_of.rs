@@ -28,7 +28,6 @@ pub enum AllOfItem {
         title: String,
         type_: String,
         properties: Map<String, Value>,
-        required: Vec<String>,
     },
 }
 
@@ -71,10 +70,6 @@ impl TryFrom<&Value> for AllOfItem {
                     .to_string(),
                 // TODO Optional?
                 properties: obj.get("properties").unwrap().as_object().unwrap().clone(),
-                required: serde_json::from_value(
-                    obj.get("required").unwrap_or(&Value::Array(vec![])).clone(),
-                )
-                .unwrap(),
             };
             Ok(output)
         } else {
@@ -134,7 +129,6 @@ impl From<AllOfInput> for MergedAllOf {
                     title: _,
                     type_,
                     mut properties,
-                    required,
                 } => {
                     assert_eq!(type_, "object");
 
