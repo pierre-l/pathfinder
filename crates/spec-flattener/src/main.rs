@@ -14,10 +14,14 @@ async fn main() -> anyhow::Result<()> {
     );
 
     let mut root = fetch_spec_file(url).await;
+    write_to_file(&root, format!("original/{}", file))?;
+
     // Flatten the $ref pointers into objects, retrieve a pointer->definition map.
     let flattened_schemas = flatten_openrpc_spec(&mut root)?;
     // Sort the top-level fields so they're ordered by pointer (section, then name)
     let sorted = sort_map_fields(flattened_schemas);
+    write_output("1-flatten", file, sorted.clone())?;
+
     // Trim the "$ref" layer, effectively inlining the pointer object and getting completely rid of the original "$ref" field
     let mut trimmed = {
         let mut object_as_value = Value::Object(sorted);
@@ -26,6 +30,8 @@ async fn main() -> anyhow::Result<()> {
         });
         object_as_value.as_object().unwrap().clone()
     };
+    write_output("2-trimmed", file, trimmed.clone())?;
+
     // For allOf objects that have a "required" array field, embed that as a boolean in the property objects.
     let mut embedded_required = {
         trimmed
@@ -33,6 +39,8 @@ async fn main() -> anyhow::Result<()> {
             .for_each(|(_key, value)| for_each_object(value, &embed_required));
         trimmed
     };
+    write_output("3-embedded-required", file, embedded_required.clone())?;
+
     // Merge the "allOf" arrays, regroup their item properties into a single object (name -> property)
     let merged_allof = {
         embedded_required.iter_mut().for_each(|(_key, value)| {
@@ -42,25 +50,27 @@ async fn main() -> anyhow::Result<()> {
         });
         embedded_required
     };
+    write_output("4-merged-allOf", file, merged_allof)
+}
 
-    // TODO We could have an output dir per step and write output for every step for easier debugging
+fn write_output(directory: &str, file: &str, result: Map<String, Value>) -> anyhow::Result<()> {
     // Write the method files
-    merged_allof
+    result
         .iter()
         .filter_map(|(pointer, schema)| {
             if pointer.starts_with("#/methods") {
-                let name = pointer.split('/').last().unwrap();
+                let name = pointer.split('/').last().unwrap_or(pointer);
                 Some((name, schema))
             } else {
                 None
             }
         })
         .for_each(|(name, schema)| {
-            write_to_file(schema, "output/methods/".to_string() + name + "json").unwrap()
+            write_to_file(schema, format!("{}/methods/{}.json", directory, name)).unwrap()
         });
 
     // Write the whole file
-    write_to_file(&Value::Object(merged_allof), format!("output/{}", file))
+    write_to_file(&Value::Object(result), format!("{}/{}", directory, file))
 }
 
 /// Reconstructs the `Map`, sorting the fields by their key.
@@ -222,10 +232,10 @@ fn merge_allofs(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
 
 fn write_to_file(sorted: &Value, path: String) -> anyhow::Result<()> {
     std::fs::write(
-        path,
+        &path,
         serde_json::to_string_pretty(&sorted).context("Serialization failed")?,
     )
-    .context("Failed to write to file")
+    .context(format!("Failed to write to file: {}", path))
 }
 
 /// Flattens the "$ref" fields.
