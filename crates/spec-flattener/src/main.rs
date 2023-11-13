@@ -14,32 +14,33 @@ async fn main() -> anyhow::Result<()> {
     );
 
     let mut root = fetch_spec_file(url).await;
+    // Flatten the $ref pointers into objects, retrieve a pointer->definition map.
     let flattened_schemas = flatten_openrpc_spec(&mut root)?;
+    // Sort the top-level fields so they're ordered by pointer (section, then name)
     let sorted = sort_map_fields(flattened_schemas);
-
-    let trimmed = {
+    // Trim the "$ref" layer, effectively inlining the pointer object and getting completely rid of the original "$ref" field
+    let mut trimmed = {
         let mut object_as_value = Value::Object(sorted);
         for_each_object(&mut object_as_value, &|object| {
             trim_ref_layer(object).unwrap();
         });
         object_as_value.as_object().unwrap().clone()
     };
-
-    let embedded_required = {
-        let mut object_as_value = Value::Object(trimmed);
-        for_each_object(&mut object_as_value, &|object| {
-            embed_required(object);
-        });
-        object_as_value.as_object().unwrap().clone()
+    // For allOf objects that have a "required" array field, embed that as a boolean in the property objects.
+    let mut embedded_required = {
+        trimmed
+            .iter_mut()
+            .for_each(|(_key, value)| for_each_object(value, &embed_required));
+        trimmed
     };
-
-    // Merge the "allOf" objects, regroup their item properties into a single object
+    // Merge the "allOf" arrays, regroup their item properties into a single object (name -> property)
     let merged_allof = {
-        let mut object_as_value = Value::Object(embedded_required);
-        for_each_object(&mut object_as_value, &|object| {
-            merge_allofs(object).unwrap();
+        embedded_required.iter_mut().for_each(|(_key, value)| {
+            for_each_object(value, &|object| {
+                merge_allofs(object).unwrap();
+            })
         });
-        object_as_value.as_object().unwrap().clone()
+        embedded_required
     };
 
     // TODO We could have an output dir per step and write output for every step for easier debugging
