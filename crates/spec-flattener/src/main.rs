@@ -12,52 +12,11 @@ async fn main() -> anyhow::Result<()> {
         "https://raw.githubusercontent.com/starkware-libs/starknet-specs/{}/api/{}",
         version, file
     );
-    println!("Fetching {}", url);
-    let spec = reqwest::get(url)
-        .await
-        .expect("Failed to retrieve the spec file")
-        .text()
-        .await
-        .expect("Failed to parse the spec file to a string");
 
-    let mut root = serde_json::from_str::<Value>(&spec).expect("The spec file isn't valid JSON");
+    let mut root = fetch_spec_file(url).await;
+    let flattened_schemas = flatten_openrpc_spec(&mut root)?;
+    let sorted = sort_map_fields(flattened_schemas);
 
-    let mut flattened_schemas = serde_json::Map::new();
-    flatten_refs(&mut root, &mut flattened_schemas, "/components/errors");
-    flatten_refs(&mut root, &mut flattened_schemas, "/components/schemas");
-    // TODO Find a better solution?
-    {
-        // Just make the methods an object.
-        let mut object = serde_json::Map::new();
-        root.pointer("/methods")
-            .expect("The spec file must have a methods section")
-            .as_array()
-            .expect("The methods section must be an array")
-            .iter()
-            .for_each(|value| {
-                object.insert(
-                    value
-                        .get("name")
-                        .expect("Methods must have a name")
-                        .as_str()
-                        .expect("Method names must be strings")
-                        .to_string(),
-                    value.clone(),
-                );
-            });
-        *root
-            .pointer_mut("/methods")
-            .context("The spec file must have a methods section")? = Value::Object(object);
-    }
-    flatten_refs(&mut root, &mut flattened_schemas, "/methods");
-
-    let sorted = {
-        let mut raw: Vec<(String, Value)> = flattened_schemas.into_iter().collect();
-        raw.sort_by(|(name_a, _), (name_b, _)| name_a.cmp(name_b));
-        serde_json::Map::from_iter(raw)
-    };
-
-    // Trim: remove the intermediate layers of flattened references: the "$ref" field, the pointer object.
     let trimmed = {
         let mut object_as_value = Value::Object(sorted);
         for_each_object(&mut object_as_value, &|object| {
@@ -103,6 +62,84 @@ async fn main() -> anyhow::Result<()> {
     write_to_file(&Value::Object(merged_allof), format!("output/{}", file))
 }
 
+/// Reconstructs the `Map`, sorting the fields by their key.
+/// TODO Might be unnecessary. Is this something that `serde_json` already does?
+fn sort_map_fields(flattened_schemas: Map<String, Value>) -> Map<String, Value> {
+    let mut raw: Vec<(String, Value)> = flattened_schemas.into_iter().collect();
+    raw.sort_by(|(name_a, _), (name_b, _)| name_a.cmp(name_b));
+    serde_json::Map::from_iter(raw)
+}
+
+fn flatten_openrpc_spec(mut root: &mut Value) -> anyhow::Result<Map<String, Value>> {
+    let mut flattened_schemas = serde_json::Map::new();
+    flatten_refs(&mut root, &mut flattened_schemas, "/components/errors");
+    flatten_refs(&mut root, &mut flattened_schemas, "/components/schemas");
+    // TODO Find a better solution?
+    {
+        // Just make the methods an object.
+        let mut object = serde_json::Map::new();
+        root.pointer("/methods")
+            .expect("The spec file must have a methods section")
+            .as_array()
+            .expect("The methods section must be an array")
+            .iter()
+            .for_each(|value| {
+                object.insert(
+                    value
+                        .get("name")
+                        .expect("Methods must have a name")
+                        .as_str()
+                        .expect("Method names must be strings")
+                        .to_string(),
+                    value.clone(),
+                );
+            });
+        *root
+            .pointer_mut("/methods")
+            .context("The spec file must have a methods section")? = Value::Object(object);
+    }
+    flatten_refs(&mut root, &mut flattened_schemas, "/methods");
+    Ok(flattened_schemas)
+}
+
+async fn fetch_spec_file(url: String) -> Value {
+    println!("Fetching {}", url);
+    let spec = reqwest::get(url)
+        .await
+        .expect("Failed to retrieve the spec file")
+        .text()
+        .await
+        .expect("Failed to parse the spec file to a string");
+
+    let mut root = serde_json::from_str::<Value>(&spec).expect("The spec file isn't valid JSON");
+    root
+}
+
+/// Trim: remove the intermediate layers of flattened references: the "$ref" field, the pointer object.
+///
+/// Example input:
+/// ```json
+/// {
+///     "$ref": {
+///         "POINTER_OBJECT_NAME": {
+///             "pointer_object_field": "value"
+///         }
+///     },
+///     "other_field": "value"
+/// }
+/// ```
+///
+/// Example output:
+/// ```json
+/// {
+///     "POINTER_OBJECT_NAME": {
+///         "pointer_object_field": "value"
+///     },
+///     "other_field": "value"
+/// }
+/// ```
+///
+/// TODO Unit test
 fn trim_ref_layer(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
     for (key, value) in obj.clone() {
         if key == "$ref" {
@@ -115,9 +152,9 @@ fn trim_ref_layer(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
                 .iter()
                 .next()
                 .expect("Shouldn't happen as the vec len is supposedly checked above");
-            // Remove the original reference.
+            // Remove the original reference, the "$ref" field.
             obj.remove(&key);
-            // Replace it with the pointer object
+            // Replace it with the pointer object, effectively removing the "$ref" layer
             let pointer_end = pointer.split("/").last().unwrap_or(pointer).to_string();
             obj.insert(pointer_end, flat.clone());
         }
@@ -127,7 +164,8 @@ fn trim_ref_layer(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
 }
 
 /// When an object has a "properties" field and a "required" array field, embed the "required" prop
-/// as a boolean inside the corresponding property
+/// as a boolean inside the corresponding property object.
+/// TODO Unit test
 fn embed_required(obj: &mut Map<String, Value>) {
     for child in obj.values_mut() {
         // TODO Let else?
@@ -210,7 +248,7 @@ fn write_to_file(sorted: &Value, path: String) -> anyhow::Result<()> {
 /// # Panics
 /// This function will panic in two main cases:
 /// * the values don't fit the expected schema (eg: $refs are anything else than strings and objects,
-///     or the pointer value is formatted in an unexpected way
+///     or the pointer value is formatted in an unexpected way)
 /// * a flattening pass doesn't result in fewer schemas to flatten (eg: there's a $ref cycle).
 fn flatten_refs(root: &mut Value, flattened_schemas: &mut Map<String, Value>, pointer: &str) {
     let mut schemas = root.pointer(pointer).unwrap().as_object().unwrap().clone();
