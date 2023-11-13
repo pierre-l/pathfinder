@@ -34,10 +34,9 @@ async fn main() -> anyhow::Result<()> {
 
     // For allOf objects that have a "required" array field, embed that as a boolean in the property objects.
     let mut embedded_required = {
-        trimmed
-            .iter_mut()
-            .for_each(|(_key, value)| for_each_object(value, &embed_required));
-        trimmed
+        let mut object_as_value = Value::Object(trimmed);
+        for_each_object(&mut object_as_value, &embed_required);
+        object_as_value.as_object().unwrap().clone()
     };
     write_output("3-embedded-required", file, embedded_required.clone())?;
 
@@ -357,8 +356,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::leaf_fields;
-    use serde_json::json;
+    use crate::{embed_required, leaf_fields};
+    use serde_json::{json, Value};
 
     #[test]
     fn test_leaf_fields() {
@@ -378,5 +377,37 @@ mod tests {
                 ("field2", &mut json!("value2"))
             ]
         )
+    }
+
+    #[test]
+    fn test_embed_required() {
+        let mut original = json!({
+            "properties": {
+                "block_hash": {
+                    "BLOCK_HASH": "omitted",
+                    "title": "Block hash"
+                }
+            },
+            "required": [
+                "block_hash"
+            ],
+            "title": "Block hash",
+            "type": "object"
+        });
+        let expected = json!({
+            "properties": {
+                "block_hash": {
+                    "BLOCK_HASH": "omitted",
+                    "title": "Block hash",
+                    "required": true
+                }
+            },
+            "title": "Block hash",
+            "type": "object"
+        });
+
+        let mut result = original.as_object().unwrap().clone();
+        embed_required(&mut result);
+        assert_eq!(Value::Object(result), original)
     }
 }

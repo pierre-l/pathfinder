@@ -9,9 +9,11 @@ use serde_json::{Map, Value};
 pub struct AllOfInput {
     #[serde(rename = "allOf")]
     items: Vec<AllOfItem>,
-    // TODO Option is probably better
+    // TODO Option is probably better?
     #[serde(default)]
     description: String,
+    // TODO Option is probably better?
+    #[serde(default)]
     title: String,
 }
 
