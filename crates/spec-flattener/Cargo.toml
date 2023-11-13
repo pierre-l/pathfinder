@@ -7,7 +7,8 @@ rust-version.workspace = true
 
 # TODO Trim features
 [dependencies]
-reqwest = {workspace = true}
+anyhow = { workspace = true }
+reqwest = { workspace = true }
 tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true, features = [

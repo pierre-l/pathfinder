@@ -1,3 +1,4 @@
+use anyhow::Context;
 use serde::de::Error;
 use serde::{Deserialize, Deserializer, Serialize};
 use serde_json::{Map, Value};
@@ -35,12 +36,12 @@ impl<'a> Deserialize<'a> for AllOfItem {
         D: Deserializer<'a>,
     {
         let value = Value::deserialize(deserializer)?;
-        AllOfItem::try_from(&value).map_err(|()| Error::custom("Invalid \"AllOfItem\""))
+        AllOfItem::try_from(&value).map_err(|err| Error::custom(err.to_string()))
     }
 }
 
 impl TryFrom<&Value> for AllOfItem {
-    type Error = ();
+    type Error = anyhow::Error;
 
     fn try_from(value: &Value) -> Result<Self, Self::Error> {
         let mut obj: Map<String, Value> = value.as_object().unwrap().clone();
@@ -51,16 +52,21 @@ impl TryFrom<&Value> for AllOfItem {
                     .get("description")
                     .unwrap_or(&Value::String("".to_string()))
                     .as_str()
-                    .unwrap()
+                    .context("\"description\" is supposed to be a string")?
                     .to_string(),
                 // TODO Apparently this isn't mandatory? Good, we don't need it anyway.
                 title: obj
                     .get("title")
                     .unwrap_or(&Value::String("".to_string()))
                     .as_str()
-                    .unwrap()
+                    .context("\"title\" is supposed to be a string")?
                     .to_string(),
-                type_: obj.get("type").unwrap().as_str().unwrap().to_string(),
+                type_: obj
+                    .get("type")
+                    .unwrap()
+                    .as_str()
+                    .context("\"type\" is supposed to be a string")?
+                    .to_string(),
                 // TODO Optional?
                 properties: obj.get("properties").unwrap().as_object().unwrap().clone(),
                 required: serde_json::from_value(

@@ -1,10 +1,11 @@
 mod all_of;
 
 use crate::all_of::{AllOfInput, MergedAllOf};
+use anyhow::Context;
 use serde_json::{Map, Value};
 
 #[tokio::main]
-async fn main() {
+async fn main() -> anyhow::Result<()> {
     let version = "v0.5.0";
     let file = "starknet_api_openrpc.json";
     let url = format!(
@@ -12,9 +13,14 @@ async fn main() {
         version, file
     );
     println!("Fetching {}", url);
-    let spec = reqwest::get(url).await.unwrap().text().await.unwrap();
+    let spec = reqwest::get(url)
+        .await
+        .expect("Failed to retrieve the spec file")
+        .text()
+        .await
+        .expect("Failed to parse the spec file to a string");
 
-    let mut root = serde_json::from_str::<Value>(&spec).unwrap();
+    let mut root = serde_json::from_str::<Value>(&spec).expect("The spec file isn't valid JSON");
 
     let mut flattened_schemas = serde_json::Map::new();
     flatten_section(&mut root, &mut flattened_schemas, "/components/errors");
@@ -24,17 +30,24 @@ async fn main() {
         // Just make the methods an object.
         let mut object = serde_json::Map::new();
         root.pointer("/methods")
-            .unwrap()
+            .expect("The spec file must have a methods section")
             .as_array()
-            .unwrap()
+            .expect("The methods section must be an array")
             .iter()
             .for_each(|value| {
                 object.insert(
-                    value.get("name").unwrap().as_str().unwrap().to_string(),
+                    value
+                        .get("name")
+                        .expect("Methods must have a name")
+                        .as_str()
+                        .expect("Method names must be strings")
+                        .to_string(),
                     value.clone(),
                 );
             });
-        *root.pointer_mut("/methods").unwrap() = Value::Object(object);
+        *root
+            .pointer_mut("/methods")
+            .context("The spec file must have a methods section")? = Value::Object(object);
     }
     flatten_section(&mut root, &mut flattened_schemas, "/methods");
 
@@ -48,7 +61,7 @@ async fn main() {
     let trimmed = {
         let mut object_as_value = Value::Object(sorted);
         for_each_object(&mut object_as_value, &|object| {
-            trim_ref_layer(object);
+            trim_ref_layer(object).unwrap();
         });
         object_as_value.as_object().unwrap().clone()
     };
@@ -65,7 +78,7 @@ async fn main() {
     let merged_allof = {
         let mut object_as_value = Value::Object(embedded_required);
         for_each_object(&mut object_as_value, &|object| {
-            merge_allofs(object);
+            merge_allofs(object).unwrap();
         });
         object_as_value.as_object().unwrap().clone()
     };
@@ -83,27 +96,34 @@ async fn main() {
             }
         })
         .for_each(|(name, schema)| {
-            write_to_file(schema, "output/methods/".to_string() + name + "json")
+            write_to_file(schema, "output/methods/".to_string() + name + "json").unwrap()
         });
 
     // Write the whole file
-    write_to_file(&Value::Object(merged_allof), format!("output/{}", file));
+    write_to_file(&Value::Object(merged_allof), format!("output/{}", file))
 }
 
-fn trim_ref_layer(obj: &mut Map<String, Value>) {
+fn trim_ref_layer(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
     for (key, value) in obj.clone() {
         if key == "$ref" {
             // References should now be an object with a single field whose key is the pointer.
-            let pointer_object = value.as_object().unwrap();
+            let pointer_object = value
+                .as_object()
+                .context("\"$ref\" fields are expected to be objects at this point")?;
             assert_eq!(pointer_object.keys().len(), 1);
-            let (pointer, flat) = pointer_object.iter().next().unwrap();
+            let (pointer, flat) = pointer_object
+                .iter()
+                .next()
+                .expect("Shouldn't happen as the vec len is supposedly checked above");
             // Remove the original reference.
             obj.remove(&key);
             // Replace it with the pointer object
-            let pointer_end = pointer.split("/").last().unwrap().to_string();
+            let pointer_end = pointer.split("/").last().unwrap_or(pointer).to_string();
             obj.insert(pointer_end, flat.clone());
         }
     }
+
+    Ok(())
 }
 
 /// When an object has a "properties" field and a "required" array field, embed the "required" prop
@@ -137,9 +157,14 @@ fn embed_required(obj: &mut Map<String, Value>) {
             continue;
         };
 
-        required.into_iter().for_each(|key| {
+        required.into_iter().for_each(|property_name| {
             let child_prop = properties
-                .get_mut(key.as_str().unwrap())
+                .get_mut(
+                    property_name
+                        .as_str()
+                        .context("Property names in the required array are supposed to be strings")
+                        .unwrap(),
+                )
                 .expect(
                     "A property marked as \"required\" should already exist in the property map",
                 )
@@ -153,18 +178,28 @@ fn embed_required(obj: &mut Map<String, Value>) {
     }
 }
 
-fn merge_allofs(obj: &mut Map<String, Value>) {
+fn merge_allofs(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
     for (key, value) in obj.clone() {
         if value.get("allOf").is_some() {
-            let allof = serde_json::from_value::<AllOfInput>(value.clone()).unwrap();
+            let allof = serde_json::from_value::<AllOfInput>(value.clone())
+                .context("allOf deserialization failed")?;
             let merged = MergedAllOf::from(allof);
-            obj.insert(key, serde_json::to_value(&merged).unwrap());
+            obj.insert(
+                key,
+                serde_json::to_value(&merged).context("Merged allOf serialization failed")?,
+            );
         }
     }
+
+    Ok(())
 }
 
-fn write_to_file(sorted: &Value, path: String) {
-    std::fs::write(path, serde_json::to_string_pretty(&sorted).unwrap()).unwrap();
+fn write_to_file(sorted: &Value, path: String) -> anyhow::Result<()> {
+    std::fs::write(
+        path,
+        serde_json::to_string_pretty(&sorted).context("Serialization failed")?,
+    )
+    .context("Failed to write to file")
 }
 
 // TODO Document the transformations
@@ -229,8 +264,9 @@ fn flatten_section(root: &mut Value, flattened_schemas: &mut Map<String, Value>,
     }
 }
 
-// TODO Doc
 // TODO Return an iterator?
+/// Returns mutable references to the leaf fields of all `Value::Object`s in the tree.
+/// Leaf values are `Value::Null`, `Value::Bool`, `Value::Number` and `Value::String`.
 fn leaf_fields(value: &mut Value) -> Vec<(&str, &mut Value)> {
     match value {
         Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {
@@ -253,6 +289,7 @@ fn leaf_fields(value: &mut Value) -> Vec<(&str, &mut Value)> {
 }
 
 // TODO The closure ref could be avoided?
+/// Apply the closure to every `Value::Object` in the tree.
 fn for_each_object<F>(value: &mut Value, f: &F)
 where
     F: Fn(&mut Map<String, Value>),
