@@ -70,13 +70,13 @@ fn sort_map_fields(flattened_schemas: Map<String, Value>) -> Map<String, Value> 
     serde_json::Map::from_iter(raw)
 }
 
-fn flatten_openrpc_spec(mut root: &mut Value) -> anyhow::Result<Map<String, Value>> {
+fn flatten_openrpc_spec(root: &mut Value) -> anyhow::Result<Map<String, Value>> {
     let mut flattened_schemas = serde_json::Map::new();
-    flatten_refs(&mut root, &mut flattened_schemas, "/components/errors");
-    flatten_refs(&mut root, &mut flattened_schemas, "/components/schemas");
-    // TODO Find a better solution?
+    flatten_refs(root, &mut flattened_schemas, "/components/errors");
+    flatten_refs(root, &mut flattened_schemas, "/components/schemas");
+
     {
-        // Just make the methods an object.
+        // The methods section is an array. Make it an object. Use the method name as the key.
         let mut object = serde_json::Map::new();
         root.pointer("/methods")
             .expect("The spec file must have a methods section")
@@ -98,7 +98,7 @@ fn flatten_openrpc_spec(mut root: &mut Value) -> anyhow::Result<Map<String, Valu
             .pointer_mut("/methods")
             .context("The spec file must have a methods section")? = Value::Object(object);
     }
-    flatten_refs(&mut root, &mut flattened_schemas, "/methods");
+    flatten_refs(root, &mut flattened_schemas, "/methods");
     Ok(flattened_schemas)
 }
 
@@ -154,7 +154,7 @@ fn trim_ref_layer(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
             // Remove the original reference, the "$ref" field.
             obj.remove(&key);
             // Replace it with the pointer object, effectively removing the "$ref" layer
-            let pointer_end = pointer.split("/").last().unwrap_or(pointer).to_string();
+            let pointer_end = pointer.split('/').last().unwrap_or(pointer).to_string();
             obj.insert(pointer_end, flat.clone());
         }
     }
@@ -171,18 +171,13 @@ fn embed_required(obj: &mut Map<String, Value>) {
             continue;
         };
 
-        let Some(required) = child
-            .get("required")
-            .map(|v| v.as_array().cloned())
-            .flatten()
-        else {
+        let Some(required) = child.get("required").and_then(|v| v.as_array().cloned()) else {
             continue;
         };
 
         let Some(properties) = child
             .get_mut("properties")
-            .map(|value| value.as_object_mut())
-            .flatten()
+            .and_then(|value| value.as_object_mut())
         else {
             continue;
         };
@@ -267,8 +262,9 @@ fn flatten_refs(root: &mut Value, flattened_schemas: &mut Map<String, Value>, po
 
         for flat in flat {
             let definition = schemas.remove(flat.as_str()).unwrap();
-            if let Some(_) =
-                flattened_schemas.insert(reference_prefix.to_string() + &flat, definition)
+            if flattened_schemas
+                .insert(reference_prefix.to_string() + &flat, definition)
+                .is_some()
             {
                 panic!("A schema was replaced")
             }
@@ -281,14 +277,15 @@ fn flatten_refs(root: &mut Value, flattened_schemas: &mut Map<String, Value>, po
                 .for_each(|(key, value)| {
                     if key == "$ref" {
                         let reference = value.as_str().unwrap();
-                        if !reference.starts_with("#") {
+                        if !reference.starts_with('#') {
                             panic!()
                         }
 
                         if let Some(definition) = flattened_schemas.get(reference) {
                             let mut flattened_reference = serde_json::Map::new();
-                            if let Some(_) = flattened_reference
+                            if flattened_reference
                                 .insert(reference.to_string(), definition.clone())
+                                .is_some()
                             {
                                 panic!("A schema was replaced")
                             }
@@ -313,18 +310,17 @@ fn leaf_fields(value: &mut Value) -> Vec<(&str, &mut Value)> {
         Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {
             vec![]
         }
-        Value::Array(array) => array.iter_mut().map(leaf_fields).flatten().collect(),
+        Value::Array(array) => array.iter_mut().flat_map(leaf_fields).collect(),
         Value::Object(obj) => obj
             .iter_mut()
-            .map(|(key, value)| match value {
+            .flat_map(|(key, value)| match value {
                 Value::Object(_) => leaf_fields(value),
-                Value::Array(array) => array.iter_mut().map(leaf_fields).flatten().collect(),
+                Value::Array(array) => array.iter_mut().flat_map(leaf_fields).collect(),
                 Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {
                     // TODO This whole match could probably be merge with the outer match
                     vec![(key.as_str(), value)]
                 }
             })
-            .flatten()
             .collect(),
     }
 }
