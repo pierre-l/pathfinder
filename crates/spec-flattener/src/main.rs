@@ -256,8 +256,7 @@ fn flatten_refs(root: &mut Value, flattened_schemas: &mut Map<String, Value>, po
 
     println!("Schemas: {}", schemas.len());
 
-    // TODO ugly
-    let mut schemas_left = 999;
+    let mut schemas_left = usize::MAX;
     while schemas_left > 0 {
         // Collect the schemas that are flat
         // TODO Ugly
