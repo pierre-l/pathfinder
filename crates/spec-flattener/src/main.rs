@@ -305,6 +305,8 @@ fn flatten_refs(root: &mut Value, flattened_schemas: &mut Map<String, Value>, po
 // TODO Return an iterator?
 /// Returns mutable references to the leaf fields of all `Value::Object`s in the tree.
 /// Leaf values are `Value::Null`, `Value::Bool`, `Value::Number` and `Value::String`.
+///
+/// ⚠ returns an empty array if the input is already a leaf field.
 fn leaf_fields(value: &mut Value) -> Vec<(&str, &mut Value)> {
     match value {
         Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {
@@ -317,7 +319,6 @@ fn leaf_fields(value: &mut Value) -> Vec<(&str, &mut Value)> {
                 Value::Object(_) => leaf_fields(value),
                 Value::Array(array) => array.iter_mut().flat_map(leaf_fields).collect(),
                 Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {
-                    // TODO This whole match could probably be merge with the outer match
                     vec![(key.as_str(), value)]
                 }
             })
