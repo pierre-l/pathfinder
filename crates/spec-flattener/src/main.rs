@@ -12,16 +12,17 @@ async fn main() -> anyhow::Result<()> {
         "https://raw.githubusercontent.com/starkware-libs/starknet-specs/{}/api/{}",
         version, file
     );
+    let directory_name = "api";
 
     let mut root = fetch_spec_file(url).await;
-    write_to_file(&root, format!("original/{}", file))?;
+    write_to_file(format!("original/{}", file), &root)?;
 
     // TODO Check again if this really provides value.
     // Flatten the $ref pointers into objects, retrieve a pointer->definition map.
     let flattened_schemas = flatten_openrpc_spec(&mut root)?;
     // Sort the top-level fields so they're ordered by pointer (section, then name)
     let sorted = sort_map_fields(flattened_schemas);
-    write_output("api/1-flatten", file, sorted.clone())?;
+    write_output(format!("{directory_name}/1-flatten"), file, sorted.clone())?;
 
     // Trim the "$ref" layer, effectively inlining the pointer object and getting completely rid of the original "$ref" field
     let trimmed = {
@@ -31,7 +32,7 @@ async fn main() -> anyhow::Result<()> {
         });
         object_as_value.as_object().unwrap().clone()
     };
-    write_output("api/2-trimmed", file, trimmed.clone())?;
+    write_output(format!("{directory_name}/2-trimmed"), file, trimmed.clone())?;
 
     // For allOf objects that have a "required" array field, embed that as a boolean in the property objects.
     let mut embedded_required = {
@@ -39,7 +40,7 @@ async fn main() -> anyhow::Result<()> {
         for_each_object(&mut object_as_value, &embed_required);
         object_as_value.as_object().unwrap().clone()
     };
-    write_output("api/3-embedded-required", file, embedded_required.clone())?;
+    write_output(format!("{directory_name}/3-embedded-required"), file, embedded_required.clone())?;
 
     // Merge the "allOf" arrays, regroup their item properties into a single object (name -> property)
     let merged_allof = {
@@ -50,10 +51,11 @@ async fn main() -> anyhow::Result<()> {
         });
         embedded_required
     };
-    write_output("api/4-merged-allOf", file, merged_allof)
+    write_output(format!("{directory_name}/4-merged-allOf"), file, merged_allof)
 }
 
-fn write_output(directory: &str, file: &str, result: Map<String, Value>) -> anyhow::Result<()> {
+fn write_output(directory: impl AsRef<str>, file: &str, result: Map<String, Value>) -> anyhow::Result<()> {
+    let directory = directory.as_ref();
     // Write the method files
     result
         .iter()
@@ -66,11 +68,11 @@ fn write_output(directory: &str, file: &str, result: Map<String, Value>) -> anyh
             }
         })
         .for_each(|(name, schema)| {
-            write_to_file(schema, format!("{}/methods/{}.json", directory, name)).unwrap()
+            write_to_file(format!("{}/methods/{}.json", directory, name), schema).unwrap()
         });
 
     // Write the whole file
-    write_to_file(&Value::Object(result), format!("{}/{}", directory, file))
+    write_to_file(format!("{}/{}", directory, file), &Value::Object(result))
 }
 
 /// Reconstructs the `Map`, sorting the fields by their key.
@@ -220,10 +222,11 @@ fn merge_allofs(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn write_to_file(sorted: &Value, path: String) -> anyhow::Result<()> {
+fn write_to_file(path: impl AsRef<str>, value: &Value) -> anyhow::Result<()> {
+    let path = path.as_ref();
     std::fs::write(
         &path,
-        serde_json::to_string_pretty(&sorted).context("Serialization failed")?,
+        serde_json::to_string_pretty(&value).context("Serialization failed")?,
     )
     .context(format!("Failed to write to file: {}", path))
 }
