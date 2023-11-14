@@ -14,8 +14,12 @@ async fn main() -> anyhow::Result<()> {
     );
     let directory_name = "api";
 
+    process(directory_name, file, &url).await
+}
+
+async fn process(directory_name: &str, file: &str, url: &str) -> anyhow::Result<()> {
     let mut root = fetch_spec_file(url).await;
-    write_to_file(format!("original/{}", file), &root)?;
+    write_to_file(format!("{directory_name}/0-original/{file}"), &root)?;
 
     // TODO Check again if this really provides value.
     // Flatten the $ref pointers into objects, retrieve a pointer->definition map.
@@ -115,7 +119,7 @@ fn flatten_openrpc_spec(root: &mut Value) -> anyhow::Result<Map<String, Value>> 
     Ok(flattened_schemas)
 }
 
-async fn fetch_spec_file(url: String) -> Value {
+async fn fetch_spec_file(url: &str) -> Value {
     println!("Fetching {}", url);
     let spec = reqwest::get(url)
         .await
