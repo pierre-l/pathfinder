@@ -7,14 +7,33 @@ use serde_json::{Map, Value};
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let version = "v0.5.0";
-    let file = "starknet_api_openrpc.json";
-    let url = format!(
-        "https://raw.githubusercontent.com/starkware-libs/starknet-specs/{}/api/{}",
-        version, file
-    );
-    let directory_name = "api";
 
-    process(directory_name, file, &url).await
+    // TODO Remove the extensions
+    {
+        let file = "starknet_api_openrpc.json";
+        let url = format!(
+            "https://raw.githubusercontent.com/starkware-libs/starknet-specs/{}/api/{}",
+            version, file
+        );
+        process("api", file, &url).await?;
+    }
+
+    {
+        /* TODO This doesn't work yet because it references types from the main API.
+        let file = "starknet_trace_api_openrpc.json";
+        let url = format!(
+            "https://raw.githubusercontent.com/starkware-libs/starknet-specs/{}/api/{}",
+            version, file
+        );
+        process("trace_api", file, &url).await?; 
+        */
+    }
+
+    // TODO Bring support for all the spec files: trace_api, write_api
+    // TODO Add another non-flat file. Still apply embedded and allOf merging, just don't flatten.
+    // TODO Hunt down panics? unwrap, expect, panic
+
+    Ok(())
 }
 
 async fn process(directory_name: &str, file: &str, url: &str) -> anyhow::Result<()> {
