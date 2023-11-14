@@ -2,21 +2,39 @@ mod all_of;
 
 use crate::all_of::{AllOfInput, MergedAllOf};
 use anyhow::Context;
+use std::fmt::Display;
 use serde_json::{Map, Value};
+
+#[derive(Clone, Copy)]
+enum Domain {
+    Api,
+    WriteApi,
+    TraceApi,
+}
+
+impl Domain {
+    fn name(&self) -> &'static str {
+        match self {
+            Self::Api => "api",
+            Self::WriteApi => "write_api",
+            Self::TraceApi => "trace_api",
+        }
+    }
+
+    fn file_name(&self) -> String {
+        format!("starknet_{}_openrpc.json", self.name())
+    }
+}
+
+impl Display for Domain {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}", self.name())
+    }
+}
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let version = "v0.5.0";
-
-    // TODO Remove the extensions
-    {
-        let file = "starknet_api_openrpc.json";
-        let url = format!(
-            "https://raw.githubusercontent.com/starkware-libs/starknet-specs/{}/api/{}",
-            version, file
-        );
-        process("api", file, &url).await?;
-    }
+    process(Domain::Api).await?;
 
     {
         /* TODO This doesn't work yet because it references types from the main API.
@@ -36,18 +54,25 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn process(directory_name: &str, file: &str, url: &str) -> anyhow::Result<()> {
-    let mut root = fetch_spec_file(url).await;
-    write_to_file(format!("{directory_name}/0-original/{file}"), &root)?;
+async fn process(domain: Domain) -> anyhow::Result<()> {
+    let version = "v0.5.0";
+    let domain_name = domain.name();
+    let url = format!(
+        "https://raw.githubusercontent.com/starkware-libs/starknet-specs/{}/api/{}",
+        version, domain.file_name()
+    );
+
+    let mut root = fetch_spec_file(&url).await;
+    write_to_file(format!("{domain_name}/0-original/{}", domain.file_name()), &root)?;
 
     // TODO Check again if this really provides value.
     // Flatten the $ref pointers into objects, retrieve a pointer->definition map.
     let flattened_schemas = flatten_openrpc_spec(&mut root)?;
     // Sort the top-level fields so they're ordered by pointer (section, then name)
     let sorted = sort_map_fields(flattened_schemas);
-    write_output(format!("{directory_name}/1-flatten"), file, sorted.clone())?;
+    write_output(domain, "/1-flatten", sorted.clone())?;
 
-    // Trim the "$ref" layer, effectively inlining the pointer object and getting completely rid of the original "$ref" field
+    // Trim the "$ref" layer, getting rid of the original "$ref" field, leaving just the pointer object
     let trimmed = {
         let mut object_as_value = Value::Object(sorted);
         for_each_object(&mut object_as_value, &|object| {
@@ -55,7 +80,7 @@ async fn process(directory_name: &str, file: &str, url: &str) -> anyhow::Result<
         });
         object_as_value.as_object().unwrap().clone()
     };
-    write_output(format!("{directory_name}/2-trimmed"), file, trimmed.clone())?;
+    write_output(domain, "2-trimmed", trimmed.clone())?;
 
     // For allOf objects that have a "required" array field, embed that as a boolean in the property objects.
     let mut embedded_required = {
@@ -63,7 +88,7 @@ async fn process(directory_name: &str, file: &str, url: &str) -> anyhow::Result<
         for_each_object(&mut object_as_value, &embed_required);
         object_as_value.as_object().unwrap().clone()
     };
-    write_output(format!("{directory_name}/3-embedded-required"), file, embedded_required.clone())?;
+    write_output(domain, "3-embedded-required", embedded_required.clone())?;
 
     // Merge the "allOf" arrays, regroup their item properties into a single object (name -> property)
     let merged_allof = {
@@ -74,11 +99,11 @@ async fn process(directory_name: &str, file: &str, url: &str) -> anyhow::Result<
         });
         embedded_required
     };
-    write_output(format!("{directory_name}/4-merged-allOf"), file, merged_allof)
+    write_output(domain, "4-merged-allOf", merged_allof)
 }
 
-fn write_output(directory: impl AsRef<str>, file: &str, result: Map<String, Value>) -> anyhow::Result<()> {
-    let directory = directory.as_ref();
+fn write_output(domain: Domain, step_name: &str, result: Map<String, Value>) -> anyhow::Result<()> {
+    let directory = format!("{}/{}", domain.name(), step_name);
     // Write the method files
     result
         .iter()
@@ -95,7 +120,7 @@ fn write_output(directory: impl AsRef<str>, file: &str, result: Map<String, Valu
         });
 
     // Write the whole file
-    write_to_file(format!("{}/{}", directory, file), &Value::Object(result))
+    write_to_file(format!("{}/{}", directory, domain.file_name()), &Value::Object(result))
 }
 
 /// Reconstructs the `Map`, sorting the fields by their key.
