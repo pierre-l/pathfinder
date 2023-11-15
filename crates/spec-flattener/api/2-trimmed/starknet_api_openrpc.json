@@ -1,13 +1,13 @@
 {
-  "#/components/errors/BLOCK_NOT_FOUND": {
+  "/components/errors/BLOCK_NOT_FOUND": {
     "code": 24,
     "message": "Block not found"
   },
-  "#/components/errors/CLASS_HASH_NOT_FOUND": {
+  "/components/errors/CLASS_HASH_NOT_FOUND": {
     "code": 28,
     "message": "Class hash not found"
   },
-  "#/components/errors/CONTRACT_ERROR": {
+  "/components/errors/CONTRACT_ERROR": {
     "code": 40,
     "data": {
       "description": "More data about the execution failure",
@@ -23,39 +23,39 @@
     },
     "message": "Contract error"
   },
-  "#/components/errors/CONTRACT_NOT_FOUND": {
+  "/components/errors/CONTRACT_NOT_FOUND": {
     "code": 20,
     "message": "Contract not found"
   },
-  "#/components/errors/FAILED_TO_RECEIVE_TXN": {
+  "/components/errors/FAILED_TO_RECEIVE_TXN": {
     "code": 1,
     "message": "Failed to write transaction"
   },
-  "#/components/errors/INVALID_CONTINUATION_TOKEN": {
+  "/components/errors/INVALID_CONTINUATION_TOKEN": {
     "code": 33,
     "message": "The supplied continuation token is invalid or unknown"
   },
-  "#/components/errors/INVALID_TXN_INDEX": {
+  "/components/errors/INVALID_TXN_INDEX": {
     "code": 27,
     "message": "Invalid transaction index in a block"
   },
-  "#/components/errors/NO_BLOCKS": {
+  "/components/errors/NO_BLOCKS": {
     "code": 32,
     "message": "There are no blocks"
   },
-  "#/components/errors/PAGE_SIZE_TOO_BIG": {
+  "/components/errors/PAGE_SIZE_TOO_BIG": {
     "code": 31,
     "message": "Requested page size is too big"
   },
-  "#/components/errors/TOO_MANY_KEYS_IN_FILTER": {
+  "/components/errors/TOO_MANY_KEYS_IN_FILTER": {
     "code": 34,
     "message": "Too many keys provided in a filter"
   },
-  "#/components/errors/TXN_HASH_NOT_FOUND": {
+  "/components/errors/TXN_HASH_NOT_FOUND": {
     "code": 29,
     "message": "Transaction hash not found"
   },
-  "#/components/schemas/ADDRESS": {
+  "/components/schemas/ADDRESS": {
     "FELT": {
       "description": "A field element. represented by at most 63 hex digits",
       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
@@ -64,7 +64,7 @@
     },
     "title": "Address"
   },
-  "#/components/schemas/BLOCK_BODY_WITH_TXS": {
+  "/components/schemas/BLOCK_BODY_WITH_TXS": {
     "properties": {
       "transactions": {
         "description": "The transactions in this block",
@@ -897,7 +897,7 @@
     "title": "Block body with transactions",
     "type": "object"
   },
-  "#/components/schemas/BLOCK_BODY_WITH_TX_HASHES": {
+  "/components/schemas/BLOCK_BODY_WITH_TX_HASHES": {
     "properties": {
       "transactions": {
         "description": "The hashes of the transactions included in this block",
@@ -924,7 +924,7 @@
     "title": "Block body with transaction hashes",
     "type": "object"
   },
-  "#/components/schemas/BLOCK_HASH": {
+  "/components/schemas/BLOCK_HASH": {
     "FELT": {
       "description": "A field element. represented by at most 63 hex digits",
       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
@@ -933,7 +933,7 @@
     },
     "title": "Block hash"
   },
-  "#/components/schemas/BLOCK_HEADER": {
+  "/components/schemas/BLOCK_HEADER": {
     "properties": {
       "block_hash": {
         "BLOCK_HASH": {
@@ -1047,7 +1047,7 @@
     "title": "Block header",
     "type": "object"
   },
-  "#/components/schemas/BLOCK_ID": {
+  "/components/schemas/BLOCK_ID": {
     "description": "Block hash, number or tag",
     "oneOf": [
       {
@@ -1104,13 +1104,13 @@
     ],
     "title": "Block id"
   },
-  "#/components/schemas/BLOCK_NUMBER": {
+  "/components/schemas/BLOCK_NUMBER": {
     "description": "The block's number (its height)",
     "minimum": 0,
     "title": "Block number",
     "type": "integer"
   },
-  "#/components/schemas/BLOCK_STATUS": {
+  "/components/schemas/BLOCK_STATUS": {
     "description": "The status of the block",
     "enum": [
       "PENDING",
@@ -1121,7 +1121,7 @@
     "title": "Block status",
     "type": "string"
   },
-  "#/components/schemas/BLOCK_TAG": {
+  "/components/schemas/BLOCK_TAG": {
     "description": "A tag specifying a dynamic reference to a block",
     "enum": [
       "latest",
@@ -1130,7 +1130,7 @@
     "title": "Block tag",
     "type": "string"
   },
-  "#/components/schemas/BLOCK_WITH_TXS": {
+  "/components/schemas/BLOCK_WITH_TXS": {
     "allOf": [
       {
         "properties": {
@@ -2112,7 +2112,7 @@
     "description": "The block object",
     "title": "Block with transactions"
   },
-  "#/components/schemas/BLOCK_WITH_TX_HASHES": {
+  "/components/schemas/BLOCK_WITH_TX_HASHES": {
     "allOf": [
       {
         "properties": {
@@ -2288,7 +2288,7 @@
     "description": "The block object",
     "title": "Block with transaction hashes"
   },
-  "#/components/schemas/BROADCASTED_DECLARE_TXN": {
+  "/components/schemas/BROADCASTED_DECLARE_TXN": {
     "oneOf": [
       {
         "BROADCASTED_DECLARE_TXN_V1": {
@@ -3028,7 +3028,7 @@
     ],
     "title": "Broadcasted declare transaction"
   },
-  "#/components/schemas/BROADCASTED_DECLARE_TXN_V1": {
+  "/components/schemas/BROADCASTED_DECLARE_TXN_V1": {
     "allOf": [
       {
         "properties": {
@@ -3518,7 +3518,7 @@
     ],
     "title": "Broadcasted declare contract transaction V1"
   },
-  "#/components/schemas/BROADCASTED_DECLARE_TXN_V2": {
+  "/components/schemas/BROADCASTED_DECLARE_TXN_V2": {
     "allOf": [
       {
         "properties": {
@@ -3757,7 +3757,7 @@
     "description": "Broadcasted declare Contract Transaction V2",
     "title": "Broadcasted declare Transaction V2"
   },
-  "#/components/schemas/BROADCASTED_DEPLOY_ACCOUNT_TXN": {
+  "/components/schemas/BROADCASTED_DEPLOY_ACCOUNT_TXN": {
     "DEPLOY_ACCOUNT_TXN": {
       "description": "deploys a new account contract",
       "oneOf": [
@@ -3870,7 +3870,7 @@
     },
     "title": "Broadcasted deploy account transaction"
   },
-  "#/components/schemas/BROADCASTED_INVOKE_TXN": {
+  "/components/schemas/BROADCASTED_INVOKE_TXN": {
     "oneOf": [
       {
         "INVOKE_TXN_V0": {
@@ -4068,7 +4068,7 @@
     ],
     "title": "Broadcasted invoke transaction"
   },
-  "#/components/schemas/BROADCASTED_TXN": {
+  "/components/schemas/BROADCASTED_TXN": {
     "oneOf": [
       {
         "BROADCASTED_INVOKE_TXN": {
@@ -5129,13 +5129,13 @@
       }
     ]
   },
-  "#/components/schemas/CHAIN_ID": {
+  "/components/schemas/CHAIN_ID": {
     "description": "StarkNet chain id, given in hex representation.",
     "pattern": "^0x[a-fA-F0-9]+$",
     "title": "Chain id",
     "type": "string"
   },
-  "#/components/schemas/COMMON_RECEIPT_PROPERTIES": {
+  "/components/schemas/COMMON_RECEIPT_PROPERTIES": {
     "description": "Common properties for a transaction receipt",
     "properties": {
       "actual_fee": {
@@ -5460,7 +5460,7 @@
     "title": "Common receipt properties",
     "type": "object"
   },
-  "#/components/schemas/CONTRACT_ABI": {
+  "/components/schemas/CONTRACT_ABI": {
     "items": {
       "CONTRACT_ABI_ENTRY": {
         "oneOf": [
@@ -5727,7 +5727,7 @@
     "title": "Contract ABI",
     "type": "array"
   },
-  "#/components/schemas/CONTRACT_ABI_ENTRY": {
+  "/components/schemas/CONTRACT_ABI_ENTRY": {
     "oneOf": [
       {
         "FUNCTION_ABI_ENTRY": {
@@ -5988,7 +5988,7 @@
     ],
     "title": "Contract ABI entry"
   },
-  "#/components/schemas/CONTRACT_CLASS": {
+  "/components/schemas/CONTRACT_CLASS": {
     "properties": {
       "abi": {
         "description": "The class ABI, as supplied by the user declaring the class",
@@ -6126,7 +6126,7 @@
     "title": "Contract class",
     "type": "object"
   },
-  "#/components/schemas/CONTRACT_STORAGE_DIFF_ITEM": {
+  "/components/schemas/CONTRACT_STORAGE_DIFF_ITEM": {
     "properties": {
       "address": {
         "FELT": {
@@ -6177,7 +6177,7 @@
     "title": "Contract storage diff item",
     "type": "object"
   },
-  "#/components/schemas/DA_MODE": {
+  "/components/schemas/DA_MODE": {
     "description": "Specifies a storage domain in Starknet. Each domain has different gurantess regarding availability",
     "enum": [
       "L1",
@@ -6186,7 +6186,7 @@
     "title": "DA mode",
     "type": "string"
   },
-  "#/components/schemas/DECLARE_TXN": {
+  "/components/schemas/DECLARE_TXN": {
     "oneOf": [
       {
         "DECLARE_TXN_V0": {
@@ -6483,7 +6483,7 @@
     ],
     "title": "Declare transaction"
   },
-  "#/components/schemas/DECLARE_TXN_RECEIPT": {
+  "/components/schemas/DECLARE_TXN_RECEIPT": {
     "allOf": [
       {
         "properties": {
@@ -6832,7 +6832,7 @@
     ],
     "title": "Declare Transaction Receipt"
   },
-  "#/components/schemas/DECLARE_TXN_V0": {
+  "/components/schemas/DECLARE_TXN_V0": {
     "allOf": [
       {
         "properties": {
@@ -6916,7 +6916,7 @@
     "description": "Declare Contract Transaction V0",
     "title": "Declare Contract Transaction V0"
   },
-  "#/components/schemas/DECLARE_TXN_V1": {
+  "/components/schemas/DECLARE_TXN_V1": {
     "allOf": [
       {
         "properties": {
@@ -7010,7 +7010,7 @@
     "description": "Declare Contract Transaction V1",
     "title": "Declare Contract Transaction V1"
   },
-  "#/components/schemas/DECLARE_TXN_V2": {
+  "/components/schemas/DECLARE_TXN_V2": {
     "allOf": [
       {
         "properties": {
@@ -7115,7 +7115,7 @@
     "description": "Declare Contract Transaction V2",
     "title": "Declare Transaction V2"
   },
-  "#/components/schemas/DEPLOYED_CONTRACT_ITEM": {
+  "/components/schemas/DEPLOYED_CONTRACT_ITEM": {
     "properties": {
       "address": {
         "FELT": {
@@ -7145,7 +7145,7 @@
     "title": "Deployed contract item",
     "type": "object"
   },
-  "#/components/schemas/DEPLOY_ACCOUNT_TXN": {
+  "/components/schemas/DEPLOY_ACCOUNT_TXN": {
     "description": "deploys a new account contract",
     "oneOf": [
       {
@@ -7255,7 +7255,7 @@
     ],
     "title": "Deploy account transaction"
   },
-  "#/components/schemas/DEPLOY_ACCOUNT_TXN_RECEIPT": {
+  "/components/schemas/DEPLOY_ACCOUNT_TXN_RECEIPT": {
     "allOf": [
       {
         "COMMON_RECEIPT_PROPERTIES": {
@@ -7615,7 +7615,7 @@
     ],
     "title": "Deploy Account Transaction Receipt"
   },
-  "#/components/schemas/DEPLOY_ACCOUNT_TXN_V1": {
+  "/components/schemas/DEPLOY_ACCOUNT_TXN_V1": {
     "description": "Deploys an account contract, charges fee from the pre-funded account addresses",
     "properties": {
       "class_hash": {
@@ -7716,7 +7716,7 @@
     ],
     "title": "Deploy account transaction"
   },
-  "#/components/schemas/DEPLOY_TXN": {
+  "/components/schemas/DEPLOY_TXN": {
     "allOf": [
       {
         "properties": {
@@ -7785,7 +7785,7 @@
     "description": "The structure of a deploy transaction. Note that this transaction type is deprecated and will no longer be supported in future versions",
     "title": "Deploy Contract Transaction"
   },
-  "#/components/schemas/DEPLOY_TXN_RECEIPT": {
+  "/components/schemas/DEPLOY_TXN_RECEIPT": {
     "allOf": [
       {
         "COMMON_RECEIPT_PROPERTIES": {
@@ -8145,7 +8145,7 @@
     ],
     "title": "Deploy Transaction Receipt"
   },
-  "#/components/schemas/DEPRECATED_CAIRO_ENTRY_POINT": {
+  "/components/schemas/DEPRECATED_CAIRO_ENTRY_POINT": {
     "properties": {
       "offset": {
         "NUM_AS_HEX": {
@@ -8175,7 +8175,7 @@
     "title": "Deprecated Cairo entry point",
     "type": "object"
   },
-  "#/components/schemas/DEPRECATED_CONTRACT_CLASS": {
+  "/components/schemas/DEPRECATED_CONTRACT_CLASS": {
     "description": "The definition of a StarkNet contract class",
     "properties": {
       "abi": {
@@ -8576,7 +8576,7 @@
     "title": "Deprecated contract class",
     "type": "object"
   },
-  "#/components/schemas/EMITTED_EVENT": {
+  "/components/schemas/EMITTED_EVENT": {
     "allOf": [
       {
         "EVENT": {
@@ -8700,14 +8700,14 @@
     "description": "Event information decorated with metadata on where it was emitted / An event emitted as a result of transaction execution",
     "title": "Emitted event"
   },
-  "#/components/schemas/ETH_ADDRESS": {
+  "/components/schemas/ETH_ADDRESS": {
     "$comment": "An ethereum address",
     "description": "an ethereum address represented as 40 hex digits",
     "pattern": "^0x[a-fA-F0-9]{40}$",
     "title": "Ethereum address",
     "type": "string"
   },
-  "#/components/schemas/EVENT": {
+  "/components/schemas/EVENT": {
     "allOf": [
       {
         "properties": {
@@ -8772,7 +8772,7 @@
     "description": "A StarkNet event",
     "title": "Event"
   },
-  "#/components/schemas/EVENTS_CHUNK": {
+  "/components/schemas/EVENTS_CHUNK": {
     "properties": {
       "continuation_token": {
         "description": "Use this token in a subsequent query to obtain the next page. Should not appear if there are no more pages.",
@@ -8916,7 +8916,7 @@
     "title": "Events chunk",
     "type": "object"
   },
-  "#/components/schemas/EVENT_ABI_ENTRY": {
+  "/components/schemas/EVENT_ABI_ENTRY": {
     "properties": {
       "data": {
         "items": {
@@ -8995,14 +8995,14 @@
     "title": "Event ABI entry",
     "type": "object"
   },
-  "#/components/schemas/EVENT_ABI_TYPE": {
+  "/components/schemas/EVENT_ABI_TYPE": {
     "enum": [
       "event"
     ],
     "title": "Event ABI type",
     "type": "string"
   },
-  "#/components/schemas/EVENT_CONTENT": {
+  "/components/schemas/EVENT_CONTENT": {
     "description": "The content of an event",
     "properties": {
       "data": {
@@ -9037,7 +9037,7 @@
     "title": "Event content",
     "type": "object"
   },
-  "#/components/schemas/EVENT_FILTER": {
+  "/components/schemas/EVENT_FILTER": {
     "description": "An event filter/query",
     "properties": {
       "address": {
@@ -9195,7 +9195,7 @@
     "title": "Event filter",
     "type": "object"
   },
-  "#/components/schemas/EXECUTION_RESOURCES": {
+  "/components/schemas/EXECUTION_RESOURCES": {
     "description": "The resources consumed by the transaction",
     "properties": {
       "bitwise_builtin_applications": {
@@ -9302,7 +9302,7 @@
     "title": "Execution resources",
     "type": "object"
   },
-  "#/components/schemas/FEE_ESTIMATE": {
+  "/components/schemas/FEE_ESTIMATE": {
     "properties": {
       "gas_consumed": {
         "NUM_AS_HEX": {
@@ -9343,13 +9343,13 @@
     "title": "Fee estimation",
     "type": "object"
   },
-  "#/components/schemas/FELT": {
+  "/components/schemas/FELT": {
     "description": "A field element. represented by at most 63 hex digits",
     "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
     "title": "Field element",
     "type": "string"
   },
-  "#/components/schemas/FUNCTION_ABI_ENTRY": {
+  "/components/schemas/FUNCTION_ABI_ENTRY": {
     "properties": {
       "inputs": {
         "items": {
@@ -9440,7 +9440,7 @@
     "title": "Function ABI entry",
     "type": "object"
   },
-  "#/components/schemas/FUNCTION_ABI_TYPE": {
+  "/components/schemas/FUNCTION_ABI_TYPE": {
     "enum": [
       "function",
       "l1_handler",
@@ -9449,7 +9449,7 @@
     "title": "Function ABI type",
     "type": "string"
   },
-  "#/components/schemas/FUNCTION_CALL": {
+  "/components/schemas/FUNCTION_CALL": {
     "description": "Function call information",
     "properties": {
       "calldata": {
@@ -9495,14 +9495,14 @@
     "title": "Function call",
     "type": "object"
   },
-  "#/components/schemas/FUNCTION_STATE_MUTABILITY": {
+  "/components/schemas/FUNCTION_STATE_MUTABILITY": {
     "enum": [
       "view"
     ],
     "title": "Function state mutability type",
     "type": "string"
   },
-  "#/components/schemas/INVOKE_TXN": {
+  "/components/schemas/INVOKE_TXN": {
     "description": "Initiate a transaction from an account",
     "oneOf": [
       {
@@ -9701,7 +9701,7 @@
     ],
     "title": "Invoke transaction"
   },
-  "#/components/schemas/INVOKE_TXN_RECEIPT": {
+  "/components/schemas/INVOKE_TXN_RECEIPT": {
     "allOf": [
       {
         "properties": {
@@ -10050,7 +10050,7 @@
     ],
     "title": "Invoke Transaction Receipt"
   },
-  "#/components/schemas/INVOKE_TXN_V0": {
+  "/components/schemas/INVOKE_TXN_V0": {
     "description": "invokes a specific function in the desired contract (not necessarily an account)",
     "properties": {
       "calldata": {
@@ -10140,7 +10140,7 @@
     ],
     "title": "Invoke transaction V0"
   },
-  "#/components/schemas/INVOKE_TXN_V1": {
+  "/components/schemas/INVOKE_TXN_V1": {
     "allOf": [
       {
         "properties": {
@@ -10237,7 +10237,7 @@
     "description": "initiates a transaction from a given account",
     "title": "Invoke transaction V1"
   },
-  "#/components/schemas/L1_HANDLER_TXN": {
+  "/components/schemas/L1_HANDLER_TXN": {
     "allOf": [
       {
         "description": "a call to an l1_handler on an L2 contract induced by a message from L1",
@@ -10330,7 +10330,7 @@
     ],
     "title": "L1 Handler transaction"
   },
-  "#/components/schemas/L1_HANDLER_TXN_RECEIPT": {
+  "/components/schemas/L1_HANDLER_TXN_RECEIPT": {
     "allOf": [
       {
         "properties": {
@@ -10691,7 +10691,7 @@
     "description": "receipt for l1 handler transaction",
     "title": "L1 Handler Transaction Receipt"
   },
-  "#/components/schemas/MSG_FROM_L1": {
+  "/components/schemas/MSG_FROM_L1": {
     "properties": {
       "entry_point_selector": {
         "FELT": {
@@ -10749,7 +10749,7 @@
     "title": "Message from L1",
     "type": "object"
   },
-  "#/components/schemas/MSG_TO_L1": {
+  "/components/schemas/MSG_TO_L1": {
     "properties": {
       "from_address": {
         "FELT": {
@@ -10792,13 +10792,13 @@
     "title": "Message to L1",
     "type": "object"
   },
-  "#/components/schemas/NUM_AS_HEX": {
+  "/components/schemas/NUM_AS_HEX": {
     "description": "An integer number in hex format (0x...)",
     "pattern": "^0x[a-fA-F0-9]+$",
     "title": "Number as hex",
     "type": "string"
   },
-  "#/components/schemas/PENDING_BLOCK_HEADER": {
+  "/components/schemas/PENDING_BLOCK_HEADER": {
     "additionalProperties": false,
     "properties": {
       "l1_gas_price": {
@@ -10878,7 +10878,7 @@
     "title": "Pending block header",
     "type": "object"
   },
-  "#/components/schemas/PENDING_BLOCK_WITH_TXS": {
+  "/components/schemas/PENDING_BLOCK_WITH_TXS": {
     "additionalProperties": false,
     "allOf": [
       {
@@ -11804,7 +11804,7 @@
     "description": "The dynamic block being constructed by the sequencer. Note that this object will be deprecated upon decentralization.",
     "title": "Pending block with transactions"
   },
-  "#/components/schemas/PENDING_BLOCK_WITH_TX_HASHES": {
+  "/components/schemas/PENDING_BLOCK_WITH_TX_HASHES": {
     "additionalProperties": false,
     "allOf": [
       {
@@ -11924,7 +11924,7 @@
     "description": "The dynamic block being constructed by the sequencer. Note that this object will be deprecated upon decentralization.",
     "title": "Pending block with transaction hashes"
   },
-  "#/components/schemas/PENDING_COMMON_RECEIPT_PROPERTIES": {
+  "/components/schemas/PENDING_COMMON_RECEIPT_PROPERTIES": {
     "description": "Common properties for a pending transaction receipt",
     "properties": {
       "actual_fee": {
@@ -12238,7 +12238,7 @@
     "title": "Pending common receipt properties",
     "type": "object"
   },
-  "#/components/schemas/PENDING_DECLARE_TXN_RECEIPT": {
+  "/components/schemas/PENDING_DECLARE_TXN_RECEIPT": {
     "allOf": [
       {
         "properties": {
@@ -12576,7 +12576,7 @@
     ],
     "title": "Declare Transaction Receipt"
   },
-  "#/components/schemas/PENDING_DEPLOY_ACCOUNT_TXN_RECEIPT": {
+  "/components/schemas/PENDING_DEPLOY_ACCOUNT_TXN_RECEIPT": {
     "allOf": [
       {
         "PENDING_COMMON_RECEIPT_PROPERTIES": {
@@ -12925,7 +12925,7 @@
     ],
     "title": "Deploy Account Transaction Receipt"
   },
-  "#/components/schemas/PENDING_INVOKE_TXN_RECEIPT": {
+  "/components/schemas/PENDING_INVOKE_TXN_RECEIPT": {
     "allOf": [
       {
         "properties": {
@@ -13263,7 +13263,7 @@
     ],
     "title": "Invoke Transaction Receipt"
   },
-  "#/components/schemas/PENDING_L1_HANDLER_TXN_RECEIPT": {
+  "/components/schemas/PENDING_L1_HANDLER_TXN_RECEIPT": {
     "allOf": [
       {
         "properties": {
@@ -13613,7 +13613,7 @@
     "description": "receipt for l1 handler transaction",
     "title": "L1 Handler Transaction Receipt"
   },
-  "#/components/schemas/PENDING_STATE_UPDATE": {
+  "/components/schemas/PENDING_STATE_UPDATE": {
     "additionalProperties": false,
     "description": "Pending state update",
     "properties": {
@@ -13859,7 +13859,7 @@
     "title": "Pending state update",
     "type": "object"
   },
-  "#/components/schemas/PENDING_TXN_RECEIPT": {
+  "/components/schemas/PENDING_TXN_RECEIPT": {
     "oneOf": [
       {
         "PENDING_INVOKE_TXN_RECEIPT": {
@@ -15251,7 +15251,7 @@
     ],
     "title": "Transaction Receipt"
   },
-  "#/components/schemas/RESOURCE_LIMITS": {
+  "/components/schemas/RESOURCE_LIMITS": {
     "properties": {
       "max_amount": {
         "NUM_AS_HEX": {
@@ -15280,7 +15280,7 @@
     ],
     "type": "object"
   },
-  "#/components/schemas/RESOURCE_PRICE": {
+  "/components/schemas/RESOURCE_PRICE": {
     "properties": {
       "price_in_strk": {
         "NUM_AS_HEX": {
@@ -15308,7 +15308,7 @@
     ],
     "type": "object"
   },
-  "#/components/schemas/RESULT_PAGE_REQUEST": {
+  "/components/schemas/RESULT_PAGE_REQUEST": {
     "properties": {
       "chunk_size": {
         "minimum": 1,
@@ -15327,7 +15327,7 @@
     "title": "Result page request",
     "type": "object"
   },
-  "#/components/schemas/SIERRA_ENTRY_POINT": {
+  "/components/schemas/SIERRA_ENTRY_POINT": {
     "properties": {
       "function_idx": {
         "description": "The index of the function in the program",
@@ -15352,7 +15352,7 @@
     "title": "Sierra entry point",
     "type": "object"
   },
-  "#/components/schemas/SIGNATURE": {
+  "/components/schemas/SIGNATURE": {
     "description": "A transaction signature",
     "items": {
       "FELT": {
@@ -15365,7 +15365,7 @@
     "title": "Signature",
     "type": "array"
   },
-  "#/components/schemas/STATE_DIFF": {
+  "/components/schemas/STATE_DIFF": {
     "description": "The change in state applied in this block, given as a mapping of addresses to the new values and/or new contracts",
     "properties": {
       "declared_classes": {
@@ -15586,7 +15586,7 @@
     ],
     "type": "object"
   },
-  "#/components/schemas/STATE_UPDATE": {
+  "/components/schemas/STATE_UPDATE": {
     "properties": {
       "block_hash": {
         "BLOCK_HASH": {
@@ -15854,14 +15854,14 @@
     "title": "State update",
     "type": "object"
   },
-  "#/components/schemas/STORAGE_KEY": {
+  "/components/schemas/STORAGE_KEY": {
     "$comment": "A storage key, represented as a string of hex digits",
     "description": "A storage key. Represented as up to 62 hex digits, 3 bits, and 5 leading zeroes.",
     "pattern": "^0x0[0-7]{1}[a-fA-F0-9]{0,62}$",
     "title": "Storage key",
     "type": "string"
   },
-  "#/components/schemas/STRUCT_ABI_ENTRY": {
+  "/components/schemas/STRUCT_ABI_ENTRY": {
     "properties": {
       "members": {
         "items": {
@@ -15938,14 +15938,14 @@
     "title": "Struct ABI entry",
     "type": "object"
   },
-  "#/components/schemas/STRUCT_ABI_TYPE": {
+  "/components/schemas/STRUCT_ABI_TYPE": {
     "enum": [
       "struct"
     ],
     "title": "Struct ABI type",
     "type": "string"
   },
-  "#/components/schemas/STRUCT_MEMBER": {
+  "/components/schemas/STRUCT_MEMBER": {
     "allOf": [
       {
         "TYPED_PARAMETER": {
@@ -15984,7 +15984,7 @@
     ],
     "title": "Struct member"
   },
-  "#/components/schemas/SYNC_STATUS": {
+  "/components/schemas/SYNC_STATUS": {
     "description": "An object describing the node synchronization status",
     "properties": {
       "current_block_hash": {
@@ -16068,7 +16068,7 @@
     "title": "Sync status",
     "type": "object"
   },
-  "#/components/schemas/TXN": {
+  "/components/schemas/TXN": {
     "description": "The transaction schema, as it appears inside a block",
     "oneOf": [
       {
@@ -16857,7 +16857,7 @@
     ],
     "title": "Transaction"
   },
-  "#/components/schemas/TXN_EXECUTION_STATUS": {
+  "/components/schemas/TXN_EXECUTION_STATUS": {
     "description": "The execution status of the transaction",
     "enum": [
       "SUCCEEDED",
@@ -16866,7 +16866,7 @@
     "title": "Execution status",
     "type": "string"
   },
-  "#/components/schemas/TXN_FINALITY_STATUS": {
+  "/components/schemas/TXN_FINALITY_STATUS": {
     "description": "The finality status of the transaction",
     "enum": [
       "ACCEPTED_ON_L2",
@@ -16875,7 +16875,7 @@
     "title": "Finality status",
     "type": "string"
   },
-  "#/components/schemas/TXN_HASH": {
+  "/components/schemas/TXN_HASH": {
     "FELT": {
       "description": "A field element. represented by at most 63 hex digits",
       "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
@@ -16885,7 +16885,7 @@
     "description": "The transaction hash, as assigned in StarkNet",
     "title": "Transaction hash"
   },
-  "#/components/schemas/TXN_RECEIPT": {
+  "/components/schemas/TXN_RECEIPT": {
     "oneOf": [
       {
         "INVOKE_TXN_RECEIPT": {
@@ -18684,7 +18684,7 @@
     ],
     "title": "Transaction Receipt"
   },
-  "#/components/schemas/TXN_STATUS": {
+  "/components/schemas/TXN_STATUS": {
     "description": "The finality status of the transaction, including the case the txn is still in the mempool or failed validation during the block construction phase",
     "enum": [
       "RECEIVED",
@@ -18695,7 +18695,7 @@
     "title": "Transaction status",
     "type": "string"
   },
-  "#/components/schemas/TXN_TYPE": {
+  "/components/schemas/TXN_TYPE": {
     "description": "The type of the transaction",
     "enum": [
       "DECLARE",
@@ -18707,7 +18707,7 @@
     "title": "Transaction type",
     "type": "string"
   },
-  "#/components/schemas/TYPED_PARAMETER": {
+  "/components/schemas/TYPED_PARAMETER": {
     "properties": {
       "name": {
         "description": "The parameter's name",
@@ -18727,7 +18727,7 @@
     "title": "Typed parameter",
     "type": "object"
   },
-  "#/methods/starknet_blockHashAndNumber": {
+  "/methods/starknet_blockHashAndNumber": {
     "errors": [
       {
         "NO_BLOCKS": {
@@ -18775,7 +18775,7 @@
     },
     "summary": "Get the most recent accepted block hash and number"
   },
-  "#/methods/starknet_blockNumber": {
+  "/methods/starknet_blockNumber": {
     "errors": [
       {
         "NO_BLOCKS": {
@@ -18801,7 +18801,7 @@
     },
     "summary": "Get the most recent accepted block number"
   },
-  "#/methods/starknet_call": {
+  "/methods/starknet_call": {
     "description": "Calls a function in a contract and returns the return value.  Using this call will not create a transaction; hence, will not change the state",
     "errors": [
       {
@@ -18976,7 +18976,7 @@
     },
     "summary": "call a starknet function without creating a StarkNet transaction"
   },
-  "#/methods/starknet_chainId": {
+  "/methods/starknet_chainId": {
     "name": "starknet_chainId",
     "params": [],
     "result": {
@@ -18994,7 +18994,7 @@
     },
     "summary": "Return the currently configured StarkNet chain id"
   },
-  "#/methods/starknet_estimateFee": {
+  "/methods/starknet_estimateFee": {
     "description": "estimates the resources required by transactions when applyed on a given state",
     "errors": [
       {
@@ -20223,7 +20223,7 @@
     },
     "summary": "estimate the fee for of StarkNet transactions"
   },
-  "#/methods/starknet_estimateMessageFee": {
+  "/methods/starknet_estimateMessageFee": {
     "description": "estimates the resources required by the l1_handler transaction induced by the message",
     "errors": [
       {
@@ -20439,7 +20439,7 @@
     },
     "summary": "estimate the L2 fee of a message sent on L1"
   },
-  "#/methods/starknet_getBlockTransactionCount": {
+  "/methods/starknet_getBlockTransactionCount": {
     "description": "Returns the number of transactions in the designated block.",
     "errors": [
       {
@@ -20529,7 +20529,7 @@
     },
     "summary": "Get the number of transactions in a block given a block id"
   },
-  "#/methods/starknet_getBlockWithTxHashes": {
+  "/methods/starknet_getBlockWithTxHashes": {
     "errors": [
       {
         "BLOCK_NOT_FOUND": {
@@ -20919,7 +20919,7 @@
     },
     "summary": "Get block information with transaction hashes given the block id"
   },
-  "#/methods/starknet_getBlockWithTxs": {
+  "/methods/starknet_getBlockWithTxs": {
     "errors": [
       {
         "BLOCK_NOT_FOUND": {
@@ -22921,7 +22921,7 @@
     },
     "summary": "Get block information with full transactions given the block id"
   },
-  "#/methods/starknet_getClass": {
+  "/methods/starknet_getClass": {
     "errors": [
       {
         "BLOCK_NOT_FOUND": {
@@ -23574,7 +23574,7 @@
     },
     "summary": "Get the contract class definition in the given block associated with the given hash"
   },
-  "#/methods/starknet_getClassAt": {
+  "/methods/starknet_getClassAt": {
     "errors": [
       {
         "BLOCK_NOT_FOUND": {
@@ -24230,7 +24230,7 @@
     },
     "summary": "Get the contract class definition in the given block at the given address"
   },
-  "#/methods/starknet_getClassHashAt": {
+  "/methods/starknet_getClassHashAt": {
     "errors": [
       {
         "BLOCK_NOT_FOUND": {
@@ -24345,7 +24345,7 @@
     },
     "summary": "Get the contract class hash in the given block for the contract deployed at the given address"
   },
-  "#/methods/starknet_getEvents": {
+  "/methods/starknet_getEvents": {
     "description": "Returns all event objects matching the conditions in the provided filter",
     "errors": [
       {
@@ -24722,7 +24722,7 @@
     },
     "summary": "Returns all events matching the given filter"
   },
-  "#/methods/starknet_getNonce": {
+  "/methods/starknet_getNonce": {
     "errors": [
       {
         "BLOCK_NOT_FOUND": {
@@ -24837,7 +24837,7 @@
     },
     "summary": "Get the nonce associated with the given address in the given block"
   },
-  "#/methods/starknet_getStateUpdate": {
+  "/methods/starknet_getStateUpdate": {
     "errors": [
       {
         "BLOCK_NOT_FOUND": {
@@ -25445,7 +25445,7 @@
     },
     "summary": "Get the information about the result of executing the requested block"
   },
-  "#/methods/starknet_getStorageAt": {
+  "/methods/starknet_getStorageAt": {
     "errors": [
       {
         "CONTRACT_NOT_FOUND": {
@@ -25578,7 +25578,7 @@
     },
     "summary": "Get the value of the storage at the given address and key"
   },
-  "#/methods/starknet_getTransactionByBlockIdAndIndex": {
+  "/methods/starknet_getTransactionByBlockIdAndIndex": {
     "description": "Get the details of the transaction given by the identified block and index in that block. If no transaction is found, null is returned.",
     "errors": [
       {
@@ -26494,7 +26494,7 @@
     },
     "summary": "Get the details of a transaction by a given block id and index"
   },
-  "#/methods/starknet_getTransactionByHash": {
+  "/methods/starknet_getTransactionByHash": {
     "errors": [
       {
         "TXN_HASH_NOT_FOUND": {
@@ -27347,7 +27347,7 @@
     },
     "summary": "Get the details and status of a submitted transaction"
   },
-  "#/methods/starknet_getTransactionReceipt": {
+  "/methods/starknet_getTransactionReceipt": {
     "errors": [
       {
         "TXN_HASH_NOT_FOUND": {
@@ -30584,7 +30584,7 @@
     },
     "summary": "Get the transaction receipt by the transaction hash"
   },
-  "#/methods/starknet_getTransactionStatus": {
+  "/methods/starknet_getTransactionStatus": {
     "errors": [
       {
         "TXN_HASH_NOT_FOUND": {
@@ -30655,7 +30655,7 @@
     },
     "summary": "Gets the transaction status (possibly reflecting that the tx is still in the mempool, or dropped from it)"
   },
-  "#/methods/starknet_specVersion": {
+  "/methods/starknet_specVersion": {
     "name": "starknet_specVersion",
     "params": [],
     "result": {
@@ -30669,7 +30669,7 @@
     },
     "summary": "Returns the version of the Starknet JSON-RPC specification being used"
   },
-  "#/methods/starknet_syncing": {
+  "/methods/starknet_syncing": {
     "name": "starknet_syncing",
     "params": [],
     "result": {

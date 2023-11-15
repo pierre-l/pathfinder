@@ -1,11 +1,37 @@
 mod all_of;
 
 use crate::all_of::{AllOfInput, MergedAllOf};
-use anyhow::Context;
+use anyhow::{Context, bail};
 use std::fmt::Display;
 use serde_json::{Map, Value};
+use std::collections::HashMap;
 
-#[derive(Clone, Copy)]
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let mut registry = SchemaRegistry::new();
+
+    process(&mut registry, Domain::Api).await?;
+    process(&mut registry, Domain::TraceApi).await?;
+
+    {
+        /* TODO This doesn't work yet because it references types from the main API.
+        let file = "starknet_trace_api_openrpc.json";
+        let url = format!(
+            "https://raw.githubusercontent.com/starkware-libs/starknet-specs/{}/api/{}",
+            version, file
+        );
+        process("trace_api", file, &url).await?; 
+        */
+    }
+
+    // TODO Bring support for all the spec files: trace_api, write_api
+    // TODO Add another non-flat file. Still apply embedded and allOf merging, just don't flatten.
+    // TODO Hunt down panics? unwrap, expect, panic
+
+    Ok(())
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 enum Domain {
     Api,
     WriteApi,
@@ -32,29 +58,89 @@ impl Display for Domain {
     }
 }
 
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    process(Domain::Api).await?;
-
-    {
-        /* TODO This doesn't work yet because it references types from the main API.
-        let file = "starknet_trace_api_openrpc.json";
-        let url = format!(
-            "https://raw.githubusercontent.com/starkware-libs/starknet-specs/{}/api/{}",
-            version, file
-        );
-        process("trace_api", file, &url).await?; 
-        */
-    }
-
-    // TODO Bring support for all the spec files: trace_api, write_api
-    // TODO Add another non-flat file. Still apply embedded and allOf merging, just don't flatten.
-    // TODO Hunt down panics? unwrap, expect, panic
-
-    Ok(())
+struct SchemaRegistry {
+    schemas: HashMap<Pointer, Value>,
 }
 
-async fn process(domain: Domain) -> anyhow::Result<()> {
+impl SchemaRegistry {
+    fn new() -> Self {
+        Self {
+            schemas: HashMap::new(),
+        }
+    }
+
+    fn insert(&mut self, pointer: Pointer, schema: Value) {
+        // TODO Replacement: panic or err.
+        self.schemas.insert(pointer, schema);
+    }
+
+    fn get(&self, pointer: &Pointer) -> Option<&Value> {
+        self.schemas.get(pointer)
+    }
+
+    // TODO Rename, express this is cloned.
+    fn for_domain(&self, domain: Domain) -> Map<String, Value> {
+        // TODO 
+        let mut result = Map::new();
+        self.schemas.iter()
+        .filter(|(pointer, _schema)| pointer.domain == domain)
+        .for_each(|(pointer, schema)| {
+            result.insert(pointer.path.clone(), schema.clone());
+        });
+        result
+    }
+}
+
+/// The parsed value of a "$ref" field.
+#[derive(PartialEq, Eq, Hash)]
+struct Pointer {
+    domain: Domain,
+    path: String,
+}
+
+impl Pointer {
+    pub fn try_new(current_domain: Domain, raw_pointer: &str) -> anyhow::Result<Self> {
+        // TODO Unit tests
+        if raw_pointer.starts_with('#') {
+            // The pointer is referencing another schema from the same spec file.
+            Ok(Pointer {
+                domain: current_domain,
+                path: raw_pointer.split_at(1).1.to_string(),
+            })
+        } else if raw_pointer.starts_with("./") {
+            // The pointer is referencing a schema from a different spec file.
+            // TODO Look for the domain
+            let chunks = raw_pointer.split('#').collect::<Vec<&str>>();
+            assert_eq!(2, chunks.len());
+
+            let file_path = chunks[0];
+            let schema_path = chunks[1];
+
+            let domain = {                
+                // TODO Ugly
+                if file_path.contains(&Domain::Api.file_name()) {
+                    Domain::Api
+                } else if file_path.contains(&Domain::TraceApi.file_name()) {
+                    Domain::TraceApi
+                } else if file_path.contains(&Domain::WriteApi.file_name()) {
+                    Domain::WriteApi
+                } else {
+                    bail!("Unknown domain")
+                }
+            };
+
+            Ok(Pointer {
+                domain,
+                path: schema_path.to_string(),
+            })
+        } else {
+            bail!("Unsupported pointer type: {}", raw_pointer)
+        }
+    }
+}
+
+// TODO Doc
+async fn process(registry: &mut SchemaRegistry, domain: Domain) -> anyhow::Result<()> {
     let version = "v0.5.0";
     let domain_name = domain.name();
     let url = format!(
@@ -67,7 +153,9 @@ async fn process(domain: Domain) -> anyhow::Result<()> {
 
     // TODO Check again if this really provides value.
     // Flatten the $ref pointers into objects, retrieve a pointer->definition map.
-    let flattened_schemas = flatten_openrpc_spec(&mut root)?;
+    flatten_openrpc_spec(registry, domain, &mut root)?;
+    let flattened_schemas = registry.for_domain(domain);
+
     // Sort the top-level fields so they're ordered by pointer (section, then name)
     let sorted = sort_map_fields(flattened_schemas);
     write_output(domain, "/1-flatten", sorted.clone())?;
@@ -82,7 +170,7 @@ async fn process(domain: Domain) -> anyhow::Result<()> {
     };
     write_output(domain, "2-trimmed", trimmed.clone())?;
 
-    // For allOf objects that have a "required" array field, embed that as a boolean in the property objects.
+    // For every object that has a "required" array field, embed that as a boolean in the property objects.
     let mut embedded_required = {
         let mut object_as_value = Value::Object(trimmed);
         for_each_object(&mut object_as_value, &embed_required);
@@ -131,10 +219,9 @@ fn sort_map_fields(flattened_schemas: Map<String, Value>) -> Map<String, Value> 
     serde_json::Map::from_iter(raw)
 }
 
-fn flatten_openrpc_spec(root: &mut Value) -> anyhow::Result<Map<String, Value>> {
-    let mut flattened_schemas = serde_json::Map::new();
-    flatten_refs(root, &mut flattened_schemas, "/components/errors");
-    flatten_refs(root, &mut flattened_schemas, "/components/schemas");
+fn flatten_openrpc_spec(registry: &mut SchemaRegistry, domain: Domain, root: &mut Value) -> anyhow::Result<()> {
+    flatten_refs(registry, domain, root, "/components/errors")?;
+    flatten_refs(registry, domain, root, "/components/schemas")?;
 
     {
         // The methods section is an array. Make it an object. Use the method name as the key.
@@ -159,8 +246,8 @@ fn flatten_openrpc_spec(root: &mut Value) -> anyhow::Result<Map<String, Value>> 
             .pointer_mut("/methods")
             .context("The spec file must have a methods section")? = Value::Object(object);
     }
-    flatten_refs(root, &mut flattened_schemas, "/methods");
-    Ok(flattened_schemas)
+    flatten_refs(registry, domain, root, "/methods")?;
+    Ok(())
 }
 
 async fn fetch_spec_file(url: &str) -> Value {
@@ -289,11 +376,9 @@ fn write_to_file(path: impl AsRef<str>, value: &Value) -> anyhow::Result<()> {
 /// * the values don't fit the expected schema (eg: $refs are anything else than strings and objects,
 ///     or the pointer value is formatted in an unexpected way)
 /// * a flattening pass doesn't result in fewer schemas to flatten (eg: there's a $ref cycle).
-fn flatten_refs(root: &mut Value, flattened_schemas: &mut Map<String, Value>, pointer: &str) {
-    let mut schemas = root.pointer(pointer).unwrap().as_object().unwrap().clone();
+fn flatten_refs(registry: &mut SchemaRegistry, domain: Domain, root: &Value, pointer: &str) -> anyhow::Result<()> {
     let reference_prefix = "#".to_string() + pointer + "/";
-
-    println!("Schemas: {}", schemas.len());
+    let mut schemas = root.pointer(pointer).unwrap().as_object().unwrap().clone();
 
     let mut schemas_left = usize::MAX;
     while schemas_left > 0 {
@@ -314,29 +399,25 @@ fn flatten_refs(root: &mut Value, flattened_schemas: &mut Map<String, Value>, po
 
         for flat in flat {
             let definition = schemas.remove(flat.as_str()).unwrap();
-            if flattened_schemas
-                .insert(reference_prefix.to_string() + &flat, definition)
-                .is_some()
-            {
-                panic!("A schema was replaced")
-            }
+            let raw_pointer = reference_prefix.clone()+&flat;
+            registry.insert(Pointer::try_new(domain, &raw_pointer)?, definition);
         }
 
         // Perform a flattening pass: if a "$ref" is mentioned, make it a pointer object.
-        for definition in schemas.values_mut() {
-            leaf_fields(definition)
+        for schema in schemas.values_mut() {
+            leaf_fields(schema)
                 .into_iter()
                 .for_each(|(key, value)| {
                     if key == "$ref" {
-                        let reference = value.as_str().unwrap();
-                        if !reference.starts_with('#') {
+                        let pointer = value.as_str().unwrap();
+                        if !pointer.starts_with('#') {
                             panic!()
                         }
 
-                        if let Some(definition) = flattened_schemas.get(reference) {
+                        if let Some(definition) = registry.get(&Pointer::try_new(domain, pointer).unwrap()) {
                             let mut flattened_reference = serde_json::Map::new();
                             if flattened_reference
-                                .insert(reference.to_string(), definition.clone())
+                                .insert(pointer.to_string(), definition.clone())
                                 .is_some()
                             {
                                 panic!("A schema was replaced")
@@ -352,6 +433,8 @@ fn flatten_refs(root: &mut Value, flattened_schemas: &mut Map<String, Value>, po
         }
         schemas_left = schemas.len();
     }
+
+    Ok(())
 }
 
 // TODO Return an iterator?
