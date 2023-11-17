@@ -2,7 +2,7 @@ mod all_of;
 
 use crate::all_of::{AllOfInput, MergedAllOf};
 use anyhow::{Context, bail};
-use std::fmt::Display;
+use std::{fmt::Display, collections::HashSet};
 use serde_json::{Map, Value};
 use std::collections::HashMap;
 
@@ -11,7 +11,9 @@ async fn main() -> anyhow::Result<()> {
     let mut registry = SchemaRegistry::new();
 
     process(&mut registry, Domain::Api).await?;
-    // TODO process(&mut registry, Domain::WriteApi).await?;
+    // TODO 
+    process(&mut registry, Domain::WriteApi).await?;
+    // TODO process(&mut registry, Domain::TraceApi).await?;
 
 
     // TODO Bring support for all the spec files: trace_api, write_api
@@ -89,7 +91,7 @@ struct Pointer {
 }
 
 impl Pointer {
-    pub fn try_new(current_domain: Domain, raw_pointer: &str) -> anyhow::Result<Self> {
+    fn try_new(current_domain: Domain, raw_pointer: &str) -> anyhow::Result<Self> {
         // TODO Unit tests
         if raw_pointer.starts_with('#') {
             // The pointer is referencing another schema from the same spec file.
@@ -126,6 +128,10 @@ impl Pointer {
         } else {
             bail!("Unsupported pointer type: {}", raw_pointer)
         }
+    }
+
+    fn schema_name(&self) -> &str {
+        self.path.split('/').last().unwrap()
     }
 }
 
@@ -284,7 +290,8 @@ fn trim_ref_layer(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
             let pointer_object = value
                 .as_object()
                 .context("\"$ref\" fields are expected to be objects at this point")?;
-            assert_eq!(pointer_object.keys().len(), 1);
+            // TODO Untrue now, cycle objects
+            // assert_eq!(pointer_object.keys().len(), 1);
             let (pointer, flat) = pointer_object
                 .iter()
                 .next()
@@ -393,23 +400,37 @@ fn flatten_refs(registry: &mut SchemaRegistry, domain: Domain, root: &Value, poi
             registry.insert(Pointer::try_new(domain, &raw_pointer)?, definition);
         }
 
+        let schema_names = schemas.keys().cloned().collect::<HashSet<String>>();
         // Perform a flattening pass: if a "$ref" is mentioned, make it a pointer object.
         for schema in schemas.values_mut() {
             leaf_fields(schema)
                 .into_iter()
                 .for_each(|(key, value)| {
                     if key == "$ref" {
-                        let pointer = value.as_str().unwrap();
+                        let raw_pointer = value.as_str().unwrap();
+                        let pointer = Pointer::try_new(domain, raw_pointer).unwrap();
 
-                        if let Some(definition) = registry.get(&Pointer::try_new(domain, pointer).unwrap()) {
+                        if let Some(definition) = registry.get(&pointer) {
                             let mut flattened_reference = serde_json::Map::new();
                             if flattened_reference
-                                .insert(pointer.to_string(), definition.clone())
+                                .insert(raw_pointer.to_string(), definition.clone())
                                 .is_some()
                             {
                                 panic!("A schema was replaced")
                             }
                             *value = Value::Object(flattened_reference);
+                        /* TODO Useful?
+                        } else if raw_pointer.ends_with(&format!("/{name}")) {
+                            // Cycle: this schema depends on itself.
+                            let mut object = Map::new();
+                            object.insert("_CYCLING_REF_".to_string(), Value::String(raw_pointer.to_string()));
+                            *value = Value::Object(object);
+                        */
+                        } else if pointer.domain == domain && !schema_names.contains(pointer.schema_name()) {
+                            // Local schema not found.
+                            let mut object = Map::new();
+                            object.insert("_SCHEMA_NOT_FOUND_".to_string(), Value::String(raw_pointer.to_string()));
+                            *value = Value::Object(object);
                         }
                     }
                 })
