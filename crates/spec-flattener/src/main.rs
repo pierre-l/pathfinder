@@ -14,9 +14,6 @@ async fn main() -> anyhow::Result<()> {
     process(&mut registry, Domain::WriteApi).await?;
     process(&mut registry, Domain::TraceApi).await?;
 
-
-    // TODO Bring support for all the spec files: trace_api, write_api
-    // TODO Add another non-flat file. Still apply embedded and allOf merging, just don't flatten.
     // TODO Hunt down panics? unwrap, expect, panic
 
     Ok(())
@@ -71,7 +68,6 @@ impl SchemaRegistry {
 
     // TODO Rename, express this is cloned.
     fn for_domain(&self, domain: Domain) -> Map<String, Value> {
-        // TODO 
         let mut result = Map::new();
         self.schemas.iter()
         .filter(|(pointer, _schema)| pointer.domain == domain)
@@ -100,15 +96,13 @@ impl Pointer {
             })
         } else if raw_pointer.starts_with("./") {
             // The pointer is referencing a schema from a different spec file.
-            // TODO Look for the domain
             let chunks = raw_pointer.split('#').collect::<Vec<&str>>();
             assert_eq!(2, chunks.len());
 
             let file_path = chunks[0];
             let schema_path = chunks[1];
 
-            let domain = {                
-                // TODO Ugly
+            let domain = {              
                 if file_path.contains(&Domain::Api.file_name()) {
                     Domain::Api
                 } else if file_path.contains(&Domain::TraceApi.file_name()) {
@@ -146,7 +140,6 @@ async fn process(registry: &mut SchemaRegistry, domain: Domain) -> anyhow::Resul
     let mut root = fetch_spec_file(&url).await;
     write_to_file(format!("{domain_name}/0-original/{}", domain.file_name()), &root)?;
 
-    // TODO Check again if this really provides value.
     // Flatten the $ref pointers into objects, retrieve a pointer->definition map.
     flatten_openrpc_spec(registry, domain, &mut root)?;
     let flattened_schemas = registry.for_domain(domain);
@@ -207,7 +200,6 @@ fn write_output(domain: Domain, step_name: &str, result: Map<String, Value>) -> 
 }
 
 /// Reconstructs the `Map`, sorting the fields by their key.
-/// TODO Might be unnecessary. Is this something that `serde_json` already does?
 fn sort_map_fields(flattened_schemas: Map<String, Value>) -> Map<String, Value> {
     let mut raw: Vec<(String, Value)> = flattened_schemas.into_iter().collect();
     raw.sort_by(|(name_a, _), (name_b, _)| name_a.cmp(name_b));
@@ -442,7 +434,6 @@ fn flatten_refs(registry: &mut SchemaRegistry, domain: Domain, root: &Value, poi
     Ok(())
 }
 
-// TODO Return an iterator?
 /// Returns mutable references to the leaf fields of all `Value::Object`s in the tree.
 /// Leaf values are `Value::Null`, `Value::Bool`, `Value::Number` and `Value::String`.
 ///
@@ -466,7 +457,6 @@ fn leaf_fields(value: &mut Value) -> Vec<(&str, &mut Value)> {
     }
 }
 
-// TODO The closure ref could be avoided?
 /// Apply the closure to every `Value::Object` in the tree.
 fn for_each_object<F>(value: &mut Value, f: &F)
 where
