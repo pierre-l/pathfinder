@@ -11,9 +11,8 @@ async fn main() -> anyhow::Result<()> {
     let mut registry = SchemaRegistry::new();
 
     process(&mut registry, Domain::Api).await?;
-    // TODO 
     process(&mut registry, Domain::WriteApi).await?;
-    // TODO process(&mut registry, Domain::TraceApi).await?;
+    process(&mut registry, Domain::TraceApi).await?;
 
 
     // TODO Bring support for all the spec files: trace_api, write_api
@@ -388,6 +387,10 @@ fn flatten_refs(registry: &mut SchemaRegistry, domain: Domain, root: &Value, poi
                     .any(|(key, value)| key == "$ref" && value.as_str().is_some())
                 {
                     Some(name.clone())
+                } else if name == "FUNCTION_INVOCATION"{
+                    // Recursive type, skip.
+                    *definition = Value::String("_RECURSIVE_TYPE_SKIPPED_".to_string());
+                    Some(name.clone())
                 } else {
                     None
                 }
@@ -419,13 +422,6 @@ fn flatten_refs(registry: &mut SchemaRegistry, domain: Domain, root: &Value, poi
                                 panic!("A schema was replaced")
                             }
                             *value = Value::Object(flattened_reference);
-                        /* TODO Useful?
-                        } else if raw_pointer.ends_with(&format!("/{name}")) {
-                            // Cycle: this schema depends on itself.
-                            let mut object = Map::new();
-                            object.insert("_CYCLING_REF_".to_string(), Value::String(raw_pointer.to_string()));
-                            *value = Value::Object(object);
-                        */
                         } else if pointer.domain == domain && !schema_names.contains(pointer.schema_name()) {
                             // Local schema not found.
                             let mut object = Map::new();
