@@ -19,7 +19,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum Domain {
     Api,
     WriteApi,
@@ -57,29 +57,21 @@ impl SchemaRegistry {
         }
     }
 
-    fn insert(&mut self, pointer: Pointer, schema: Value) {
-        // TODO Replacement: panic or err.
-        self.schemas.insert(pointer, schema);
+    fn insert(&mut self, pointer: Pointer, schema: Value) -> anyhow::Result<()> {
+        if self.schemas.insert(pointer.clone(), schema).is_some() {
+            bail!("A schema was replaced, indicating a duplicated definition. Or a bug :) Pointer: {:?}", pointer)
+        }
+
+        Ok(())
     }
 
     fn get(&self, pointer: &Pointer) -> Option<&Value> {
         self.schemas.get(pointer)
     }
-
-    // TODO Rename, express this is cloned.
-    fn for_domain(&self, domain: Domain) -> Map<String, Value> {
-        let mut result = Map::new();
-        self.schemas.iter()
-        .filter(|(pointer, _schema)| pointer.domain == domain)
-        .for_each(|(pointer, schema)| {
-            result.insert(pointer.path.clone(), schema.clone());
-        });
-        result
-    }
 }
 
 /// The parsed value of a "$ref" field.
-#[derive(PartialEq, Eq, Hash)]
+#[derive(PartialEq, Eq, Hash, Clone, Debug)]
 struct Pointer {
     domain: Domain,
     path: String,
@@ -137,12 +129,21 @@ async fn process(registry: &mut SchemaRegistry, domain: Domain) -> anyhow::Resul
         version, domain.file_name()
     );
 
-    let mut root = fetch_spec_file(&url).await;
+    let mut root = fetch_spec_file(&url).await?;
     write_to_file(format!("{domain_name}/0-original/{}", domain.file_name()), &root)?;
 
     // Flatten the $ref pointers into objects, retrieve a pointer->definition map.
     flatten_openrpc_spec(registry, domain, &mut root)?;
-    let flattened_schemas = registry.for_domain(domain);
+
+    let flattened_schemas = {
+        let mut result = Map::new();
+        registry.schemas.iter()
+        .filter(|(pointer, _schema)| pointer.domain == domain)
+        .for_each(|(pointer, schema)| {
+            result.insert(pointer.path.clone(), schema.clone());
+        });
+        result
+    };
 
     // Sort the top-level fields so they're ordered by pointer (section, then name)
     let sorted = sort_map_fields(flattened_schemas);
@@ -214,9 +215,9 @@ fn flatten_openrpc_spec(registry: &mut SchemaRegistry, domain: Domain, root: &mu
         // The methods section is an array. Make it an object. Use the method name as the key.
         let mut object = serde_json::Map::new();
         root.pointer("/methods")
-            .expect("The spec file must have a methods section")
+            .context("The spec file must have a methods section")?
             .as_array()
-            .expect("The methods section must be an array")
+            .context("The methods section must be an array")?
             .iter()
             .for_each(|value| {
                 object.insert(
@@ -237,16 +238,16 @@ fn flatten_openrpc_spec(registry: &mut SchemaRegistry, domain: Domain, root: &mu
     Ok(())
 }
 
-async fn fetch_spec_file(url: &str) -> Value {
+async fn fetch_spec_file(url: &str) -> anyhow::Result<Value> {
     println!("Fetching {}", url);
     let spec = reqwest::get(url)
         .await
-        .expect("Failed to retrieve the spec file")
+        .context("Failed to retrieve the spec file")?
         .text()
         .await
-        .expect("Failed to parse the spec file to a string");
+        .context("Failed to parse the spec file to a string")?;
 
-    serde_json::from_str::<Value>(&spec).expect("The spec file isn't valid JSON")
+    serde_json::from_str::<Value>(&spec).context("The spec file isn't valid JSON")
 }
 
 /// Trim: remove the intermediate layers of flattened references: the "$ref" field, the pointer object.
@@ -286,7 +287,7 @@ fn trim_ref_layer(obj: &mut Map<String, Value>) -> anyhow::Result<()> {
             let (pointer, flat) = pointer_object
                 .iter()
                 .next()
-                .expect("Shouldn't happen as the vec len is supposedly checked above");
+                .context("Shouldn't happen as the vec len is supposedly checked above")?;
             // Remove the original reference, the "$ref" field.
             obj.remove(&key);
             // Replace it with the pointer object, effectively removing the "$ref" layer
@@ -366,7 +367,7 @@ fn write_to_file(path: impl AsRef<str>, value: &Value) -> anyhow::Result<()> {
 /// * a flattening pass doesn't result in fewer schemas to flatten (eg: there's a $ref cycle).
 fn flatten_refs(registry: &mut SchemaRegistry, domain: Domain, root: &Value, pointer: &str) -> anyhow::Result<()> {
     let reference_prefix = "#".to_string() + pointer + "/";
-    let mut schemas = root.pointer(pointer).unwrap().as_object().unwrap().clone();
+    let mut schemas = root.pointer(pointer).context("Pointer not found")?.as_object().context("Pointer does not point at an object")?.clone();
 
     let mut schemas_left = usize::MAX;
     while schemas_left > 0 {
@@ -390,9 +391,9 @@ fn flatten_refs(registry: &mut SchemaRegistry, domain: Domain, root: &Value, poi
             .collect::<Vec<String>>();
 
         for flat in flat {
-            let definition = schemas.remove(flat.as_str()).unwrap();
+            let definition = schemas.remove(flat.as_str()).context("No way we can't find the name of a schema that we just collected. That's a bug.")?;
             let raw_pointer = reference_prefix.clone()+&flat;
-            registry.insert(Pointer::try_new(domain, &raw_pointer)?, definition);
+            registry.insert(Pointer::try_new(domain, &raw_pointer)?, definition)?;
         }
 
         let schema_names = schemas.keys().cloned().collect::<HashSet<String>>();
@@ -406,17 +407,14 @@ fn flatten_refs(registry: &mut SchemaRegistry, domain: Domain, root: &Value, poi
                         let pointer = Pointer::try_new(domain, raw_pointer).unwrap();
 
                         if let Some(definition) = registry.get(&pointer) {
-                            let mut flattened_reference = serde_json::Map::new();
-                            if flattened_reference
-                                .insert(raw_pointer.to_string(), definition.clone())
-                                .is_some()
-                            {
-                                panic!("A schema was replaced")
-                            }
-                            *value = Value::Object(flattened_reference);
+                            let mut object = serde_json::Map::new();
+                            object
+                                .insert(raw_pointer.to_string(), definition.clone());
+                            *value = Value::Object(object);
                         } else if pointer.domain == domain && !schema_names.contains(pointer.schema_name()) {
                             // Local schema not found.
                             let mut object = Map::new();
+                            println!("Schema not found: {:?}", pointer);
                             object.insert("_SCHEMA_NOT_FOUND_".to_string(), Value::String(raw_pointer.to_string()));
                             *value = Value::Object(object);
                         }
@@ -426,7 +424,7 @@ fn flatten_refs(registry: &mut SchemaRegistry, domain: Domain, root: &Value, poi
 
         if schemas_left == schemas.len() {
             let schema_names = schemas.keys().map(|name| "\n".to_string() + name).collect::<String>();
-            panic!("No replacement during the last pass. Schemas left: {}", schema_names);
+            bail!("No replacement during the last pass. Cycle? Schemas left: {}", schema_names);
         }
         schemas_left = schemas.len();
     }
