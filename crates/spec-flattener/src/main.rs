@@ -11,18 +11,8 @@ async fn main() -> anyhow::Result<()> {
     let mut registry = SchemaRegistry::new();
 
     process(&mut registry, Domain::Api).await?;
-    process(&mut registry, Domain::TraceApi).await?;
+    // TODO process(&mut registry, Domain::WriteApi).await?;
 
-    {
-        /* TODO This doesn't work yet because it references types from the main API.
-        let file = "starknet_trace_api_openrpc.json";
-        let url = format!(
-            "https://raw.githubusercontent.com/starkware-libs/starknet-specs/{}/api/{}",
-            version, file
-        );
-        process("trace_api", file, &url).await?; 
-        */
-    }
 
     // TODO Bring support for all the spec files: trace_api, write_api
     // TODO Add another non-flat file. Still apply embedded and allOf merging, just don't flatten.
@@ -41,14 +31,14 @@ enum Domain {
 impl Domain {
     fn name(&self) -> &'static str {
         match self {
-            Self::Api => "api",
+            Self::Api => "api_openrpc",
             Self::WriteApi => "write_api",
-            Self::TraceApi => "trace_api",
+            Self::TraceApi => "trace_api_openrpc",
         }
     }
 
     fn file_name(&self) -> String {
-        format!("starknet_{}_openrpc.json", self.name())
+        format!("starknet_{}.json", self.name())
     }
 }
 
@@ -410,9 +400,6 @@ fn flatten_refs(registry: &mut SchemaRegistry, domain: Domain, root: &Value, poi
                 .for_each(|(key, value)| {
                     if key == "$ref" {
                         let pointer = value.as_str().unwrap();
-                        if !pointer.starts_with('#') {
-                            panic!()
-                        }
 
                         if let Some(definition) = registry.get(&Pointer::try_new(domain, pointer).unwrap()) {
                             let mut flattened_reference = serde_json::Map::new();
@@ -429,7 +416,8 @@ fn flatten_refs(registry: &mut SchemaRegistry, domain: Domain, root: &Value, poi
         }
 
         if schemas_left == schemas.len() {
-            panic!("No replacement during the last pass.")
+            let schema_names = schemas.keys().map(|name| "\n".to_string() + name).collect::<String>();
+            panic!("No replacement during the last pass. Schemas left: {}", schema_names);
         }
         schemas_left = schemas.len();
     }
