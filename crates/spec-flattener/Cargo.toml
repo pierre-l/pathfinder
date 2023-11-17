@@ -15,3 +15,4 @@ serde_json = { workspace = true, features = [
     "arbitrary_precision",
     "raw_value",
 ] }
+sha256 = "1.4"

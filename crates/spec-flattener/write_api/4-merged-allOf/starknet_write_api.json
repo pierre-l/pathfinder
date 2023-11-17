@@ -57,637 +57,19 @@
     "message": "Account validation failed"
   },
   "/components/schemas/BROADCASTED_DEPLOY_ACCOUNT_TXN": {
-    "BROADCASTED_DEPLOY_ACCOUNT_TXN": {
-      "DEPLOY_ACCOUNT_TXN": {
-        "description": "deploys a new account contract",
-        "oneOf": [
-          {
-            "DEPLOY_ACCOUNT_TXN_V1": {
-              "description": "Deploys an account contract, charges fee from the pre-funded account addresses",
-              "properties": {
-                "class_hash": {
-                  "FELT": {
-                    "description": "A field element. represented by at most 63 hex digits",
-                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                    "title": "Field element",
-                    "type": "string"
-                  },
-                  "description": "The hash of the deployed contract's class",
-                  "required": true,
-                  "title": "Class hash"
-                },
-                "constructor_calldata": {
-                  "description": "The parameters passed to the constructor",
-                  "items": {
-                    "FELT": {
-                      "description": "A field element. represented by at most 63 hex digits",
-                      "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                      "title": "Field element",
-                      "type": "string"
-                    }
-                  },
-                  "required": true,
-                  "title": "Constructor calldata",
-                  "type": "array"
-                },
-                "contract_address_salt": {
-                  "FELT": {
-                    "description": "A field element. represented by at most 63 hex digits",
-                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                    "title": "Field element",
-                    "type": "string"
-                  },
-                  "description": "The salt for the address of the deployed contract",
-                  "required": true,
-                  "title": "Contract address salt"
-                },
-                "max_fee": {
-                  "FELT": {
-                    "description": "A field element. represented by at most 63 hex digits",
-                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                    "title": "Field element",
-                    "type": "string"
-                  },
-                  "description": "The maximal fee that can be charged for including the transaction",
-                  "required": true,
-                  "title": "Max fee"
-                },
-                "nonce": {
-                  "FELT": {
-                    "description": "A field element. represented by at most 63 hex digits",
-                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                    "title": "Field element",
-                    "type": "string"
-                  },
-                  "required": true,
-                  "title": "Nonce"
-                },
-                "signature": {
-                  "SIGNATURE": {
-                    "description": "A transaction signature",
-                    "items": {
-                      "FELT": {
-                        "description": "A field element. represented by at most 63 hex digits",
-                        "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                        "title": "Field element",
-                        "type": "string"
-                      }
-                    },
-                    "title": "Signature",
-                    "type": "array"
-                  },
-                  "required": true,
-                  "title": "Signature"
-                },
-                "type": {
-                  "enum": [
-                    "DEPLOY_ACCOUNT"
-                  ],
-                  "required": true,
-                  "title": "Deploy account",
-                  "type": "string"
-                },
-                "version": {
-                  "NUM_AS_HEX": {
-                    "description": "An integer number in hex format (0x...)",
-                    "pattern": "^0x[a-fA-F0-9]+$",
-                    "title": "Number as hex",
-                    "type": "string"
-                  },
-                  "description": "Version of the transaction scheme",
-                  "required": true,
-                  "title": "Version"
-                }
-              },
-              "title": "Deploy account transaction"
-            },
-            "title": "Deploy account V1"
-          }
-        ],
-        "title": "Deploy account transaction"
-      },
-      "title": "Broadcasted deploy account transaction"
-    }
+    "_HASH_": "fb9977e1f59af866ad1a357b9b28e1f15aa5457887c5182a5a5d68d24e54104e"
   },
   "/components/schemas/BROADCASTED_INVOKE_TXN": {
-    "BROADCASTED_INVOKE_TXN": {
-      "oneOf": [
-        {
-          "INVOKE_TXN_V0": {
-            "description": "invokes a specific function in the desired contract (not necessarily an account)",
-            "properties": {
-              "calldata": {
-                "description": "The parameters passed to the function",
-                "items": {
-                  "FELT": {
-                    "description": "A field element. represented by at most 63 hex digits",
-                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                    "title": "Field element",
-                    "type": "string"
-                  }
-                },
-                "required": true,
-                "title": "Calldata",
-                "type": "array"
-              },
-              "contract_address": {
-                "ADDRESS": {
-                  "FELT": {
-                    "description": "A field element. represented by at most 63 hex digits",
-                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                    "title": "Field element",
-                    "type": "string"
-                  },
-                  "title": "Address"
-                },
-                "required": true,
-                "title": "Contract address"
-              },
-              "entry_point_selector": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "required": true,
-                "title": "Entry point selector"
-              },
-              "max_fee": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "description": "The maximal fee that can be charged for including the transaction",
-                "required": true,
-                "title": "Max fee"
-              },
-              "signature": {
-                "SIGNATURE": {
-                  "description": "A transaction signature",
-                  "items": {
-                    "FELT": {
-                      "description": "A field element. represented by at most 63 hex digits",
-                      "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                      "title": "Field element",
-                      "type": "string"
-                    }
-                  },
-                  "title": "Signature",
-                  "type": "array"
-                },
-                "required": true,
-                "title": "Signature"
-              },
-              "type": {
-                "enum": [
-                  "INVOKE"
-                ],
-                "required": true,
-                "title": "Type",
-                "type": "string"
-              },
-              "version": {
-                "description": "Version of the transaction scheme",
-                "enum": [
-                  "0x0"
-                ],
-                "required": true,
-                "title": "Version",
-                "type": "string"
-              }
-            },
-            "title": "Invoke transaction V0"
-          },
-          "title": "Broadcasted invoke transaction V0"
-        },
-        {
-          "INVOKE_TXN_V1": {
-            "description": "initiates a transaction from a given account",
-            "properties": {
-              "calldata": {
-                "description": "The data expected by the account's `execute` function (in most usecases, this includes the called contract address and a function selector)",
-                "items": {
-                  "FELT": {
-                    "description": "A field element. represented by at most 63 hex digits",
-                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                    "title": "Field element",
-                    "type": "string"
-                  }
-                },
-                "required": true,
-                "title": "calldata",
-                "type": "array"
-              },
-              "max_fee": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "description": "The maximal fee that can be charged for including the transaction",
-                "required": true,
-                "title": "Max fee"
-              },
-              "nonce": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "required": true,
-                "title": "Nonce"
-              },
-              "sender_address": {
-                "ADDRESS": {
-                  "FELT": {
-                    "description": "A field element. represented by at most 63 hex digits",
-                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                    "title": "Field element",
-                    "type": "string"
-                  },
-                  "title": "Address"
-                },
-                "required": true,
-                "title": "sender address"
-              },
-              "signature": {
-                "SIGNATURE": {
-                  "description": "A transaction signature",
-                  "items": {
-                    "FELT": {
-                      "description": "A field element. represented by at most 63 hex digits",
-                      "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                      "title": "Field element",
-                      "type": "string"
-                    }
-                  },
-                  "title": "Signature",
-                  "type": "array"
-                },
-                "required": true,
-                "title": "Signature"
-              },
-              "type": {
-                "enum": [
-                  "INVOKE"
-                ],
-                "required": true,
-                "title": "Type",
-                "type": "string"
-              },
-              "version": {
-                "NUM_AS_HEX": {
-                  "description": "An integer number in hex format (0x...)",
-                  "pattern": "^0x[a-fA-F0-9]+$",
-                  "title": "Number as hex",
-                  "type": "string"
-                },
-                "description": "Version of the transaction scheme",
-                "required": true,
-                "title": "Version"
-              }
-            },
-            "title": "Invoke transaction V1"
-          },
-          "title": "Broadcasted invoke transaction V1"
-        }
-      ],
-      "title": "Broadcasted invoke transaction"
-    }
+    "_HASH_": "bf67d41e920e4257a824504ca387b3cbfb9cab7955664b2e3c6b715273ef6e40"
   },
   "/components/schemas/DECLARE_TXN": {
-    "DECLARE_TXN": {
-      "oneOf": [
-        {
-          "DECLARE_TXN_V0": {
-            "description": "Declare Contract Transaction V0",
-            "properties": {
-              "class_hash": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "description": "The hash of the declared class",
-                "required": true,
-                "title": "Class hash"
-              },
-              "max_fee": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "description": "The maximal fee that can be charged for including the transaction",
-                "required": true,
-                "title": "Max fee"
-              },
-              "sender_address": {
-                "ADDRESS": {
-                  "FELT": {
-                    "description": "A field element. represented by at most 63 hex digits",
-                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                    "title": "Field element",
-                    "type": "string"
-                  },
-                  "title": "Address"
-                },
-                "description": "The address of the account contract sending the declaration transaction",
-                "required": true,
-                "title": "Sender address"
-              },
-              "signature": {
-                "SIGNATURE": {
-                  "description": "A transaction signature",
-                  "items": {
-                    "FELT": {
-                      "description": "A field element. represented by at most 63 hex digits",
-                      "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                      "title": "Field element",
-                      "type": "string"
-                    }
-                  },
-                  "title": "Signature",
-                  "type": "array"
-                },
-                "required": true,
-                "title": "Signature"
-              },
-              "type": {
-                "enum": [
-                  "DECLARE"
-                ],
-                "required": true,
-                "title": "Declare",
-                "type": "string"
-              },
-              "version": {
-                "description": "Version of the transaction scheme",
-                "enum": [
-                  "0x0"
-                ],
-                "required": true,
-                "title": "Version",
-                "type": "string"
-              }
-            },
-            "title": "Declare Contract Transaction V0"
-          },
-          "title": "Declare transaction V0"
-        },
-        {
-          "DECLARE_TXN_V1": {
-            "description": "Declare Contract Transaction V1",
-            "properties": {
-              "class_hash": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "description": "The hash of the declared class",
-                "required": true,
-                "title": "Class hash"
-              },
-              "max_fee": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "description": "The maximal fee that can be charged for including the transaction",
-                "required": true,
-                "title": "Max fee"
-              },
-              "nonce": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "required": true,
-                "title": "Nonce"
-              },
-              "sender_address": {
-                "ADDRESS": {
-                  "FELT": {
-                    "description": "A field element. represented by at most 63 hex digits",
-                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                    "title": "Field element",
-                    "type": "string"
-                  },
-                  "title": "Address"
-                },
-                "description": "The address of the account contract sending the declaration transaction",
-                "required": true,
-                "title": "Sender address"
-              },
-              "signature": {
-                "SIGNATURE": {
-                  "description": "A transaction signature",
-                  "items": {
-                    "FELT": {
-                      "description": "A field element. represented by at most 63 hex digits",
-                      "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                      "title": "Field element",
-                      "type": "string"
-                    }
-                  },
-                  "title": "Signature",
-                  "type": "array"
-                },
-                "required": true,
-                "title": "Signature"
-              },
-              "type": {
-                "enum": [
-                  "DECLARE"
-                ],
-                "required": true,
-                "title": "Declare",
-                "type": "string"
-              },
-              "version": {
-                "description": "Version of the transaction scheme",
-                "enum": [
-                  "0x1"
-                ],
-                "required": true,
-                "title": "Version",
-                "type": "string"
-              }
-            },
-            "title": "Declare Contract Transaction V1"
-          },
-          "title": "Declare transaction V1"
-        },
-        {
-          "DECLARE_TXN_V2": {
-            "description": "Declare Contract Transaction V2",
-            "properties": {
-              "class_hash": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "description": "The hash of the declared class",
-                "required": true,
-                "title": "Class hash"
-              },
-              "compiled_class_hash": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "description": "The hash of the Cairo assembly resulting from the Sierra compilation",
-                "required": true,
-                "title": "Compiled class hash"
-              },
-              "max_fee": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "description": "The maximal fee that can be charged for including the transaction",
-                "required": true,
-                "title": "Max fee"
-              },
-              "nonce": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "required": true,
-                "title": "Nonce"
-              },
-              "sender_address": {
-                "ADDRESS": {
-                  "FELT": {
-                    "description": "A field element. represented by at most 63 hex digits",
-                    "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                    "title": "Field element",
-                    "type": "string"
-                  },
-                  "title": "Address"
-                },
-                "description": "The address of the account contract sending the declaration transaction",
-                "required": true,
-                "title": "Sender address"
-              },
-              "signature": {
-                "SIGNATURE": {
-                  "description": "A transaction signature",
-                  "items": {
-                    "FELT": {
-                      "description": "A field element. represented by at most 63 hex digits",
-                      "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                      "title": "Field element",
-                      "type": "string"
-                    }
-                  },
-                  "title": "Signature",
-                  "type": "array"
-                },
-                "required": true,
-                "title": "Signature"
-              },
-              "type": {
-                "enum": [
-                  "DECLARE"
-                ],
-                "required": true,
-                "title": "Declare",
-                "type": "string"
-              },
-              "version": {
-                "description": "Version of the transaction scheme",
-                "enum": [
-                  "0x2"
-                ],
-                "required": true,
-                "title": "Version",
-                "type": "string"
-              }
-            },
-            "title": "Declare Transaction V2"
-          },
-          "title": "Declare transaction V2"
-        }
-      ],
-      "title": "Declare transaction"
-    }
+    "_HASH_": "a882736e106987f80171ca1eac61290d5d3589fa5802e52e03a6ef3a2450b92a"
   },
   "/components/schemas/FELT": {
-    "FELT": {
-      "description": "A field element. represented by at most 63 hex digits",
-      "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-      "title": "Field element",
-      "type": "string"
-    }
+    "_HASH_": "6774f99119ccc935c1bc6508a35029a1d45155ddac9fe33740ff3aa44dc4414d"
   },
   "/components/schemas/FUNCTION_CALL": {
-    "FUNCTION_CALL": {
-      "description": "Function call information",
-      "properties": {
-        "calldata": {
-          "description": "The parameters passed to the function",
-          "items": {
-            "FELT": {
-              "description": "A field element. represented by at most 63 hex digits",
-              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-              "title": "Field element",
-              "type": "string"
-            }
-          },
-          "required": true,
-          "title": "Calldata",
-          "type": "array"
-        },
-        "contract_address": {
-          "ADDRESS": {
-            "FELT": {
-              "description": "A field element. represented by at most 63 hex digits",
-              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-              "title": "Field element",
-              "type": "string"
-            },
-            "title": "Address"
-          },
-          "required": true,
-          "title": "Contract address"
-        },
-        "entry_point_selector": {
-          "FELT": {
-            "description": "A field element. represented by at most 63 hex digits",
-            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-            "title": "Field element",
-            "type": "string"
-          },
-          "required": true,
-          "title": "Entry point selector"
-        }
-      },
-      "title": "Function call",
-      "type": "object"
-    }
+    "_HASH_": "687f10aec0684aa925b896c588f3c5fce94c9525834972d5b6c7b874d9c04f72"
   },
   "/components/schemas/NUM_AS_HEX": {
     "pattern": "^0x[a-fA-F0-9]+$",
@@ -695,112 +77,51 @@
     "type": "string"
   },
   "/components/schemas/SIGNATURE": {
-    "SIGNATURE": {
-      "description": "A transaction signature",
-      "items": {
-        "FELT": {
-          "description": "A field element. represented by at most 63 hex digits",
-          "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-          "title": "Field element",
-          "type": "string"
-        }
-      },
-      "title": "Signature",
-      "type": "array"
-    }
+    "_HASH_": "a2777ac5d50504fa2482f872fa8ed861b6de99f9a574cbdf73a96035861fce8e"
   },
   "/components/schemas/TXN_HASH": {
-    "TXN_HASH": {
-      "FELT": {
-        "description": "A field element. represented by at most 63 hex digits",
-        "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-        "title": "Field element",
-        "type": "string"
-      },
-      "description": "The transaction hash, as assigned in StarkNet",
-      "title": "Transaction hash"
-    }
+    "_HASH_": "91cd8ff3137a85f8f36d4cc963db1535a377763cc025351f4e9b41893e038689"
   },
   "/methods/starknet_addDeclareTransaction": {
     "errors": [
       {
-        "CLASS_ALREADY_DECLARED": {
-          "code": 51,
-          "message": "Class already declared"
-        }
+        "_HASH_": "24b300c3ace09fced1c4b82cf6e3980be5e096e7405cfe6a546b2cf4a36c9aa1"
       },
       {
-        "COMPILATION_FAILED": {
-          "code": 56,
-          "message": "Compilation failed"
-        }
+        "_HASH_": "37ed48a6fc8b54c31d19bbd567b7c1e0a25786ef6097af014711e59edde51715"
       },
       {
-        "COMPILED_CLASS_HASH_MISMATCH": {
-          "code": 60,
-          "message": "the compiled class hash did not match the one supplied in the transaction"
-        }
+        "_HASH_": "ba70ed35f2485fc4ed7aa5a17137b3d20e60792e648b625e2269fd75273e1b69"
       },
       {
-        "INSUFFICIENT_ACCOUNT_BALANCE": {
-          "code": 54,
-          "message": "Account balance is smaller than the transaction's max_fee"
-        }
+        "_HASH_": "94c156c32302013547422d1c02e8930f158f56b72ce437287e97a58e231ab25f"
       },
       {
-        "INSUFFICIENT_MAX_FEE": {
-          "code": 53,
-          "message": "Max fee is smaller than the minimal transaction cost (validation plus fee transfer)"
-        }
+        "_HASH_": "216c51c7bd3fb07dc28901f0c489746fbe404b2d474b5d18b9bfc4883072c507"
       },
       {
-        "INVALID_TRANSACTION_NONCE": {
-          "code": 52,
-          "message": "Invalid transaction nonce"
-        }
+        "_HASH_": "0f80b9e84cd6fa0e3e9fccb94efc1065bfd31a93b0bb15dee7dde6451e0e22cf"
       },
       {
-        "VALIDATION_FAILURE": {
-          "code": 55,
-          "message": "Account validation failed"
-        }
+        "_HASH_": "0fb840d95b80fdfede2ae2caa3b9527810baa8a91f1d2d53b5da94090fbb4035"
       },
       {
-        "NON_ACCOUNT": {
-          "code": 58,
-          "message": "Sender address in not an account contract"
-        }
+        "_HASH_": "2246a32e71671d9fbe6525373f2640848d66a44e8f37e629e8eba144f6d2ceab"
       },
       {
-        "DUPLICATE_TX": {
-          "code": 59,
-          "message": "A transaction with the same hash already exists in the mempool"
-        }
+        "_HASH_": "c83ba9175c1e77a70ef81327a7635d4962361ed0cd3ad050de7a89615a4c2702"
       },
       {
-        "CONTRACT_CLASS_SIZE_IS_TOO_LARGE": {
-          "code": 57,
-          "message": "Contract class size it too large"
-        }
+        "_HASH_": "daf45ad781f0f34e6e4b33fe61263798ee63cc218e9dd28af7be8394bfe94155"
       },
       {
-        "UNSUPPORTED_TX_VERSION": {
-          "code": 61,
-          "message": "the transaction version is not supported"
-        }
+        "_HASH_": "d867bbf53a08e13c3c8661e320b8212fdbda8b000d114f5d265dace1df0a81f7"
       },
       {
-        "UNSUPPORTED_CONTRACT_CLASS_VERSION": {
-          "code": 62,
-          "message": "the contract class version is not supported"
-        }
+        "_HASH_": "2100508e133c77a28413fd959a7fa6cc50b9d620d1e175ecdce741fb028d1096"
       },
       {
-        "UNEXPECTED_ERROR": {
-          "code": 63,
-          "data": "string",
-          "message": "An unexpected error occurred"
-        }
+        "_HASH_": "f2bcbe3a0ce3904fe91fc6e4aab6aac3927e20db6947373c2954eafb460de8ca"
       }
     ],
     "name": "starknet_addDeclareTransaction",
@@ -821,30 +142,12 @@
       "schema": {
         "properties": {
           "class_hash": {
-            "FELT": {
-              "FELT": {
-                "description": "A field element. represented by at most 63 hex digits",
-                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                "title": "Field element",
-                "type": "string"
-              }
-            },
+            "_HASH_": "a05aa0392667b749e4725338de012dd442622c71e7362aef4cbe186e63f9903e",
             "required": true,
             "title": "The hash of the declared class"
           },
           "transaction_hash": {
-            "TXN_HASH": {
-              "TXN_HASH": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "description": "The transaction hash, as assigned in StarkNet",
-                "title": "Transaction hash"
-              }
-            },
+            "_HASH_": "ce4e089587ad61a722d55bfd295db32b966e982d387d022fc5e3e5d299b192b3",
             "required": true,
             "title": "The hash of the declare transaction"
           }
@@ -857,59 +160,31 @@
   "/methods/starknet_addDeployAccountTransaction": {
     "errors": [
       {
-        "INSUFFICIENT_ACCOUNT_BALANCE": {
-          "code": 54,
-          "message": "Account balance is smaller than the transaction's max_fee"
-        }
+        "_HASH_": "94c156c32302013547422d1c02e8930f158f56b72ce437287e97a58e231ab25f"
       },
       {
-        "INSUFFICIENT_MAX_FEE": {
-          "code": 53,
-          "message": "Max fee is smaller than the minimal transaction cost (validation plus fee transfer)"
-        }
+        "_HASH_": "216c51c7bd3fb07dc28901f0c489746fbe404b2d474b5d18b9bfc4883072c507"
       },
       {
-        "INVALID_TRANSACTION_NONCE": {
-          "code": 52,
-          "message": "Invalid transaction nonce"
-        }
+        "_HASH_": "0f80b9e84cd6fa0e3e9fccb94efc1065bfd31a93b0bb15dee7dde6451e0e22cf"
       },
       {
-        "VALIDATION_FAILURE": {
-          "code": 55,
-          "message": "Account validation failed"
-        }
+        "_HASH_": "0fb840d95b80fdfede2ae2caa3b9527810baa8a91f1d2d53b5da94090fbb4035"
       },
       {
-        "NON_ACCOUNT": {
-          "code": 58,
-          "message": "Sender address in not an account contract"
-        }
+        "_HASH_": "2246a32e71671d9fbe6525373f2640848d66a44e8f37e629e8eba144f6d2ceab"
       },
       {
-        "CLASS_HASH_NOT_FOUND": {
-          "code": 28,
-          "message": "Class hash not found"
-        }
+        "_HASH_": "d15f7dab40aa01217e48fd19a68c89963b96ef988533958f2b42e8e012dc6e61"
       },
       {
-        "DUPLICATE_TX": {
-          "code": 59,
-          "message": "A transaction with the same hash already exists in the mempool"
-        }
+        "_HASH_": "c83ba9175c1e77a70ef81327a7635d4962361ed0cd3ad050de7a89615a4c2702"
       },
       {
-        "UNSUPPORTED_TX_VERSION": {
-          "code": 61,
-          "message": "the transaction version is not supported"
-        }
+        "_HASH_": "d867bbf53a08e13c3c8661e320b8212fdbda8b000d114f5d265dace1df0a81f7"
       },
       {
-        "UNEXPECTED_ERROR": {
-          "code": 63,
-          "data": "string",
-          "message": "An unexpected error occurred"
-        }
+        "_HASH_": "f2bcbe3a0ce3904fe91fc6e4aab6aac3927e20db6947373c2954eafb460de8ca"
       }
     ],
     "name": "starknet_addDeployAccountTransaction",
@@ -919,119 +194,7 @@
         "name": "deploy_account_transaction",
         "required": true,
         "schema": {
-          "BROADCASTED_DEPLOY_ACCOUNT_TXN": {
-            "BROADCASTED_DEPLOY_ACCOUNT_TXN": {
-              "DEPLOY_ACCOUNT_TXN": {
-                "description": "deploys a new account contract",
-                "oneOf": [
-                  {
-                    "DEPLOY_ACCOUNT_TXN_V1": {
-                      "description": "Deploys an account contract, charges fee from the pre-funded account addresses",
-                      "properties": {
-                        "class_hash": {
-                          "FELT": {
-                            "description": "A field element. represented by at most 63 hex digits",
-                            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                            "title": "Field element",
-                            "type": "string"
-                          },
-                          "description": "The hash of the deployed contract's class",
-                          "required": true,
-                          "title": "Class hash"
-                        },
-                        "constructor_calldata": {
-                          "description": "The parameters passed to the constructor",
-                          "items": {
-                            "FELT": {
-                              "description": "A field element. represented by at most 63 hex digits",
-                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                              "title": "Field element",
-                              "type": "string"
-                            }
-                          },
-                          "required": true,
-                          "title": "Constructor calldata",
-                          "type": "array"
-                        },
-                        "contract_address_salt": {
-                          "FELT": {
-                            "description": "A field element. represented by at most 63 hex digits",
-                            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                            "title": "Field element",
-                            "type": "string"
-                          },
-                          "description": "The salt for the address of the deployed contract",
-                          "required": true,
-                          "title": "Contract address salt"
-                        },
-                        "max_fee": {
-                          "FELT": {
-                            "description": "A field element. represented by at most 63 hex digits",
-                            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                            "title": "Field element",
-                            "type": "string"
-                          },
-                          "description": "The maximal fee that can be charged for including the transaction",
-                          "required": true,
-                          "title": "Max fee"
-                        },
-                        "nonce": {
-                          "FELT": {
-                            "description": "A field element. represented by at most 63 hex digits",
-                            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                            "title": "Field element",
-                            "type": "string"
-                          },
-                          "required": true,
-                          "title": "Nonce"
-                        },
-                        "signature": {
-                          "SIGNATURE": {
-                            "description": "A transaction signature",
-                            "items": {
-                              "FELT": {
-                                "description": "A field element. represented by at most 63 hex digits",
-                                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                                "title": "Field element",
-                                "type": "string"
-                              }
-                            },
-                            "title": "Signature",
-                            "type": "array"
-                          },
-                          "required": true,
-                          "title": "Signature"
-                        },
-                        "type": {
-                          "enum": [
-                            "DEPLOY_ACCOUNT"
-                          ],
-                          "required": true,
-                          "title": "Deploy account",
-                          "type": "string"
-                        },
-                        "version": {
-                          "NUM_AS_HEX": {
-                            "description": "An integer number in hex format (0x...)",
-                            "pattern": "^0x[a-fA-F0-9]+$",
-                            "title": "Number as hex",
-                            "type": "string"
-                          },
-                          "description": "Version of the transaction scheme",
-                          "required": true,
-                          "title": "Version"
-                        }
-                      },
-                      "title": "Deploy account transaction"
-                    },
-                    "title": "Deploy account V1"
-                  }
-                ],
-                "title": "Deploy account transaction"
-              },
-              "title": "Broadcasted deploy account transaction"
-            }
-          }
+          "_HASH_": "735aa5cb469894813db4684b2eba642121b55d87b4286318f603d0eb8b14a6bd"
         }
       }
     ],
@@ -1041,30 +204,12 @@
       "schema": {
         "properties": {
           "contract_address": {
-            "FELT": {
-              "FELT": {
-                "description": "A field element. represented by at most 63 hex digits",
-                "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                "title": "Field element",
-                "type": "string"
-              }
-            },
+            "_HASH_": "a05aa0392667b749e4725338de012dd442622c71e7362aef4cbe186e63f9903e",
             "required": true,
             "title": "The address of the new contract"
           },
           "transaction_hash": {
-            "TXN_HASH": {
-              "TXN_HASH": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "description": "The transaction hash, as assigned in StarkNet",
-                "title": "Transaction hash"
-              }
-            },
+            "_HASH_": "ce4e089587ad61a722d55bfd295db32b966e982d387d022fc5e3e5d299b192b3",
             "required": true,
             "title": "The hash of the deploy transaction"
           }
@@ -1077,53 +222,28 @@
   "/methods/starknet_addInvokeTransaction": {
     "errors": [
       {
-        "INSUFFICIENT_ACCOUNT_BALANCE": {
-          "code": 54,
-          "message": "Account balance is smaller than the transaction's max_fee"
-        }
+        "_HASH_": "94c156c32302013547422d1c02e8930f158f56b72ce437287e97a58e231ab25f"
       },
       {
-        "INSUFFICIENT_MAX_FEE": {
-          "code": 53,
-          "message": "Max fee is smaller than the minimal transaction cost (validation plus fee transfer)"
-        }
+        "_HASH_": "216c51c7bd3fb07dc28901f0c489746fbe404b2d474b5d18b9bfc4883072c507"
       },
       {
-        "INVALID_TRANSACTION_NONCE": {
-          "code": 52,
-          "message": "Invalid transaction nonce"
-        }
+        "_HASH_": "0f80b9e84cd6fa0e3e9fccb94efc1065bfd31a93b0bb15dee7dde6451e0e22cf"
       },
       {
-        "VALIDATION_FAILURE": {
-          "code": 55,
-          "message": "Account validation failed"
-        }
+        "_HASH_": "0fb840d95b80fdfede2ae2caa3b9527810baa8a91f1d2d53b5da94090fbb4035"
       },
       {
-        "NON_ACCOUNT": {
-          "code": 58,
-          "message": "Sender address in not an account contract"
-        }
+        "_HASH_": "2246a32e71671d9fbe6525373f2640848d66a44e8f37e629e8eba144f6d2ceab"
       },
       {
-        "DUPLICATE_TX": {
-          "code": 59,
-          "message": "A transaction with the same hash already exists in the mempool"
-        }
+        "_HASH_": "c83ba9175c1e77a70ef81327a7635d4962361ed0cd3ad050de7a89615a4c2702"
       },
       {
-        "UNSUPPORTED_TX_VERSION": {
-          "code": 61,
-          "message": "the transaction version is not supported"
-        }
+        "_HASH_": "d867bbf53a08e13c3c8661e320b8212fdbda8b000d114f5d265dace1df0a81f7"
       },
       {
-        "UNEXPECTED_ERROR": {
-          "code": 63,
-          "data": "string",
-          "message": "An unexpected error occurred"
-        }
+        "_HASH_": "f2bcbe3a0ce3904fe91fc6e4aab6aac3927e20db6947373c2954eafb460de8ca"
       }
     ],
     "name": "starknet_addInvokeTransaction",
@@ -1133,197 +253,7 @@
         "name": "invoke_transaction",
         "required": true,
         "schema": {
-          "BROADCASTED_INVOKE_TXN": {
-            "BROADCASTED_INVOKE_TXN": {
-              "oneOf": [
-                {
-                  "INVOKE_TXN_V0": {
-                    "description": "invokes a specific function in the desired contract (not necessarily an account)",
-                    "properties": {
-                      "calldata": {
-                        "description": "The parameters passed to the function",
-                        "items": {
-                          "FELT": {
-                            "description": "A field element. represented by at most 63 hex digits",
-                            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                            "title": "Field element",
-                            "type": "string"
-                          }
-                        },
-                        "required": true,
-                        "title": "Calldata",
-                        "type": "array"
-                      },
-                      "contract_address": {
-                        "ADDRESS": {
-                          "FELT": {
-                            "description": "A field element. represented by at most 63 hex digits",
-                            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                            "title": "Field element",
-                            "type": "string"
-                          },
-                          "title": "Address"
-                        },
-                        "required": true,
-                        "title": "Contract address"
-                      },
-                      "entry_point_selector": {
-                        "FELT": {
-                          "description": "A field element. represented by at most 63 hex digits",
-                          "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                          "title": "Field element",
-                          "type": "string"
-                        },
-                        "required": true,
-                        "title": "Entry point selector"
-                      },
-                      "max_fee": {
-                        "FELT": {
-                          "description": "A field element. represented by at most 63 hex digits",
-                          "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                          "title": "Field element",
-                          "type": "string"
-                        },
-                        "description": "The maximal fee that can be charged for including the transaction",
-                        "required": true,
-                        "title": "Max fee"
-                      },
-                      "signature": {
-                        "SIGNATURE": {
-                          "description": "A transaction signature",
-                          "items": {
-                            "FELT": {
-                              "description": "A field element. represented by at most 63 hex digits",
-                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                              "title": "Field element",
-                              "type": "string"
-                            }
-                          },
-                          "title": "Signature",
-                          "type": "array"
-                        },
-                        "required": true,
-                        "title": "Signature"
-                      },
-                      "type": {
-                        "enum": [
-                          "INVOKE"
-                        ],
-                        "required": true,
-                        "title": "Type",
-                        "type": "string"
-                      },
-                      "version": {
-                        "description": "Version of the transaction scheme",
-                        "enum": [
-                          "0x0"
-                        ],
-                        "required": true,
-                        "title": "Version",
-                        "type": "string"
-                      }
-                    },
-                    "title": "Invoke transaction V0"
-                  },
-                  "title": "Broadcasted invoke transaction V0"
-                },
-                {
-                  "INVOKE_TXN_V1": {
-                    "description": "initiates a transaction from a given account",
-                    "properties": {
-                      "calldata": {
-                        "description": "The data expected by the account's `execute` function (in most usecases, this includes the called contract address and a function selector)",
-                        "items": {
-                          "FELT": {
-                            "description": "A field element. represented by at most 63 hex digits",
-                            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                            "title": "Field element",
-                            "type": "string"
-                          }
-                        },
-                        "required": true,
-                        "title": "calldata",
-                        "type": "array"
-                      },
-                      "max_fee": {
-                        "FELT": {
-                          "description": "A field element. represented by at most 63 hex digits",
-                          "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                          "title": "Field element",
-                          "type": "string"
-                        },
-                        "description": "The maximal fee that can be charged for including the transaction",
-                        "required": true,
-                        "title": "Max fee"
-                      },
-                      "nonce": {
-                        "FELT": {
-                          "description": "A field element. represented by at most 63 hex digits",
-                          "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                          "title": "Field element",
-                          "type": "string"
-                        },
-                        "required": true,
-                        "title": "Nonce"
-                      },
-                      "sender_address": {
-                        "ADDRESS": {
-                          "FELT": {
-                            "description": "A field element. represented by at most 63 hex digits",
-                            "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                            "title": "Field element",
-                            "type": "string"
-                          },
-                          "title": "Address"
-                        },
-                        "required": true,
-                        "title": "sender address"
-                      },
-                      "signature": {
-                        "SIGNATURE": {
-                          "description": "A transaction signature",
-                          "items": {
-                            "FELT": {
-                              "description": "A field element. represented by at most 63 hex digits",
-                              "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                              "title": "Field element",
-                              "type": "string"
-                            }
-                          },
-                          "title": "Signature",
-                          "type": "array"
-                        },
-                        "required": true,
-                        "title": "Signature"
-                      },
-                      "type": {
-                        "enum": [
-                          "INVOKE"
-                        ],
-                        "required": true,
-                        "title": "Type",
-                        "type": "string"
-                      },
-                      "version": {
-                        "NUM_AS_HEX": {
-                          "description": "An integer number in hex format (0x...)",
-                          "pattern": "^0x[a-fA-F0-9]+$",
-                          "title": "Number as hex",
-                          "type": "string"
-                        },
-                        "description": "Version of the transaction scheme",
-                        "required": true,
-                        "title": "Version"
-                      }
-                    },
-                    "title": "Invoke transaction V1"
-                  },
-                  "title": "Broadcasted invoke transaction V1"
-                }
-              ],
-              "title": "Broadcasted invoke transaction"
-            }
-          }
+          "_HASH_": "b8c0da0b4bd3a5b58b8d7e511903a12322ca177dd2c00c58753236c71651c08a"
         }
       }
     ],
@@ -1333,18 +263,7 @@
       "schema": {
         "properties": {
           "transaction_hash": {
-            "TXN_HASH": {
-              "TXN_HASH": {
-                "FELT": {
-                  "description": "A field element. represented by at most 63 hex digits",
-                  "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$",
-                  "title": "Field element",
-                  "type": "string"
-                },
-                "description": "The transaction hash, as assigned in StarkNet",
-                "title": "Transaction hash"
-              }
-            },
+            "_HASH_": "ce4e089587ad61a722d55bfd295db32b966e982d387d022fc5e3e5d299b192b3",
             "required": true,
             "title": "The hash of the invoke transaction"
           }

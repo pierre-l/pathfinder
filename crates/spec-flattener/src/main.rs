@@ -71,7 +71,6 @@ impl SchemaRegistry {
 
     // TODO Rename, express this is cloned.
     fn for_domain(&self, domain: Domain) -> Map<String, Value> {
-        // TODO 
         let mut result = Map::new();
         self.schemas.iter()
         .filter(|(pointer, _schema)| pointer.domain == domain)
@@ -362,6 +361,7 @@ fn write_to_file(path: impl AsRef<str>, value: &Value) -> anyhow::Result<()> {
     .context(format!("Failed to write to file: {}", path))
 }
 
+// TODO Update
 /// Flattens the "$ref" fields.
 /// "$ref" fields originally are strings formatted like this: `"$ref": "#/components/schemas/EVENT"`
 /// This function lists all schemas, and for every "$ref", replaces the pointer string with the schema object.
@@ -414,14 +414,11 @@ fn flatten_refs(registry: &mut SchemaRegistry, domain: Domain, root: &Value, poi
                         let pointer = Pointer::try_new(domain, raw_pointer).unwrap();
 
                         if let Some(definition) = registry.get(&pointer) {
-                            let mut flattened_reference = serde_json::Map::new();
-                            if flattened_reference
-                                .insert(raw_pointer.to_string(), definition.clone())
-                                .is_some()
-                            {
-                                panic!("A schema was replaced")
-                            }
-                            *value = Value::Object(flattened_reference);
+                            let mut object = serde_json::Map::new();
+                            object.insert("_REF_".to_string(), Value::String(raw_pointer.to_string()));
+                            let hash = sha256::digest(serde_json::to_string(&definition).unwrap());
+                            object.insert("_HASH_".to_string(), Value::String(hash));
+                            *value = Value::Object(object);
                         } else if pointer.domain == domain && !schema_names.contains(pointer.schema_name()) {
                             // Local schema not found.
                             let mut object = Map::new();
