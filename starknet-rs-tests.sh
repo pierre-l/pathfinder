@@ -21,7 +21,7 @@ cd $STARKNET_RS_DIR
 # TODO nocapture?
 #   RUST_LOG="starknet-providers::jsonrpc::transport::http=trace" \
 RUST_BACKTRACE=1 \
-    STARKNET_RPC=http://127.0.0.1:9545 \
+    STARKNET_RPC=http://localhost:9545 \
     RUST_LOG="trace" \
     cargo test --all jsonrpc_get_block_with_tx_hashes -- --nocapture
 
