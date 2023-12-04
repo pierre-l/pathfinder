@@ -18,5 +18,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
+      - uses: rui314/setup-mold@v1
       - name: starknet-rs tests
         run: ./starknet-rs-tests.sh
