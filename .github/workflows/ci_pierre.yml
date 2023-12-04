@@ -18,5 +18,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: starknet-rs tests
-        run: pwd && ls
-        #run: ./starknet-rs-tests.sh
+        run: ./starknet-rs-tests.sh
