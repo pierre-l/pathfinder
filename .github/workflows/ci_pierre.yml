@@ -17,4 +17,4 @@ jobs:
     runs-on: pierre-l
     steps:
       - name: starknet-rs tests
-        run: ./starknet-rs-tests.sh
+        run: ../starknet-rs-tests.sh
