@@ -17,5 +17,6 @@ jobs:
     runs-on: pierre-l
     steps:
       - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
       - name: starknet-rs tests
         run: ./starknet-rs-tests.sh
