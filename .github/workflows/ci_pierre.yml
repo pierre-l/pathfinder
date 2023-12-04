@@ -16,6 +16,7 @@ jobs:
   test:
     runs-on: pierre-l
     steps:
+      - uses: actions/checkout@v3
       - name: starknet-rs tests
         run: pwd && ls
         #run: ./starknet-rs-tests.sh
