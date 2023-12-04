@@ -7,6 +7,7 @@ REPO_ROOT_DIR=$(git rev-parse --show-toplevel);
 CI_DIR=$REPO_ROOT_DIR/ci
 STARKNET_RS_DIR=$CI_DIR/starknet-rs
 
+mkdir $CI_DIR
 cd $CI_DIR
 
 # Clone starknet-rs if it doesn't exist
@@ -26,4 +27,4 @@ RUST_BACKTRACE=1 \
 
 # TODO Make this a TearDown cli option
 rm -Rf $STARKNET_RS_DIR
-rm -Rf tmp
+rm -Rf $CI_DIR
