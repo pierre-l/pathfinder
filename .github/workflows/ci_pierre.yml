@@ -20,4 +20,4 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: rui314/setup-mold@v1
       - name: starknet-rs tests
-        run: PATHFINDER_HOST=${{env.PATHFINDER_HOST}} && ./starknet-rs-tests.sh
+        run: export PATHFINDER_HOST=${{env.PATHFINDER_HOST}} && ./starknet-rs-tests.sh
